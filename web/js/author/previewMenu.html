@@ -1,0 +1,14 @@
+<div ng-if="preview">
+  <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>&nbsp;
+  <a ng-class="css('off')" ng-click="toggle('off')"><span>OFF</span></a><label>Preview off</label>
+  <a ng-class="css('mobile-portrait')" ng-click="toggle('mobile-portrait')"><span>MP</span></a><label>Mobile (portrait) <small>{{preview.w}}px</small></label>
+  <span ng-if="preview.w > 320">
+  <a ng-class="css('mobile-landscape')" ng-click="toggle('mobile-landscape')"><span>ML</span></a><label>Mobile (landscape) <small>{{preview.w}}px</small></label>
+  </span>
+  <a ng-class="css('tablet-portrait')" ng-click="toggle('tablet-portrait')"><span>TP</span></a><label>Tablet (portrait) <small>{{preview.w}}px</small></label>
+  <a ng-class="css('desktop-small')" ng-click="toggle('desktop-small')"><span>DS</span></a><label>Desktop (small) <small>{{preview.w}}px</small></label>
+  <span ng-if="preview.w > 320">
+  <a ng-class="css('desktop-large')" ng-click="toggle('desktop-large')"><span>DL</span></a><label>Desktop (large) <small>{{preview.w}}px</small></label>
+  <a ng-class="css('desktop-xl')" ng-click="toggle('desktop-xl')"><span>DX</span></a><label>Desktop (x-large) <small>{{preview.w}}px</small></label>
+  </span>
+</div>

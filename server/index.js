@@ -4,7 +4,7 @@ var config   = Honey.Configure(__dirname, process.env.ENV || 'dev', true)
 var track    = require('./app.track')
 
 var app = require('./app').run({ config, Honey, track },
-  (e) => { if (e) console.log('APP.ERROR'.red, e, e.stack) }
+  (e) => { if (e) console.log('APP.ERROR'.red, e, e.stack) })
 
 //     var urls = app.sitemap.map(url => `<url><loc>${url}</loc></url>`)
 //                           .join('\n  ')

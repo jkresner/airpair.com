@@ -1,7 +1,7 @@
 // ** Can't use destructuring assigment up the top here because the sub
 // attributes don't exist when we require this file, but do when invoked
 // (after extended with the models + lib from meanair-auth)
-module.exports = function(DAL, Data, Shared, Lib) {
+module.exports = function(DAL, Data, DRY) {
   var cfg = global.config.auth.oauth
 
   function validate(user, existing, provider, profile, tokens) {
@@ -29,17 +29,19 @@ module.exports = function(DAL, Data, Shared, Lib) {
 
 
     exec(provider, profile, tokens, done) {
-      Lib.userByAuth(null, 'gh', profile, (e, existing) => {
+      // $log('loginCust.profile', profile)
+      DRY.userByAuth(null, 'gh', profile, (e, existing) => {
+        // $log('loginCust.userByAuth', e, existing, profile)
         if (e) return done(e)
 
         var inValid = validate(this.user, existing, provider, profile, tokens)
-        if (inValid) return done(Shared.Unauthorized(inValid))
+        if (inValid) return done(DRY.Unauthorized(inValid))
 
-        $logIt('auth.login', 'gh:login', `${profile.login}: ${JSON.stringify(profile).gray}`)
+        LOG('auth.login', 'gh:login', `${profile.login}: ${JSON.stringify(profile).gray}`)
         if (existing) assign(this,{existing})
         var fn = existing ? 'loginOAuth' : 'signupOAuth'
 
-        Lib[fn](this, 'gh', 'github', profile, tokens, (e,r) => {
+        DRY[fn](this, 'gh', 'github', profile, tokens, (e,r) => {
           if (e) return done(e)
           r.avatar = r.photos ? r.photos[0].value : null
           if (r.avatar) r.avatar = r.avatar.split('?')[0]
@@ -50,8 +52,7 @@ module.exports = function(DAL, Data, Shared, Lib) {
             alias: _.pick(r,["_id","name","email","username"]),
             data: { user:_.pick(r,["_id","name","avatar"]), profile } })
 
-          console.log('loginCust'.yellow, r._id, r.name.yellow, r.avatar,
-            (r.photos||[]).map(p => `${p.type.blue}::${p.value}`).join(' | '))
+          // console.log('loginCust'.yellow, r)
 
           done(e, r)
         })

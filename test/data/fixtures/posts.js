@@ -589,6 +589,671 @@ module.exports = {
         "by" : ObjectId("5175efbfa3802cc4d5a5e6ed")
       }
     }
-  }
+  },
+
+  exps_deep: {
+    "_id" : ObjectId("541a36c3535a850b00b05697"),
+    "assetUrl" : "https://cloud.githubusercontent.com/assets/979542/9256432/2ec6296a-41a4-11e5-931a-7f0bc48fe8b4.png",
+      by: {
+        _id: ObjectId("5175efbfa3802cc4d5a5e6ed"),
+        "name" : "Jonathon Kresner", "email" : "jk@airpair.com",
+        "avatar" : "https://avatars.githubusercontent.com/u/979542?v=3",
+        "bio" : "Jonathon Kresner is AirPair's CEO and Founder. He conceived AirPair to help developers build ideas faster and stay un-stuck. He's decided to put AirPair to the test, by rebuilding airpair.com from scratch in 90 days with daily help from the best AngularJS, NodeJS and MongoDB experts on the web.",
+        "links" : {
+            "ap" : "hackerpreneur",
+            "gh" : "jkresner",
+            "so" : "http://stackoverflow.com/users/178211/jonathon-kresner",
+            "bb" : "hackerpreneur",
+            "in" : "d9YFKgZ7rY",
+            "tw" : "hackerpreneur",
+            "al" : "jkresner",
+            "gp" : "https://plus.google.com/117132380360243205600"
+        }
+    },
+    "md" : "Synopsis\n> There are major optimizations (and bottlenecks) you can spot by passing\nthrough your `ExpressJS Middleware` with a fine tooth comb. I was originally \nstuck for 6 hours on a middleware issue while settings up PassportJS the second\ntime round after noticing 10,000,000+ sessions in AirPair's MongoDB production\ninstance in late 2014. There's good stuff in this deep dive for all levels of\nNode.js developers building on express. The main take away is **watch out for the order you add ExpressJS Middleware** to your app. As I'll cover more than once below, a tiny swap in middleware order can have HUGE consequences.\n\n<sub>First published Oct 2014, Updated Aug 2015, intended to significantly \nenhance on discussion around bots, scrappers & analytics in Nov 2015.</sub>\n\n## ExpressJS & PassportJS 101\n\nThough I'd setup ExpressJS and PassportJS in 2013 for the *v0* version\nof airpair.com, I didn't deeply understand each or their relationship with\none another. Around October 2014 I noticed some 10,000,000 active session documents in MongoDB, which was obviously not right. \n\nLuckily it never affected us in a material way, and at the time I didn't want to \ntake my chances. So I spent some time observing how Express and PassportJS plug \ninto each other, here's what I learned on the way to uncovering what was going\nwrong.\n\n### There is only ONE Session\n\nAs per the PassportJS docs<sup>The official [PassportJS docs](http://passportjs.org/guide/configure/)</sup> configuring Passport via\nexpress middleware looks something like this:\n\n<!--?prettify lang=javascript linenums=false?-->\n\n    app.configure(function() {\n      app.use(express.static('public'));\n      app.use(express.cookieParser());\n      app.use(express.bodyParser());\n      app.use(express.session({ secret: 'keyboard cat' }));\n      app.use(passport.initialize());\n      app.use(passport.session());\n      app.use(app.router);\n    });\n\nThe syntax is a bit misleading I think ... \n\nThe first thing to conceptually get your head around is that even though you configure `express.session()` and`passport.session()`, there is really only one session, which is managed by Express. Passport merely piggy backs off the ExpressJS session to store data for authenticated users. \n\nLet's take a look at how:\n\n### ExpressJS Sessions & `req.session`\n\n`req.session` is just a json object that gets persisted by the `express-session` middleware, using a store of your choice e.g. Mongo or Redis. Logging to the terminal, you'll see the default session object looks something like:\n\n<!--?prettify lang=javascript linenums=false?-->\n\n    req.session = { cookie: \n      { path: '/',\n        _expires: Thu Nov 07 2014 09:39:45 GMT-0700 (PDT),\n        originalMaxAge: 100000,\n        httpOnly: true } }\n\nIf you open up your persistence store and look at the documents, you'll see the req.session object is an attribute of the the entire document that also comes with an `id` and `expires` attribute.\n\n<!--?prettify lang=javascript linenums=false?-->\n\n    {\n        _id : \"svZGs99EIvDkwW_60PRwlafU9Y_7_m-N\",\n        session : { cookie:{originalMaxAge:100000,expires:\"2014-11-07T02:11:16.320Z\",httpOnly:true,path:\"/\"},\n        expires : ISODate(\"2014-11-07T02:11:16.320Z\")\n    }\n\nExpress stuffs the id of the session object into a cookie on the client's browser, which gets passed back to express in a header on every request. This is how Express identifies multiple requests as belonging to a single session even if the user is not logged in. With the id from the cookie header, Express reads the session store and puts all the info onto req.session, which is available to you on each request.\n\n#### Harnessing `req.session` yourself\n\nYou can stuff anything you like onto the req.session object and Express will automatically persist it back to the session store for a given session (unique id). For example, if a user can't access a page because they are not logged in, airpair.com uses a custom made-up attribute called `return_to` to direct the user to the right page after login. \n\n<!--?prettify lang=javascript linenums=true?-->\n\n    { cookie: \n      { path: '/',\n        _expires: Thu Oct 09 2014 09:39:45 GMT-0700 (PDT),\n        originalMaxAge: 100000,\n        httpOnly: true },\n        passport: { user: { _id: '5175efbfa3802cc4d5a5e6ed' } },\n        return_to: '/workshops' }\n\nIt's worth noting that since you can put anything you want into an anonymous session, provided you can correlate it to a user in your database on login or signup, you can start persisting info for a user even though you don't know who they are straight away. You will see some cool interactions for anonymous users on airpair.com coming in the next month or two.\n\n#### Passport also harnesses `req.session`\n\nAs you can see on line 6 in the code snippet above, using the `passport` attribute allows PassportJS to use the session object to keep track of a logged in user  associated with a given session. \n\nIt then uses the `deserializeUser` function, which receives `req.session.passport.user` as its first parameter, and as the default behavior suggested in the PassportJS documentation, makes an additional read to your persistence store to retrieve the user object associated with the userId.\n\n<!--?prettify lang=javascript linenums=false?-->\n\n    passport.serializeUser(function(user, done) {\n      done(null, user.id);\n    });\n\n    passport.deserializeUser(function(id, done) {\n      User.findById(id, function(err, user) {\n        done(err, user);\n    });\n\n### Passport `req.user`\n\n`req.user` is a PassportJS specific property that is the result of the `deserializeUser` function using the data from `req.session.passport.user`\n\n## Optimize PassportJS \n\nI realized that in the old app, we followed the default suggestion and were hitting the database twice on every single API call to populate all the user's information in memory. But in practice, we rarely needed more than the userId in our backend code. So this time around, I've made the decision to stuff the name and email into the session object and avoid making multiple database trips on every single API call. With many pages on the site making 5-10 calls to render a single page, this seemed like a cheap way to significantly reduce database load. Here's what the new app looks like:\n\n<!--?prettify lang=javascript linenums=false?-->\n\n    passport.serializeUser( (user, done) => {\n      var sessionUser = { _id: user._id, name: user.name, email: user.email, roles: user.roles }\n      done(null, sessionUser)\n    })\n\n    passport.deserializeUser( (sessionUser, done) => {\n      // The sessionUser object is different from the user mongoose collection\n      // it's actually req.session.passport.user and comes from the session collection\n      done(null, sessionUser)\n    })\n\n## Optimize ExpressJS Sessions\n\n### When are sessions created?\n\nExpress will create a new session (and write it to the database) whenever it\ndoes not detect a session cookie. As it turns out, the order in which you set the session\nmiddleware and tell Express where your static directory is has some pretty\ndramatic nuances. Here's what the new AirPair index.js looks like:\n\n<!--?prettify lang=javascript linenums=false?-->\n\n    var express = require('express')\n    var app = express()\n\t\n    //-- We don't want to serve sessions for static resources\n    //-- Save database write on every resources\n    app.use(express.static(config.appdir+'/public'))\n\n    mongo.connect()\n    session(app, mongo.initSessionStore)\n\n    //-- Do not move connect-livereload before session middleware\n    if (config.livereload) app.use(require('connect-livereload')({ port: 35729 }))\n\t\n    hbsEngine.init(app)\n    routes.init(app)\t\n    app.listen(config.port, function() {})\n\n### Avoid Sessions for Static Resources\n\nI learned that if you add the session middleware before your static directory, \nExpress will generate sessions for requests on static files like stylesheets, images, and JavaScript. \n\nIf a new visitor without a session loads a page with 10 static files, the \nclient's browser will not yet have a cookie and will send 10 cookieless requests \nall triggering Express to create sessions. Ouch! So that's what was happening... \nIf you haven't done something smart to detect bots and scrapers, things can blow\nout pretty quickly!\n\nSimply put your static files first, or better yet on a CDN that has nothing to\ndo with your Node.js app and your session collection should stay much healthier.\n\n## ExpressJS 4.0 Middleware Order\n\nThe middleware setup for ExpressJS 4.0 is quite different from ExpressJS 3.0 where everything came baked in. You now need to include each piece manually with its own NPM package. In case you want to see an up-to-date version of how each  piece is chained together, because there are many non-working legacy examples floating around, this is what I ended up with.\n\nA couple of gotchas sunk half an hour or so for me, including that Cookie Parser now requires a secret and Body Parser required and Extend Url.\n\n<!--?prettify lang=javascript linenums=false?-->\n\n    // Passport does not directly manage your session, it only uses the session.\n    // So you configure session attributes (e.g. life of your session) via express\n    var sessionOpts = {\n      saveUninitialized: true, // saved new sessions\n      resave: false, // do not automatically write to the session store\n      store: sessionStore,\n      secret: config.session.secret,\n      cookie : { httpOnly: true, maxAge: 2419200000 } // configure when sessions expires\n    }\n\n    app.use(bodyParser.json())\n    app.use(bodyParser.urlencoded({extended: true}))\n    app.use(cookieParser(config.session.secret))\n    app.use(session(sessionOpts))\n\n    app.use(passport.initialize())\n    app.use(passport.session())\n\n\n### The AHA! **live-reload** middleware\n\nSo it turns out, the problem that held me up was the position of the live-reload middleware. LiveReload injects script into every response to listen for changes emitted from the server. I don't know the exact issue, but having it before the session middleware broke the session cookie being sent correctly to the client.\n\n## Check your Middleware!\n\nI'm glad I took the time to dive deep with Express and Passport for the new \nairpair.com site. A few tweaks have lead to significantly less database traffic \nand my deepening understanding of how to utilize req.session will empower us to \nbuild some cool interactions and personalization for anonymous visitors.\n\nI highly highly recommend going through all your middleware one at a time\nto understand everything you app is doing on every request. There are many performance gains to be had when you understand things\npiece by piece.\n",
+    "slug" : "expressjs-and-passportjs-sessions-deep-dive",
+    "tags" : [
+        {
+            "slug" : "express",
+            "name" : "ExpressJS",
+            "_id" : ObjectId("514825fa2a26ea0200000016")
+        },
+        {
+            "slug" : "passport",
+            "name" : "passport",
+            "_id" : ObjectId("5181e12e66a6f999a465f282")
+        }
+    ],
+    "title" : "ExpressJS and PassportJS Sessions Deep Dive",
+    "github" : {
+        "repoInfo" : {
+            "author" : "jkresner",
+            "url" : "https://github.com/airpair/expressjs-and-passportjs-sessions-deep-dive",
+            "owner" : "jkresner",
+            "authorTeamId" : 1315283,
+            "reviewTeamId" : 1315282
+        }
+    },
+    "reviews" : [
+        {
+            "_id" : ObjectId("54f0d3f64499800c00f1e3b7"),
+            "by" : ObjectId("54f0d3ea4499800c00f1e3b5"),
+            "val" : 5,
+            "said" : "+5 for disambiguation of static and session relationship! good to know",
+            "replies" : [
+                {
+                    "_id" : ObjectId("54f18f41b2ecf40c00e2911e"),
+                    "by" : "5175efbfa3802cc4d5a5e6ed",
+                    "said" : "Thank you sir :)"
+                }
+            ],
+            "votes" : [
+                {
+                    "_id" : ObjectId("54f0ea3f4499800c00f1e5b2"),
+                    "by" : "5175efbfa3802cc4d5a5e6ed",
+                    "val" : 1
+                }
+            ]
+        },
+        {
+            "_id" : ObjectId("55bda4e448f26f11009ddb00"),
+            "by" : ObjectId("55bda4c8cf98ed11005a928b"),
+            "val" : 4,
+            "said" : "Great post!"
+        },
+        {
+            "_id" : ObjectId("55cd25de88d34e110078bb63"),
+            "by" : ObjectId("54f711888438550c00e98aa0"),
+            "val" : 4,
+            "said" : "Sweet, we were just working on a similar stack for a ShipIt Day project so I'll be sure to go back and double check our Express config before pulling it into a release :)"
+        },
+        {
+            "_id" : ObjectId("55cd6c8c71d6051100c3732f"),
+            "by" : ObjectId("533afd421c67d1a4859d2b28"),
+            "val" : 5,
+            "said" : "Great job diving deep into such a seemingly mundane topic. It is a rare occurrence indeed that something like this is pursued to the point where it yields real insights, and I am very very happy that you took the time to get this insight out there for the community to share, and hopefully consume when they are building their own apps. A very interesting post."
+        },
+        {
+            "_id" : ObjectId("55cdfbeddcb9e91100e82f0f"),
+            "by" : ObjectId("532071421c67d1a4859d2755"),
+            "val" : 5,
+            "said" : "Good work, JK!  Timely and useful."
+        },
+        {
+            "_id" : ObjectId("55ce6f21ef06bf11004e50b0"),
+            "by" : ObjectId("527bd05966a6f999a465fb0c"),
+            "val" : 5,
+            "said" : "Middleware can be tricky - particularly when dealing with unique session IDs and the like. I've had my own frustrations with Express in the past, and this pretty much sums up my experience! I'm looking forward to polishing my code and fixing the issue :)"
+        },
+        {
+            "_id" : ObjectId("55e075019f326811007955c5"),
+            "by" : ObjectId("55e07499deaaba11001a8f7e"),
+            "val" : 5,
+            "said" : "+5 for explaining clearly something poorly documented \n(and for all the work needed to do that ;) )",
+            "votes" : [
+                {
+                    "_id" : ObjectId("562e6f0440899311000ad0d2"),
+                    "by" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                    "val" : 1
+                }
+            ]
+        },
+        {
+            "_id" : ObjectId("56289a056d2109110015a3fd"),
+            "by" : ObjectId("562891dac6e100110021e1c2"),
+            "val" : 4,
+            "said" : "Thanks for this post",
+            "replies" : [
+                {
+                    "_id" : ObjectId("562e6eae745e3c1100c94e19"),
+                    "by" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                    "said" : "Glad you liked it."
+                }
+            ]
+        },
+        {
+            "_id" : ObjectId("56570c55e7164111000206f9"),
+            "by" : ObjectId("5649c2a540b1891100d2f0a1"),
+            "val" : 5,
+            "said" : "Awsome work, very helpful!"
+        },
+        {
+            "_id" : ObjectId("565e134998b91511002a7b8c"),
+            "by" : ObjectId("564a4c3940b1891100d317ce"),
+            "val" : 5,
+            "said" : "good"
+        },
+        {
+            "_id" : ObjectId("5684890196ca5311007c8b89"),
+            "by" : ObjectId("568483b165dd16110077cf37"),
+            "val" : 5,
+            "said" : "good explaination"
+        },
+        {
+            "_id" : ObjectId("5696546b4c61551100766ac3"),
+            "by" : ObjectId("5696527fa86b0f1100f2b42e"),
+            "val" : 5,
+            "said" : "Excellent article!"
+        },
+        {
+            "_id" : ObjectId("56bafd9211c28d110001dd55"),
+            "by" : ObjectId("56baea25ed563e1100790f31"),
+            "val" : 5,
+            "said" : "Very nice article. Clears confusion related with Passport and Express session."
+        },
+        {
+            "_id" : ObjectId("56bdbe4a9767f51100cae009"),
+            "by" : ObjectId("56bdb8837e2c9a11006b4ba1"),
+            "val" : 5,
+            "said" : "I must say, you opened my eyes to this really confusing workflow. Now I know that req.session is populated by Express and PassportJS harnesses the content of req.session to populate req.user.  \n\nThanks for the efforts. "
+        },
+        {
+            "_id" : ObjectId("56eb9ad8e4b981110061fb8e"),
+            "by" : ObjectId("56eb9a43eeb06d110051f35a"),
+            "val" : 2,
+            "said" : "Too old post."
+        },
+        {
+            "_id" : ObjectId("56f5bc5edd95791100199980"),
+            "by" : ObjectId("56f5ba5bcbcb8611009d5883"),
+            "val" : 1,
+            "said" : "A bit miffed that the site promotes \"to help developers build ideas faster and stay un-stuck\" yet blocks code samples unless you sign in to github and give away your email."
+        },
+        {
+            "_id" : ObjectId("5706fd9c833a431100c9a797"),
+            "by" : ObjectId("5706fc76833a431100c9a794"),
+            "val" : 5,
+            "said" : "Very well done."
+        }
+    ],
+    "stats" : {
+        "words" : 1450,
+        "shares" : 0,
+        "acceptedPRs" : 0,
+        "closedPRs" : 0,
+        "openPRs" : 0,
+        "forkers" : 2,
+        "comments" : 20,
+        "reviews" : 17,
+        "rating" : 4.41
+    },
+    "forkers" : [
+        {
+            "_id" : ObjectId("558df2e619316a1100fcdd94"),
+            "userId" : ObjectId("558dccfbf6f02b110057636a")
+        },
+        {
+            "_id" : ObjectId("55cd0e5988d34e110078b6f8"),
+            "userId" : ObjectId("54f711888438550c00e98aa0")
+        }
+    ],
+    "htmlHead" : {
+        "ogImage" : "https://cloud.githubusercontent.com/assets/979542/9256432/2ec6296a-41a4-11e5-931a-7f0bc48fe8b4.png",
+        "ogDescription" : "Misunderstanding ExpressJS Sessions and how PassportJS works can lead to millions of un-necessary database reads and writes. This deep time will keep you out of trouble.",
+        "description" : "Misunderstanding ExpressJS Sessions and how PassportJS works can lead to millions of un-necessary database reads and writes. This deep time will keep you out of trouble.",
+        "ogUrl" : "http://www.airpair.com/express/posts/expressjs-and-passportjs-sessions-deep-dive",
+        "ogVideo" : null,
+        "ogTitle" : "ExpressJS and PassportJS Sessions Deep Dive",
+        "ogType" : "article",
+        "canonical" : "http://www.airpair.com/express/posts/expressjs-and-passportjs-sessions-deep-dive",
+        "title" : "ExpressJS and PassportJS Sessions Deep Dive"
+    },
+    "subscribed" : [
+        {
+            "_id" : ObjectId("541a36c3535a850b00b05697"),
+            "userId" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+            "mail" : "jk@airpair.com"
+        },
+        {
+            "_id" : ObjectId("54f0d3f64499800c00f1e3b7"),
+            "userId" : ObjectId("54f0d3ea4499800c00f1e3b5"),
+            "mail" : "montana.payne@jlmei.com"
+        },
+        {
+            "_id" : ObjectId("55bda4e448f26f11009ddb00"),
+            "userId" : ObjectId("55bda4c8cf98ed11005a928b"),
+            "mail" : "ben@handstack.com"
+        },
+        {
+            "_id" : ObjectId("55cd25de88d34e110078bb63"),
+            "userId" : ObjectId("54f711888438550c00e98aa0"),
+            "mail" : "rsmclaug@gmail.com"
+        },
+        {
+            "_id" : ObjectId("55cd6c8c71d6051100c3732f"),
+            "userId" : ObjectId("533afd421c67d1a4859d2b28"),
+            "mail" : "apolishc@gmail.com"
+        },
+        {
+            "_id" : ObjectId("55cdfbeddcb9e91100e82f0f"),
+            "userId" : ObjectId("532071421c67d1a4859d2755"),
+            "mail" : "rtinfow@gmail.com"
+        },
+        {
+            "_id" : ObjectId("55ce6f21ef06bf11004e50b0"),
+            "userId" : ObjectId("527bd05966a6f999a465fb0c"),
+            "mail" : "eric@eam.me"
+        },
+        {
+            "_id" : ObjectId("55e075019f326811007955c5"),
+            "userId" : ObjectId("55e07499deaaba11001a8f7e"),
+            "mail" : "arhuman@gmail.com"
+        },
+        {
+            "_id" : ObjectId("56289a056d2109110015a3fd"),
+            "userId" : ObjectId("562891dac6e100110021e1c2"),
+            "mail" : "primary"
+        },
+        {
+            "_id" : ObjectId("56570c55e7164111000206f9"),
+            "userId" : ObjectId("5649c2a540b1891100d2f0a1"),
+            "mail" : "kashaev.arthur@gmail.com"
+        },
+        {
+            "_id" : ObjectId("565e134998b91511002a7b8c"),
+            "userId" : ObjectId("564a4c3940b1891100d317ce"),
+            "mail" : "merloxdixcontrol@gmail.com"
+        },
+        {
+            "_id" : ObjectId("5684890196ca5311007c8b89"),
+            "userId" : ObjectId("568483b165dd16110077cf37"),
+            "mail" : "murtuzamorbi@yahoo.com"
+        },
+        {
+            "_id" : ObjectId("5696546b4c61551100766ac3"),
+            "userId" : ObjectId("5696527fa86b0f1100f2b42e"),
+            "mail" : "outofservices@outlook.com"
+        },
+        {
+            "_id" : ObjectId("56bafd9211c28d110001dd55"),
+            "userId" : ObjectId("56baea25ed563e1100790f31"),
+            "mail" : "pratik.sathe1987@gmail.com"
+        },
+        {
+            "_id" : ObjectId("56bdbe4a9767f51100cae009"),
+            "userId" : ObjectId("56bdb8837e2c9a11006b4ba1"),
+            "mail" : "rafiullahrs@gmail.com"
+        },
+        {
+            "_id" : ObjectId("56eb9ad8e4b981110061fb8e"),
+            "userId" : ObjectId("56eb9a43eeb06d110051f35a"),
+            "mail" : "prashant.sable@krixi.com"
+        },
+        {
+            "_id" : ObjectId("56f5bc5edd95791100199980"),
+            "userId" : ObjectId("56f5ba5bcbcb8611009d5883"),
+            "mail" : "github@matthewboehm.com"
+        },
+        {
+            "_id" : ObjectId("5706fd9c833a431100c9a797"),
+            "userId" : ObjectId("5706fc76833a431100c9a794"),
+            "mail" : "rahul.m.dhodapkar@gmail.com"
+        },
+        {
+            "_id" : ObjectId("558df2e619316a1100fcdd94"),
+            "userId" : ObjectId("558dccfbf6f02b110057636a"),
+            "mail" : "yuraji@gmail.com"
+        }
+    ],
+    "history" : {
+        "created" : ISODate("2014-09-18T01:34:59.747Z"),
+        "updated" : ISODate("2015-08-13T22:59:42.039Z"),
+        "submitted" : ISODate("2015-02-21T00:15:35.231Z"),
+        "published" : ISODate("2014-09-23T19:17:23.161Z"),
+        "live" : {
+            "published" : ISODate("2015-08-13T22:59:42.039Z"),
+            "by" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+            "commit" : "8503d290c7b4ed5e780f04f2b703eef43554b6d1"
+        }
+    },
+    "meta" : {
+        "lastTouch" : {
+            "action" : "propagateMDfromGithub",
+            "utc" : ISODate("2015-08-13T22:59:42.039Z"),
+            "by" : {
+                "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                "name" : "Jonathon Kresner"
+            }
+        },
+        "activity" : [
+            {
+                "_id" : ObjectId("54e7ce27fd5a340c005de39e"),
+                "utc" : ISODate("2015-02-21T00:15:35.231Z"),
+                "action" : "submittedForReview",
+                "by" : {
+                    "name" : "Jonathon Kresner",
+                    "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed")
+                }
+            },
+            {
+                "utc" : ISODate("2015-08-13T17:15:27.102Z"),
+                "action" : "updateByAuthor",
+                "_id" : ObjectId("55ccd0af88d34e110078a5f8"),
+                "by" : {
+                    "name" : "Jonathon Kresner",
+                    "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed")
+                }
+            },
+            {
+                "_id" : ObjectId("55ccd1f233be2d11001c83dc"),
+                "action" : "updateHEAD",
+                "utc" : ISODate("2015-08-13T17:20:50.953Z"),
+                "by" : {
+                    "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                    "name" : "Jonathon Kresner"
+                }
+            },
+            {
+                "utc" : ISODate("2015-08-13T17:24:16.737Z"),
+                "action" : "updateHEAD",
+                "_id" : ObjectId("55ccd2c033be2d11001c840f"),
+                "by" : {
+                    "name" : "Jonathon Kresner",
+                    "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed")
+                }
+            },
+            {
+                "_id" : ObjectId("55ccd2cd33be2d11001c8412"),
+                "action" : "propagateMDfromGithub",
+                "utc" : ISODate("2015-08-13T17:24:29.754Z"),
+                "by" : {
+                    "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                    "name" : "Jonathon Kresner"
+                }
+            },
+            {
+                "utc" : ISODate("2015-08-13T17:28:35.209Z"),
+                "action" : "updateHEAD",
+                "_id" : ObjectId("55ccd3c333be2d11001c8459"),
+                "by" : {
+                    "name" : "Jonathon Kresner",
+                    "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed")
+                }
+            },
+            {
+                "_id" : ObjectId("55ccd47888d34e110078a706"),
+                "action" : "updateHEAD",
+                "utc" : ISODate("2015-08-13T17:31:36.416Z"),
+                "by" : {
+                    "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                    "name" : "Jonathon Kresner"
+                }
+            },
+            {
+                "utc" : ISODate("2015-08-13T17:31:46.836Z"),
+                "action" : "propagateMDfromGithub",
+                "_id" : ObjectId("55ccd48233be2d11001c8496"),
+                "by" : {
+                    "name" : "Jonathon Kresner",
+                    "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed")
+                }
+            },
+            {
+                "_id" : ObjectId("55ccd55888d34e110078a75f"),
+                "action" : "updateHEAD",
+                "utc" : ISODate("2015-08-13T17:35:20.314Z"),
+                "by" : {
+                    "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                    "name" : "Jonathon Kresner"
+                }
+            },
+            {
+                "utc" : ISODate("2015-08-13T17:35:26.197Z"),
+                "action" : "propagateMDfromGithub",
+                "_id" : ObjectId("55ccd55e33be2d11001c84e0"),
+                "by" : {
+                    "name" : "Jonathon Kresner",
+                    "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed")
+                }
+            },
+            {
+                "_id" : ObjectId("55ccd5d088d34e110078a77f"),
+                "action" : "updateHEAD",
+                "utc" : ISODate("2015-08-13T17:37:20.806Z"),
+                "by" : {
+                    "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                    "name" : "Jonathon Kresner"
+                }
+            },
+            {
+                "utc" : ISODate("2015-08-13T17:37:25.929Z"),
+                "action" : "propagateMDfromGithub",
+                "_id" : ObjectId("55ccd5d533be2d11001c850c"),
+                "by" : {
+                    "name" : "Jonathon Kresner",
+                    "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed")
+                }
+            },
+            {
+                "touch" : {
+                    "action" : "publish",
+                    "utc" : ISODate("2015-08-13T17:35:26.197Z"),
+                    "by" : {
+                        "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                        "name" : "Jonathon Kresner"
+                    }
+                },
+                "commit" : "65ee5930fcde844bd42563b5cf7268702ce766ec",
+                "_id" : ObjectId("55ccd55e33be2d11001c84e1")
+            },
+            {
+                "touch" : {
+                    "action" : "publish",
+                    "utc" : ISODate("2015-08-13T17:37:25.929Z"),
+                    "by" : {
+                        "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                        "name" : "Jonathon Kresner"
+                    }
+                },
+                "commit" : "6355f61f970e2059d971e9396918e34b12fa6961",
+                "_id" : ObjectId("55ccd5d533be2d11001c850d")
+            },
+            {
+                "touch" : {
+                    "action" : "publish",
+                    "utc" : ISODate("2015-08-13T17:40:49.063Z"),
+                    "by" : {
+                        "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                        "name" : "Jonathon Kresner"
+                    }
+                },
+                "commit" : "d8e9b309c58d897fe1045dd1264ceabbc30ec9ab",
+                "_id" : ObjectId("55ccd6a188d34e110078a7d4")
+            },
+            {
+                "touch" : {
+                    "action" : "publish",
+                    "utc" : ISODate("2015-08-13T17:53:09.871Z"),
+                    "by" : {
+                        "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                        "name" : "Jonathon Kresner"
+                    }
+                },
+                "commit" : "7ba7ec4d52ab700dd8a76439d76c39e48ec2af98",
+                "_id" : ObjectId("55ccd98533be2d11001c8638")
+            },
+            {
+                "touch" : {
+                    "action" : "publish",
+                    "utc" : ISODate("2015-08-13T17:54:32.348Z"),
+                    "by" : {
+                        "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                        "name" : "Jonathon Kresner"
+                    }
+                },
+                "commit" : "3a8301598d3141ce412aecb372626f01e9e463f4",
+                "_id" : ObjectId("55ccd9d833be2d11001c864d")
+            },
+            {
+                "touch" : {
+                    "action" : "publish",
+                    "utc" : ISODate("2015-08-13T17:57:17.516Z"),
+                    "by" : {
+                        "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                        "name" : "Jonathon Kresner"
+                    }
+                },
+                "commit" : "7661a82071bacd17e8e406e87b0e06e5111235af",
+                "_id" : ObjectId("55ccda7d88d34e110078a8fc")
+            },
+            {
+                "_id" : ObjectId("55cd215e33be2d11001c9838"),
+                "commit" : "8503d290c7b4ed5e780f04f2b703eef43554b6d1",
+                "touch" : {
+                    "action" : "publish",
+                    "utc" : ISODate("2015-08-13T22:59:42.038Z"),
+                    "by" : {
+                        "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                        "name" : "Jonathon Kresner"
+                    }
+                }
+            }
+        ]
+    }
+  },
+
+  logoBra: {
+    _id: ObjectId("56b363115b56140b7e46129b"),
+    "title" : "Don't change my logo bra",
+    "tags" : [],
+    "md" : "Welcome to your post. Highlighted elements are inconsistent with our [authoring guidelines](https://www.airpair.com/authoring-guide)\n\n> Posts should start with a 30-50 word `blockquote` summary. Delete the above sentence and rewrite this blockquote when know what your post is covering.\n\n## 1. AirPair Editor Tips\n\n### 1.1 The preview pane\n\nAs you make change the preview pane will update.\n\nThe longer your post, the less frequently it will refresh. To immediately show the latest changes, click anywhere - *i.e. blur* - out of the editor.\n\n### 1.2 Change, Check, Save\n\nWhen you make changes, the **SAVE** button appears.\n\nPreview how things look across different devices and if all's well, click **SAVE** to avoid loosing work.\n\n### 1.3 Guideline\n",
+    "forkers" : [],
+    "reviews" : [],
+    history: {
+      "updated" : ISODate("2016-02-04T14:41:21.000Z"),
+      "created" : ISODate("2016-02-04T14:41:21.852Z"),
+    },
+    "meta" : {
+      "activity" : [
+        { _id: ObjectId("56b363115b56140b7e46129a"),
+          "action" : "create", by: { "name" : "Jonathon Kresner", _id: ObjectId("549342348f8c80299bcc56c2") } },
+        { _id: ObjectId("56b3631b5b56140b7e46129d"),
+          "action" : "editDraft", by: { "name" : "Jonathon Kresner", _id: ObjectId("549342348f8c80299bcc56c2") } }
+      ],
+      "lastTouch" : {
+        by: { "name" : "Jonathon Kresner", _id: ObjectId("549342348f8c80299bcc56c2") },
+        _id: ObjectId("56b3631b5b56140b7e46129d"),
+        "action" : "editDraft"
+      }
+    },
+    by: {
+      _id: ObjectId("549342348f8c80299bcc56c2"),
+      "name" : "Jonathon Kresner",
+      "bio" : "AirPair.com Founder",
+      "avatar" : "https://avatars.githubusercontent.com/u/979542?v=3"
+    },
+    "stats" : { "words" : 1 }
+  },
+
+
+
+  vagrantCheat: {
+    "_id" : ObjectId("56ceeb50fb20411200c2322b"),
+    "title" : "Vagrant Cheatsheet",
+    "md" : "\nA 3 minutes introduction to setting up your Vagrant Machine. This very short tutorial will work you through how to configure your Vagrantfile for various VM providers in the form of a cheatsheet. \n\nUninstalling Vagrant\n    - On Windows, uninstall using the add/remove programs section of the control panel.\n    - On Mac OS X, remove the /Applications/Vagrant directory and the /usr/bin/vagrant file.\n    - On Linux, remove the /opt/vagrant directory and the /usr/bin/vagrant file.\n    - On every platform, remove the ~/.vagrant.d directory to delete the user data.\n    \nNote: the ‘$’ before the commands signifies a set of commands to run on your terminal. Please, do not type ‘$’ as part of the command.\n\n‘#’ represents a comment/explanation of what the command does\n\nCommands:\n--------\n\n    $ vagrant box add NAME URL\n    $ vagrant box list\n    $ vagrant box remove NAME PROVIDER\n    $ vagrant box repackage NAME PROVIDER\n    $ vagrant box add precise32 http://files.vagrantup.com/precise32.box\n\n — -\n    # vagrant up — starts vagrant environment (also provisions only on the FIRST vagrant up)\n\n    $ vagrant up — provider=virtualbox\n    $ vagrant up — provider=vmware_fusion\n    $ vagrant up — provider=vmware_workstation\n    $ vagrant up — provider=aws\n    \n — -\n\n    # vagrant destroy — stops and deletes all traces of the vagrant machine\n    \n    $ vagrant destoy\n    $ vagrant destroy -f\n    $ vagrant destrroy — force\n    -f or — force is for : Don’t ask for confirmation before destroying.\n    \n — -\n\n# Other commands\n    $ vagrant init # Initializes the current directory to be a Vagrant environment by creating an initial Vagrantfile if one doesn’t already exist\n    \n    $ vagrant status — outputs status of the vagrant machine\n    \n    $ vagrant reload — restarts vagrant machine, loads new Vagrantfile configuration\n    \n    $ vagrant provision — forces reprovisioning of the vagrant machine\n\n# Tips\n\n    $ vagrant -v — Get the vagrant version\n    $ vagrant global-status — outputs status of all vagrant machines\n    $ vagrant suspend — Suspends a virtual machine (remembers state)\n    $ vagrant resume — Resume a suspended machine (vagrant up works just fine for this as well)\n    $ vagrant push — Yes, vagrant can be configured to deploy code!\n    $ vagrant up — provision | tee provision.log — Runs vagrant up, forces provisioning and logs all output to a file\n    \n — -\n\n    # vagrant halt — stops the vagrant machine\n    $ vagrant halt\n    $ vagrant halt -f\n    $ vagrant halt — force\n    -f or — force is for : Don’t attempt to gracefully shut down the machine. Pull out the power cord.\n    \n — -\n\n    # If a first argument is given, it will prepopulate the config.vm.box setting in the created Vagrantfile.\n    # If a second argument is given, it will prepopulate the config.vm.box_url setting in the created Vagrantfile.\n    \n    $ vagrant init [box-name] [box-url]\n    \n — -\n\n    $ vagrant package\n    \n    — base NAME — Instead of packaging a VirtualBox machine that Vagrant manages, this will package a VirtualBox machine that VirtualBox manages. NAME should be the name or UUID of the machine from the VirtualBox GUI.\n    — output NAME — The resulting package will be saved as NAME. By default, it will be saved as package.box.\n    — include x,y,z — Additional files will be packaged with the box. These can be used by a packaged Vagrantfile (documented below) to perform additional tasks.\n    — vagrantfile FILE — Packages a Vagrantfile with the box, that is loaded as part of the Vagrantfile load order when the resulting box is used.\n    \n — -\n\n    $ vagrant plugin\n    $ vagrant plugin install\n    $ vagrant plugin license\n    $ vagrant plugin list\n    $ vagrant plugin uninstall\n    \n — -\n\n    # vagrant provision — debug — Use the debug flag to increase the verbosity of the output\n    $ vagrant provision — provision-with x,y,z\n    This will only run the given provisioners. For example, if you have a :shell and :chef_solo provisioner and run vagrant provision — provision-with shell, only the shell provisioner will be run.\n    \n — -\n\n    # vagrant reload — provision — Restart the virtual machine and force provisioning\n    $ vagrant reload\n    — no-provision — The provisioners will not run.\n    — provision-with x,y,z — This will only run the given provisioners. For example, if you have a :shell and :chef_solo provisioner and run vagrant provision — provision-with shell, only the shell provisioner will be run.\n    \n — -\n\n    # vagrant ssh — connects to machine via SSH\n    $ vagrant ssh\n    -c COMMAND or — command COMMAND — This executes a single SSH command, prints out the stdout and stderr, and exits.\n    -p or — plain — This does an SSH without authentication, leaving authentication up to the user.\n    \n — -\n\n    $ vagrant ssh-config\n    This will output valid configuration for an SSH config file to SSH into the running Vagrant machine from ssh directly (instead of using vagrant ssh).\n    — host NAME — Name of the host for the outputted configuration.\n    \n — -\n\nPath\n----\n\nif vagrant is run in `/home/path/to/foo`, it will search the following paths in order for a Vagrantfile, until it finds one:\n\n    /home/path/to/foo/Vagrantfile\n    /home/path/to/Vagrantfile\n    /home/path/Vagrantfile\n    /home/Vagrantfile\n    /Vagrantfile\n    VAGRANT_CWD # environment variable to set the starting directory where Vagrant looks for a Vagrantfile\n\nConfigs\n---------\n\nVagrantFile Configs\n\n    Vagrant.configure(“2”) do |config| config.vm.box = “precise32”\n    end\n# Load order of Vagrantfile (newest overrides the older ones)\n    1. Built-in default Vagrantfile that ships with Vagrant. This has default settings\n    2. Vagrantfile packaged with the box that is to be used for a given machine.\n    3. Vagrantfile in your Vagrant home directory (defaults to ~/.vagrant.d). This lets you specify some defaults for your system user\n    4. Vagrantfile from the project directory. This is the Vagrantfile that you’ll be modifying most of the time.\n    \n# Machine Settings\n\n    - config.vm.box — This configures what box the machine will be brought up against. The value here should match one of the installed boxes on the system.\n    - config.vm.box_url — The URL that the configured box can be found at. If the box is not installed on the system, it will be retrieved from this URL when vagrant up is run.\n    - config.vm.graceful_halt_retry_count — The number of times to retry gracefully shutting down the system when vagrant halt is called. Defaults to 3.\n    - config.vm.graceful_halt_retry_interval — The amount of time in between each retry of attempting to shut down, in seconds. Defaults to 1 second.\n    - config.vm.guest — The guest OS that will be running within this machine. This defaults to :linux, and Vagrant will auto-detect the proper distro. Vagrant needs to know this information to perform some guest OS-specific things such as mounting folders and configuring networks.\n    - config.vm.hostname — The hostname the machine should have. Defaults to nil. If nil, Vagrant won’t manage the hostname. If set to a string, the hostname will be set on boot.\n    - config.vm.network — Configures networks on the machine.\n    - config.vm.provider — Configures provider-specific configuration, which is used to modify settings which are specific to a certain provider. If the provider you’re configuring doesn’t exist or is not setup on the system of the person who runs vagrant up, Vagrant will ignore this configuration block. This allows a Vagrantfile that is configured for many providers to be shared among a group of people who may not have all the same providers installed.\n    - config.vm.provision — Configures provisioners on the machine, so that software can be automatically installed and configured when the machine is created.\n    - config.vm.synced_folder — Configures synced folders on the machine, so that folders on your host machine can be synced to and from the guest machine.\n    - config.vm.usable_port_range — A range of ports Vagrant can use for handling port collisions and such. Defaults to 2200..2250.\n    SSH Settings\n    - config.ssh.default.host — This sets the default host that Vagrant will use for SSH. This is not set by default because the providers usually detect the proper host. Provider-detected hosts will override this. To force a certain host, use config.ssh.host.\n    - config.ssh.default.port — This sets the default port that Vagrant will use to connect to the machine via SSH. This is not set by default because the providers usually detect the proper port. Provider-detected ports will override this. To force a certain port, use config.ssh.port.\n    - config.ssh.default.private_key_path — This sets the default private key to use for authenticating with SSH. By default this is set to the insecure private key that ships with Vagrant, since that is what most public boxes use. A provider-detected private key will override this setting. To force a certain private key, use config.ssh.private_key_path. The private key format should be an OpenSSH private key format (as opposed to PuTTY keys and such).\n    - config.ssh.default.username — This sets the default username that Vagrant will SSH as, if no other username can be detected. This is set to “vagrant” by default, since that is what most public boxes use. Alternate providers may detect alternate usernames though, in which case this will be overriden. To force a certain username, use config.ssh.username.\n    - config.ssh.host — The same as config.ssh.default.host, except this will override any detected host and will always be used.\n    - config.ssh.port — The same as config.ssh.default.port, except this will override any detected port and will always be used.\n    - config.ssh.private_key_path — The same as config.ssh.default.private_key_path, except this will override any detected private key and will always be used.\n    - config.ssh.username — The same as config.ssh.default.username, except this will override any detected username and will always be used.\n    - config.ssh.guest_port — The port on the guest that SSH is running on. This is used by some providers to detect forwarded ports for SSH. For example, if this is set to 22 (the default), and Vagrant detects a forwarded port to port 22 on the guest from port 4567 on the host, Vagrant will attempt to use port 4567 to talk to the guest if there is no other option.\n    - config.ssh.keep_alive — If true, a “keep-alive” packet will be sent every 5 seconds on the SSH connection. This avoids the connection closing on long-running tasks. This defaults to true.\n    - config.ssh.max_tries — Maximum attempts to SSH while waiting for the machine to boot. Default is 100.\n    - config.ssh.timeout — Maximum time to wait while attempting to make a single connection via SSH before timing out. Default is 30 seconds.\n    - config.ssh.forward_agent — If true, agent forwarding over SSH connections is enabled. Defaults to false.\n    - config.ssh.forward_x11 — If true, X11 forwarding over SSH connections is enabled. Defaults to false.\n    - config.ssh.shell — The shell to use when executing SSH commands from Vagrant. By default this is bash -l. Note that this has no effect on the shell you get when you run vagrant ssh. This configuration option only affects the shell to use when executing commands internally in Vagrant.\n\n    \n    \n# Vagrant Settings\n    config.vagrant.host — This sets the type of host machine that is running Vagrant. By default this is :detect, which causes Vagrant to auto-detect the host. Vagrant needs to know this information in order to perform some host-specific things, such as preparing NFS folders if they’re enabled. You should only manually set this if auto-detection fails.\n    \n    \n    \n# Provider Settings\n    - Multiple config.vm.provider blocks can exist to configure multiple providers.\n\n    Vagrant.configure(“2”) do |config| # … (other config)\n    config.vm.provider :virtualbox do |vb| vb.customize [“modifyvm”, :id, “ — cpuexecutioncap”, “50”] end\n    end\n    \n\n\nVirtualBox configuration\n------------------------\n\n# Enable GUI\n\n\n\n    config.vm.provider “virtualbox” do |v| v.gui = true\n    end\n    \n\n\n# Virtual Machine Name\n\n\n\n    config.vm.provider “virtualbox” do |v| v.name = “my_vm”\n    end \n\n\n\n# Customization\n\nThe following settings are in compliance with VBOXMANAGE (http://www.virtualbox.org/manual/ch08.html)\n\n\n\n    config.vm.provider “virtualbox” do |v| v.customize [“modifyvm”, :id, “ — cpuexecutioncap”, “50”]\n    end\n      \n\n\nVMWare Fusion/workstation configuration\n---------------------------------------\n\n# Installation\n\n\n    $ vagrant plugin install vagrant-vmware-fusion\n    …\n    $ vagrant plugin license vagrant-vmware-fusion license.lic\n    …\n    \n\n\nCustom VMware install location (VAGRANT_VMWARE_FUSION_APP environment variable)\n-------------------------------------------------------------------------------\n\n\n    $ export VAGRANT_VMWARE_FUSION_APP=”/Apps/VMware Fusion.app”\n    $ vagrant up — provider=vmware_fusion\n\n\n# Enable GUI\n\n\n    config.vm.provider “vmware_fusion” do |v| v.gui = true\n    end\n\n\n\nVMX customization\n-----------------\n\n    config.vm.provider “vmware_fusion” do |v| v.vmx[“custom-key”] = “value” v.vmx[“another-key”] = nil\n    end\n    \n\nSynced Folders\n--------------\n\n    - By default Vagrant shares the project directory (the one with VagrantFile) to the /vagrant directory on guest machine.\n    - Any file created in /vagrant on the guest machine is automatically copied to the project directory\n    \nConfiguring\n-----------\n\n\n    Vagrant.configure(“2”) do |config| # other config here\n    config.vm.synced_folder “src/”, “/srv/website”\n    end\n\n# Disabling synced folders\n\n    Vagrant.configure(“2”) do |config| config.vm.synced_folder “src/”, “/srv/website”, disabled: true\n    end\n\n# NFS Sharing\n\n    - must have nfsd installed on the host machine\n    - during vagrant up sequence user may be prompted for administrative privileges to host machine (via sudo program)\n\n    Vagrant.configure(“2”) do |config| # … config.vm.synced_folder “.”, “/vagrant”, :nfs => true\n    end\n\n# Automated Provisioning\n\n    - run a by default shell script bootstrap.sh\n    External Scripts\n\n    Vagrant.configure(“2”) do |config| config.vm.box = “precise32” config.vm.provision :shell, :path => “bootstrap.sh”\n    end\n\nHope this helps. Checkout some of my Opensource projects on [GITHUB](http://github.com/ojeng) and [my blog](https://medium.com/@ojengwa).",
+    "github" : {
+      "repoInfo" : {
+        "authorTeamId" : "1938751",
+        "url" : "https://github.com/airpair/vagrant-cheatsheet",
+        "authorTeamName" : "vagrant-cheatsheet-00c2322b-author",
+        "author" : "ojengwa"
+      }
+    },
+    "forkers" : [],
+    "reviews" : [],
+    "meta" : {
+        "lastTouch" : {
+            "by" : {
+                "name" : "Bernard Ojengwa",
+                "_id" : ObjectId("546479888f8c80299bcc5016")
+            },
+            "utc" : ISODate("2016-02-25T12:26:08.447Z"),
+            "_id" : ObjectId("56cef2e0fb20411200c23232"),
+            "action" : "submit"
+        },
+        "activity" : [
+            {
+                "action" : "create",
+                "_id" : ObjectId("56ceeb50fb20411200c2322a"),
+                "by" : {
+                    "_id" : ObjectId("546479888f8c80299bcc5016"),
+                    "name" : "Bernard Ojengwa"
+                }
+            },
+            {
+                "action" : "editDraft",
+                "_id" : ObjectId("56cef086fb20411200c2322d"),
+                "by" : {
+                    "_id" : ObjectId("546479888f8c80299bcc5016"),
+                    "name" : "Bernard Ojengwa"
+                }
+            },
+            {
+                "_id" : ObjectId("56cef2e0fb20411200c23232"),
+                "action" : "submit",
+                "by" : {
+                    "name" : "Bernard Ojengwa",
+                    "_id" : ObjectId("546479888f8c80299bcc5016")
+                }
+            }
+        ]
+    },
+    "tags" : [
+        {
+            "sort" : 0,
+            "_id" : ObjectId("5358c8081c67d1a4859d2f18")
+        },
+        {
+            "sort" : 1,
+            "_id" : ObjectId("51f7e26566a6f999a465f4b6")
+        },
+        {
+            "sort" : 2,
+            "_id" : ObjectId("5181d0ad66a6f999a465f1bb")
+        },
+        {
+            "sort" : 3,
+            "_id" : ObjectId("5249f4d266a6f999a465f897")
+        },
+        {
+            "sort" : 4,
+            "_id" : ObjectId("518962be66a6f999a465f2bd")
+        },
+        {
+            "sort" : 5,
+            "_id" : ObjectId("5181d0ad66a6f999a465f150")
+        },
+        {
+            "sort" : 6,
+            "_id" : ObjectId("5181d0a966a6f999a465ebfc")
+        }
+    ],
+    "by" : {
+      "_id" : ObjectId("546479888f8c80299bcc5016"),
+      "name" : "Bernard Ojengwa",
+      "email" : "bernardojengwa@gmail.com",
+      "avatar" : "https://avatars.githubusercontent.com/u/3935007?v=3",
+      "links" : {
+        "ap" : "bernard",
+        "gh" : "ojengwa",
+        "so" : "http://stackoverflow.com/users/4080644/bernard-ojengwa",
+        "bb" : null,
+        "in" : "bmRu2CiLZu",
+        "tw" : "ojengwa_",
+        "gp" : "110853644319668975007"
+      }
+    },
+    "stats" : { "words" : 2023 },
+    "assetUrl" : "https://camo.githubusercontent.com/51b172d944dd3848632774f14a6c02a6feae467b/687474703a2f2f6572696b6168656964692e636f6d2f7468656d652f6661746361747a2f696d616765732f76616772616e742f6c6f676f5f76616772616e742e706e67",
+    "slug" : "vagrant-cheatsheet",
+    "htmlHead" : {
+      "ogImage" : "https://camo.githubusercontent.com/51b172d944dd3848632774f14a6c02a6feae467b/687474703a2f2f6572696b6168656964692e636f6d2f7468656d652f6661746361747a2f696d616765732f76616772616e742f6c6f676f5f76616772616e742e706e67"
+    },
+    "history" : {
+      "created" : ISODate("2016-02-25T11:53:52.002Z"),
+      "updated" : ISODate("2016-02-25T11:53:52.000Z"),
+      "submitted" : ISODate("2016-02-25T12:26:08.411Z")
+    }
+  },
 
 }

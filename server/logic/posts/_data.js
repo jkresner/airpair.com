@@ -7,6 +7,10 @@ const Views = {
   sub:     '_id name email avatar username auth.gh.login photos'
 }
 
+var lib = require('../../../es/post')
+
+
+
 const Query = {
 
   byUrl(url) {
@@ -39,12 +43,69 @@ const Query = {
                      // { 'history.submitted':  { '$gt': staleTime } } ]
     var q = { $and: [{ 'history.submitted' : {'$exists': true }},
                      { 'history.published' : {'$exists': false }},
-                     // { $or }
+  //     { '$or': [
+  //         {'submitted': {'$gt': moment().add(-10,'day').toDate() }},
+  //         {'updated':   {'$gt': moment().add(-10,'day').toDate() }}
+  //       ]
+  //     }
                      ] }
 
         return q
   }
 }
+
+
+// var query = {
+
+  // posts published before now or readyForReview
+  // publishedReviewReady(andCondition) {
+  //   var query = {$or: [
+  //     {'submitted' : {'$exists': true}},
+  //     {$and:
+  //       [{'published' : { '$exists': true }},
+  //       {'published': { '$lt': new Date() }}]}]}
+
+  //   return andQuery(query, andCondition)
+  // },
+
+  // inReview(andCondition) {
+  //   var query = [
+  //     { 'submitted': {'$exists': true } },
+  //     { 'published': {'$exists': false } },
+
+  //   ]
+  //   return andQuery(query, andCondition)
+  // },
+
+  // stale(andCondition) {
+  //   var query = [
+  //     { 'submitted': {'$exists': true } },
+  //     { 'submitted': {'$lt': moment().add(-10,'day').toDate() } },
+  //     { 'published': {'$exists': false } },
+  //   ]
+  //   return andQuery(query, andCondition)
+  // },
+
+  // inDraft(andCondition) {
+  //   return { $and:[
+  //     { _id },
+  //     { 'tags': {'$exists': true } },
+  //     { 'assetUrl': {'$exists': true } },
+  //     { 'by.userId': userId }
+  //   ]}
+  // },
+  // forker(userId) {
+  //   return {
+  //     forkers: {
+  //       $elemMatch: {
+  //         userId: userId
+  //       }
+  //     }
+  //   }
+  // },
+
+// }
+
 
 const Opts = {
   latest: { select: Views.list, sort: { 'history.published': -1, 'stats.reviews': -1, 'stats.rating': -1 } },
@@ -54,18 +115,13 @@ const Opts = {
   submitted: limit => ({ limit, select: Views.list, sort: { 'meta.lastTouch._id': -1 } }),
   subscribedUsers: { select: Views.sub }
 // recentlyUpdated: { select: Views.activity, sort: { 'updated': 1 }, limit: 15 },
+// stale: { sort: { 'stats.reviews': -1, 'stats.rating': -1 }, 'limit': 9 }
 }
 
-
-var generateToc = require('../toc')()
-var lib = {
-  post: require('../../../es/post'),
-  stat: require('../../../es/post.stat')
-}
 
 module.exports = { Views, Query, Opts,
 
-  Projections: ({select, inflate, md5}, {chain}) => ({
+  Projections: ({select, inflate, md5, tmpl}, {chain, view}) => ({
 
     subscribedHash: d => {
       var hash = {}
@@ -74,7 +130,7 @@ module.exports = { Views, Query, Opts,
 
       var p = d.post
       // $log('subHash'.yellow, p)
-      p.subscribed = p.subscribed.map(s=>assign(s,hash[s.userId]||{}))
+      p.subscribed = (p.subscribed||[]).map(s=>assign(s,hash[s.userId]||{}))
 
       if (!p.subHash) {
         p.subHash = {}
@@ -89,7 +145,7 @@ module.exports = { Views, Query, Opts,
           if (sub.auth && sub.auth.gh) p.subHash[sub.userId].gh = sub.auth.gh.login
         }
       }
-      return p
+      return d
     },
 
 
@@ -138,7 +194,7 @@ module.exports = { Views, Query, Opts,
       d.htmlHead.ogTypePost = true
 
       d.forkers = (d.forkers||[]).map(f => assign(f,d.subHash[f.userId]))
-      d.by.firstName = util.firstName(d.by.name)
+      d.by.firstName = honey.util.String.firstName(d.by.name)
 
       return d
     },
@@ -199,22 +255,12 @@ module.exports = { Views, Query, Opts,
     },
 
 
-    tocHtml: d => {
-      // $log('tocHtml'.yellow)
-      return assign(d, {toc:marked(generateToc(d.md))})
-    },
-
-    bodyHtml: d => {
-      // $log('bodyHtml'.yellow, d.tags, cache.tags.length)
-      var supped = lib.post.extractSupReferences(d.md)
-      d.references = lib.post.markupReferences(supped.references, marked)
-      var html = d.html || {}
-      html.body = marked(supped.markdown)
+    toHtml: d => {
+      var {md,references} = lib.indexReferences(d.md)
+      var html = {references}
+      html.toc = marked(lib.toc(d.md))
+      html.body = marked(md)
       return assign(d, {html})
-      // $log('inflateHtml'.yellow, d.tags)
-      // d.toc = marked(generateToc(d.md))
-      // var supped = PostsUtil.extractSupReferences(d.md)
-      // d.references = PostsUtil.markupReferences(supped.references, marked)
       // if (isAnon) {
         // var odd = false
         // marked.setOptions({highlight: function(code, lang) {
@@ -231,11 +277,11 @@ module.exports = { Views, Query, Opts,
           // else
             // return code
         // }})
-        // d.html = marked(supped.markdown)
+        // d.html = marked(md)
         // marked.setOptions({highlight:null})
       // }
       // else
-      // d.html = marked(supped.markdown)
+      // d.html = marked(md)
     },
 
     tmpl: d => {
@@ -259,13 +305,14 @@ module.exports = { Views, Query, Opts,
     },
 
     displayPublished: d => {
-      // $log('displayPublished'.yellow, d.by.name, d.adtag, d.tags)
-      var r = chain(d, 'subscribedHash', inflate.tags, 'bodyHtml', 'url', 'tocHtml', 'tmpl', 'adTag', 'reviews', 'other', select.display, 'otherByAuthor')
-      for (var sim of r.similar) sim.url = sim.htmlHead.canonical
-      if (!r.similar || r.similar.length == 0) r.similar = false
-      for (var tag of r.tags) tag.url = tag.slug == 'angularjs' ? '/angularjs/posts' : `/${tag.slug}`
+      for (var sim of d.similar) sim.url = sim.htmlHead.canonical
+      if (!d.similar || d.similar.length == 0) d.similar = false
+      // $log('d', d)
+      var d2 = chain(d, 'subscribedHash')
+      d2.post = chain(d.post, inflate.tags, 'toHtml', 'url', 'tmpl', 'adTag', 'reviews', 'other', view.display, 'otherByAuthor')
+      for (var tag of d2.post.tags) tag.url = tag.slug == 'angularjs' ? '/angularjs/posts' : `/${tag.slug}`
       // $log('displayPublished'.magenta, d.reviews.length)
-      return r
+      return d2
     },
 
     displayReview: d => {
@@ -273,9 +320,9 @@ module.exports = { Views, Query, Opts,
       if (d.post.history.published)
         return select(chain(d.post, inflate.tags, 'url'), '_id url title history')
 
-      var post = chain(d, 'subscribedHash', inflate.tags, 'bodyHtml', 'url', 'tocHtml', 'tmpl', 'reviews', select.display)
+      var post = chain(d, 'subscribedHash', inflate.tags, 'bodyHtml', 'url', 'tocHtml', 'tmpl', 'reviews', view.display)
       var r = { tmpl: 'inreview', post }
-      $log('displayReview'.yellow, r.post.title)
+      // $log('displayReview'.yellow, r.post.title)
       return r
     },
 
@@ -284,30 +331,25 @@ module.exports = { Views, Query, Opts,
       `${d.htmlHead ? d.htmlHead.canonical : '/posts/preview/'+d._id }`
     }),
 
+
     tileList: d =>
-      chain(d, inflate.tags, 'url', select.list),
+      chain(d, inflate.tags, 'url', view.list),
 
 
     submitted: d =>
-      chain(d, inflate.tags, 'url', select.list),
+      chain(d, inflate.tags, 'url', view.list),
 
 
     byTag: d => {
-      var tag = select(cache['tags'][d._id], 'name short url')
-      var htmlHead = {
-        ogType: "technology",
-        title:`${tag.name} Programming Guides and Tutorials from Top ${tag.short} Developers and expert consultants`,
-        canonical: `https://www.airpair.com${tag.url}`
-      }
+      var latest = chain(d.posts, inflate.tags, 'url', view.list)
+      var related = _.sortBy(
+                      _.uniqBy(_.flatten(latest.map(p=>p.tags)), t=>t.slug)
+                       .filter(t=>t.slug!=d.slug)
+                    , t => -1*t.posts)
 
-      // var workhops = cache.workshops.filter(w => w.tags.indexOf(d.slug))
-      var posts = chain(d.posts, inflate.tags, 'url', select.list)
-      var related = _.sortBy((_.uniq(_.flatten(_.pluck(posts, 'tags')), t => t.slug)), t => t.slug)
-                     .map(t => cache['tags'][t._id])
-      if (related.length > 16) related = _.take(_.sortBy(related, t => -1*t.posts), 16)
-
-      // if (workhops.length>0) r.workhops = workhops
-      return assign({ htmlHead, related, posts: {latest:posts} }, tag)
+      return assign(d, { posts: {latest},
+        htmlHead: tmpl("page:tag-meta", d),
+        related: related.length > 16 ? _.take(related, 16) : related })
     }
 
   })
@@ -315,7 +357,6 @@ module.exports = { Views, Query, Opts,
 }
 // .shareProjections('post', 'subscribedHash reviews url tocHtml bodyHtml displayReview')
 // .shareProjections('stat', 'words')
-// .addCacheInflate('tags', ['name','url','short'])
 
 
 // //-- Could make this generic, but we don't want to allow the cache to start
@@ -333,88 +374,12 @@ module.exports = { Views, Query, Opts,
 //   })
 // }
 
-
-
-// var inflateHtml = function(isAnon, cb) {
-//   return (e,r) => {
-//     if (!r) return cb(e,r)
-//     var tags = []
-//     for (var {_id} of r.tags)
-//       if (cache.tags[_id]) tags.push(_.pick(cache.tags[tag._id],'name','slug','short','desc')))
-//     r.tags.map(t=>({}))
-//     // $log('inflateHtml'.yellow, r.tags)
-//     r.toc = marked(generateToc(r.md))
-//     var supped = PostsUtil.extractSupReferences(r.md)
-//     r.references = PostsUtil.markupReferences(supped.references, marked)
-//     r.html = marked(supped.markdown)
-//     cb(e,r)
-//   }
-// };
-
 // var userCommentByte = (byte) => {
 //   var avatar = byte.email ? md5.gravatarUrl(byte.email) :
 //     "/static/img/pages/posts/storm.png"
 //   return _.extend(_.pick(byte,'_id','name'), {avatar})
 // }
 
-
-// var select = {
-//   list: {
-//     'by': 1,
-//     'htmlHead.canonical': 1,
-//     'htmlHead.description': 1,
-//     'htmlHead.ogImage': 1,
-//     'github.repoInfo': 1,
-//     'title':1,
-//     'slug': 1,
-//     'history': 1,
-//     'tags': 1,
-//     'stats': 1
-//   },
-//   display: {
-//     '_id': 1,
-//     'by':1,
-//     'htmlHead': 1,
-//     'github.repoInfo': 1,
-//     'reviews': 1,
-//     'forkers':1,
-//     'title':1,
-//     'tmpl':1,
-//     'slug': 1,
-//     'stats': 1,
-//     'history': 1,
-//     'meta.lastTouch': 1,
-//     'tags': 1,
-//     'assetUrl': 1,
-//     'md': 1,
-//   },
-  // stats: {
-  //   '_id': 1,
-  //   'title': 1,
-  //   'by.userId':1,
-  //   'by.name': 1,
-  //   'by.avatar': 1,
-  //   'slug': 1,
-  //   'htmlHead': 1,
-  //   'forkers':1,
-  //   'reviews._id': 1,
-  //   'reviews.by': 1,
-  //   'reviews.updated': 1,
-  //   'reviews.replies': 1,
-  //   'reviews.votes': 1,
-  //   'reviews.questions.key': 1,
-  //   'reviews.questions.answer': 1,
-  //   'created': 1,
-  //   'published': 1,
-  //   'submitted': 1,
-  //   'tags': 1,
-  //   'assetUrl': 1,
-  //   'stats': 1,
-  //   'pullRequests': 1,
-  //   'lastTouch.utc': 1,
-  //   'lastTouch.action': 1,
-  //   'lastTouch.by.name': 1
-  // },
   // tmpl: {
   //   reviewNotify(post, review) {
   //     var {_id,title} = post
@@ -469,87 +434,7 @@ module.exports = { Views, Query, Opts,
     // }
   // }
 // }
-// var query = {
-
-  // cached() {
-  //   return { $or: [
-  //     { 'history.submitted' : {'$exists': true }},
-  //     { 'history.published' : {'$exists': true }}]}
-  // },
-
-  // posts published before now or readyForReview
-  // publishedReviewReady(andCondition) {
-  //   var query = {$or: [
-  //     {'submitted' : {'$exists': true}},
-  //     {$and:
-  //       [{'published' : { '$exists': true }},
-  //       {'published': { '$lt': new Date() }}]}]}
-
-  //   return andQuery(query, andCondition)
-  // },
-
-  // inReview(andCondition) {
-  //   var query = [
-  //     { 'submitted': {'$exists': true } },
-  //     { 'published': {'$exists': false } },
-  //     { '$or': [
-  //         {'submitted': {'$gt': moment().add(-10,'day').toDate() }},
-  //         {'updated':   {'$gt': moment().add(-10,'day').toDate() }}
-  //       ]
-  //     }
-  //   ]
-  //   return andQuery(query, andCondition)
-  // },
-
-  // stale(andCondition) {
-  //   var query = [
-  //     { 'submitted': {'$exists': true } },
-  //     { 'submitted': {'$lt': moment().add(-10,'day').toDate() } },
-  //     { 'published': {'$exists': false } },
-  //   ]
-  //   return andQuery(query, andCondition)
-  // },
-
-  // inDraft(andCondition) {
-  //   return { $and:[
-  //     { _id },
-  //     { 'tags': {'$exists': true } },
-  //     { 'assetUrl': {'$exists': true } },
-  //     { 'by.userId': userId }
-  //   ]}
-  // },
-  // forker(userId) {
-  //   return {
-  //     forkers: {
-  //       $elemMatch: {
-  //         userId: userId
-  //       }
-  //     }
-  //   }
-  // },
-
-// }
-
-
-// var opts = {
-//   publishedNewest(limit) {
-//     var o = { sort: { 'history.published': -1 } }
-//     if (limit) o.limit = limit
-//     return o
-//   },
-//   highestRating: {
-//     sort: { 'stats.reviews': -1, 'stats.rating': -1 }
-//   },
-//   allPublished: {
-//     sort: { 'history.published': -1, 'stats.reviews': -1, 'stats.rating': -1 }
-//   },
-//   stale: {
-//     sort: { 'stats.reviews': -1, 'stats.rating': -1 }, 'limit': 9
-//   }
-// }
 
 
 
 
-
-// module.exports = {select,query,opts,data}

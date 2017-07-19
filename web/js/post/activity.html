@@ -1,0 +1,139 @@
+<!-- ?? TODO: Move functionality to airpair.com -->
+
+<section id="activity" ng-if="post">
+
+  <article class="blogpost">
+    <h1 class="entry-title">{{post.title}}</h1>
+  </article>
+
+  <section id="stats">
+
+    <img ng-src="{{post.by.avatar}}?s=120" class="usr">
+
+
+    <div post-stats class="blogpost"></div>
+
+    <table>
+      <tr>
+        <td><label>By</label></td>
+        <td>{{post.by.name}}</td>
+      </tr>
+      <tr>
+        <td><label>Started</label></td>
+        <td>{{post._id | idToDate | dateFormat : 'MMM DD, YYYY'}}</td>
+      </tr>
+      <tr>
+        <td><label>Submitted</label></td>
+        <td>{{post.submitted | dateFormat : 'MMM DD, YYYY'}}</td>
+      </tr>
+      <tr>
+        <td><label>Published</label></td>
+        <td>{{post.published || 'n/a' }}</td>
+      </tr>
+      <tr>
+        <td><label>Updated</label></td>
+        <td>{{post.updated | dateFormat : 'MMM DD, YYYY'}}</td>
+      </tr>
+    </table>
+
+
+  </section>
+
+
+  <section class="mycontrib" ng-if="post.by._id != session._id">
+
+    <img ng-src="{{session.avatar}}?s=120" class="usr">
+
+
+    <footer class="blogpost">
+      <div ng-if="!ui.review.editing"  class="forks">
+        <div>
+          <div ng-if="!data.fork">
+            <p><label>Contributions</label> none yet...</p>
+            <a href="/fork/{{post._id}}" class="btn">Fork and Edit</a>
+          </div>
+          <div ng-if="data.fork">
+            <p><label>Your fork</label> ...</p>
+            <a href="/editor/{{post._id}}" class="btn">Edit fork</a>
+          </div>
+        </div>
+      </div>
+      <div ng-if="ui.review.editing" post-review-form post="post" review="data.review" user-id="session._id"></div>
+      <div  ng-if="!ui.review.editing" class="revs">
+        <ul><li post-review post-id="post._id" review="data.review"></li></ul>
+      </div>
+    </footer>
+
+
+
+  </section>
+
+  <br />
+
+  <section class="contributions">
+
+    <div id="git">
+      <h3>Contributions</h3>
+      <post-git></post-git>
+      <div ng-if="post.stats.acceptedPRs == 0">
+        <p>Nobody merged contributions yet.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <br />
+
+  <section class="reviewing">
+
+    <footer class="blogpost">
+      <div class="revs" post-reviews post="post"></div>
+    </footer>
+
+  </section>
+
+<!--     <section ng-if="post.submitted && !post.published" class="inreivew">
+      <span class="status submitted">In Review</span>
+      <div class="message">
+        <p>Post needs at least 3 reviews and a rating over 3.5/5 to publish</p>
+      </div>
+      <div class="info">
+        <div class="tip">
+          <p ng-if="post.reviews.length == 0"><span>No reviews yet</span></p>
+          <div ng-if="post.reviews.length > 0">
+            <stars val="post.stars.avg"></stars>
+            <span>From <b>{{ post.reviews.length }}</b> reviewer<ss ng-if="post.reviews.length > 1">s</ss>
+          </div>
+        </div>
+        <h6>Invite people to review</h6>
+        <a href='http://twitter.com/intent/tweet?text=Looking for smart folks to help review my post "{{ post.title }}" on @airpair {{post.url}}' target="_blank" class="icon tw-white"></a>
+      </div>
+    </section>
+
+
+   <section ng-if="post.published" class="postpublished">
+      <span class="status published">Published</span>
+      <div class="message">
+        <h3><img ng-src="/static/img/pages/posts/icon-published.png" /> Post <a href="{{post.url}}" target="_self">published</a></h3>
+        <p>Only Editors can sync changes from github to the live version.</p>
+      </div>
+      <div class="info">
+        <div class="tip">
+          <p ng-if="post.reviews.length == 0"><span>No reviews yet</span></p>
+          <div ng-if="post.reviews.length > 0">
+            <stars val="post.stars.avg"></stars>
+            <span>From <b>{{ post.reviews.length }}</b> reviewer<ss ng-if="post.reviews.length > 1">s</ss>
+          </div>
+        </div>
+        <h6>Invite more people to review</h6>
+        <a href='http://twitter.com/intent/tweet?text=Let me know what you think of my post "{{ post.title }}" on @airpair {{post.url}}' target="_blank" class="icon tw-white"></a>
+      </div>
+    </section> -->
+
+      <!-- <a ng-href="{{post.url}}" class="thumb" target="_self"><img ng-src="{{post.meta.ogImage}}" /></a> -->
+
+      <!-- <a href="/posts/edit/{{post._id}}" class="icon edit"></a> -->
+
+
+
+</section>

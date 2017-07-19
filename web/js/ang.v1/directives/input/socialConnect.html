@@ -1,0 +1,34 @@
+<div class="oauth gh">
+  <a ng-if="!linked.gh" class="none" ng-href="/auth/github/callback?returnTo={{return}}" target="_self">Github</a>
+  <a ng-if="linked.gh" ng-href="/auth/github/callback?returnTo={{return}}" target="_self">Github</a>
+</div>
+<div class="oauth tw">
+  <a ng-if="!linked.tw" class="none" href="/auth/twitter/callback?returnTo={{return}}" target="_self">Twitter</a>
+  <a ng-if="linked.tw" href="/auth/twitter/callback?returnTo={{return}}" target="_self">Twitter</a>
+  <a ng-if="linked.tw && unlink" class="unlink" ng-click="unlink('twitter')">x</a>
+</div>
+<div class="oauth so">
+  <a ng-if="!linked.so" class="none" href="/auth/stackoverflow/callback?returnTo={{return}}" target="_self">Stackoverflow</a>
+  <a ng-if="linked.so" href="/auth/stackoverflow/callback?returnTo={{return}}" target="_self">Stackoverflow</a>
+  <a ng-if="linked.so && unlink" class="unlink" ng-click="unlink('stackoverflow')">x</a>
+</div>
+<div class="oauth in">
+  <a ng-if="!linked.in" class="none" href="/auth/linkedin/callback?returnTo={{return}}" target="_self">LinkedIn</a>
+  <a ng-if="linked.in" href="/auth/linkedin/callback?returnTo={{return}}" target="_self">LinkedIn</a>
+  <a ng-if="linked.in && unlink" class="unlink" ng-click="unlink('linkedin')">x</a>
+</div>
+<div class="oauth gp">
+  <a ng-if="!linked.gp" class="none" href="/auth/google/callback?returnTo={{return}}" target="_self">Google+</a>
+  <a ng-if="linked.gp" href="/auth/google/callback?returnTo={{return}}" target="_self">Google+</a>
+  <a ng-if="linked.gp && unlink" class="unlink" ng-click="unlink('google')">x</a>
+</div>
+<div class="oauth bb">
+  <a ng-if="!linked.bb" class="none" href="/auth/bitbucket/callback?returnTo={{return}}" target="_self">BitBucket</a>
+  <a ng-if="linked.bb" href="/auth/bitbucket/callback?returnTo={{return}}" target="_self">BitBucket</a>
+  <a ng-if="linked.bb && unlink" class="unlink" ng-click="unlink('google')">x</a>
+</div>
+<!-- <div class="oauth al">
+  <a ng-if="!linked.al" class="none" href="/auth/angellist/callback?returnTo={{return}}" target="_self">AngelList</a>
+  <a ng-if="linked.al" href="/auth/angellist/callback?returnTo={{return}}" target="_self">AngelList</a>
+</div>
+ -->

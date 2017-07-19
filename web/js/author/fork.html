@@ -1,0 +1,56 @@
+<section ng-if="data" id="fork" class="edit">
+
+  <!--
+  <table style="width:300px">
+    <tr>
+      <td><label>Submitted</label></td>
+      <td>{{post.submitted}}</td>
+    </tr> -->
+    <!-- <tr>
+      <td><label>Published</label></td>
+      <td>{{post.published || 'n/a' }}</td>
+    </tr> -->
+    <!-- <tr>
+      <td><label>Updated</label></td>
+      <td>{{post.updated}}</td>
+    </tr>
+  </table>
+  -->
+
+
+  <figure ng-if="isOwner" id="authorcantfork">
+    <h3 class="underline">Can't fork your own post
+      <a href="{{data.url}}" class="btn btn-sm" target="_self">Back to your post</a>
+    </h3>
+
+    <p>If you want to make changes to your post,
+      <a ng-href="/posts/edit/{{post._id}}" target="_self">edit it with the AirPair editor</a>.</p>
+  </figure>
+
+  <section id="forkinfo" ng-if="!isOwner">
+
+    <figure>
+      <h2>Fork {{data.title}}</h2>
+      <img ng-src="{{data.by.avatar}}?s=60" class="usr" />
+      <label>by {{ data.by.name }}</label>
+      <p>Fork <b>{{data.title}}</b> so you have a own copy to edit without
+       effecting {{data.by.name}} or the live version. When done
+       send changes via the one-click "Create Pull Request" button from the editor.</p>
+
+      <img class="flow" src="https://static.airpair.com/img/author/authoring-flow-collaborate.png" />
+
+    </figure>
+
+
+    <form class="forkRepo">
+      <div class="form-actions">
+        <single-submit button-text="'Fork & create repo'"
+          wait-text="Creating fork, this can take 20 seconds ..."
+          on-single-click="submitDeferred">
+        </single-submit>
+        <p>Fork will appear at <code>github.com/{{data.forking.owner}}/{{data.slug}}</code></p>
+      </div>
+    </form>
+  </section>
+
+</section>

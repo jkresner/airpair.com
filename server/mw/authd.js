@@ -66,7 +66,7 @@ module.exports = (app, mw, {forbid}) => {
       )
   }
 
-  var mwBan = (name) => function(req, res, next) {
+  var mwBan = name => function(req, res, next) {
     var data = { mw:'ban', headers: req.headers, name, url: req.originalUrl, user: req.ctx.user||'anon' }
     if (req.body) data.body = req.body
 
@@ -110,7 +110,7 @@ module.exports = (app, mw, {forbid}) => {
       // $log('check abuse'.yellow, `[${req.ctx.ip}]`, (cache.abuse[req.ctx.ip]||[]).length, cache['abuse'].ban.indexOf(req.ctx.ip))
       if (under && ok)
         return next()
-
+      // $log('check abuse'.yellow, `[${req.ctx.ip}]`, 'over'.red)
       res.send(cache.abuse.increment(500, req))
       $logMW(req, ok ? 'abuser' : 'banned')
     })
@@ -129,17 +129,6 @@ module.exports = (app, mw, {forbid}) => {
       onDisallow: req => $logMW(req, 'bot(ban|lib)') }
     ))
 
-
-  mw.
-    cache('adm', mw.res.forbid('!adm', function({ctx,user}) {
-      if (forbid.nonAdm.allow.match((user||{_id:'anon'})._id)) return
-
-      global.analytics.issue(ctx, 'forbid!adm', 'security_medium',
-        { mw:'forbid', name:'adm', rule:'!req.user', user: user||'anon' })
-
-      if (!user) return 'not authd'
-      return 'non admin'
-    }))
 
   return mw.res.forbid('anon', function({ctx,user}) {
       if (user) return

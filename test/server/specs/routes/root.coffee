@@ -38,6 +38,13 @@ describe " HUMANS".spec, ->
         expect(xml2).to.inc ['<rss xmlns:dc="http','Elevate your functional programming skills by learning ES6 higher-order functions for Arrays']
         DONE()
 
+  IT '/hangout/index.html', ->
+    PAGE @test.title, { status: 404 }, (html) ->
+      expect(html).inc('<body>')
+      PAGE '/hangout/hangoutApp.xml', { status: 500 }, (text) ->
+        expect(text).to.equal('')
+        DONE()
+
 
 describe " SEARCH".spec, ->
 
@@ -83,14 +90,10 @@ describe " SEARCH".spec, ->
 
 describe " BANNED".spec, ->
 
-  beforeEach -> @optsExpect = contentType: /text/, status:200, ua: FIXTURE.http.UA.lib.jsoup
+  beforeEach ->
+    @optsExpect = contentType: /text/, status:200, ua: FIXTURE.http.UA.lib.jsoup
 
-  IT '/hangout/index.html', ->
-    PAGE @test.title, @optsExpect, (html) ->
-      expect(html).inc('<body>')
-      PAGE '/hangout/hangoutApp.xml', assign({},@optsExpect,contentType:/xml/), (xml) ->
-        expect(xml).inc('<Module>')
-        DONE()
+
   IT '/post/thumb/:id', -> PAGE thumbUrl, @optsExpect, (txt) -> DONE()
   IT '/img/software/android.png', -> IMG @, @optsExpect
   IT '/ads/heroku/900x90.q2-1.node.js.png', -> IMG @

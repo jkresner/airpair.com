@@ -1,11 +1,8 @@
-var post = require("../../es/post")
-var role = require("../../es/post.role")
-var stat = require("../../es/post.stat")
-var TypesUtil = { post: require("../../es/post") }
+var POST = require("../../es/post")
 
-module.exports = (DAL, Data) => assign({post,role,stat}, {TypesUtil}, {
+module.exports = (DAL, Data) => assign(POST, {
 
-  
+
   getHeadMD(user, post, cb) {
     if (!post.history.submitted)
       return cb(null, post.md)
@@ -50,25 +47,24 @@ module.exports = (DAL, Data) => assign({post,role,stat}, {TypesUtil}, {
 
 
   similarPosts({post,limit}, cb) {
-
     //-- TODO, way better logic
-    var q = Data.Query.published({_id:{$ne:post._id},'tags._id':post.tags[0]._id})
-    var opts = Data.Opts.publishedNewest(limit||3)
+    var q = Data.posts.Query.published({'_id':{$ne:post._id},'tags._id':post.tags[0]._id})
+    var opts = Data.posts.Opts.publishedNewest(limit||3)
 
     // $log('simQ'.yellow, q)
-    Post.getManyByQuery(q, opts, cb)
+    DAL.Post.getManyByQuery(q, opts, cb)
   },
 
 
   postSubscribedUsers(post, cb) {
     var {subscribed} = post
-    if (!subscribed || subscribed.length == 0) return cb(null, {post,
-      users:[] // not sure.. should at least have author ?
-    })
+    if (!subscribed || subscribed.length == 0) return cb(null,
+      [] // not sure.. should at least have author ?
+    )
     var uIds = subscribed.map(s=>s.userId)
-    User.getManyByQuery({_id:{$in:uIds}}, Data.Opts.reviews.subscribedUsers, (e, users) => {
+    DAL.User.getManyByQuery({_id:{$in:uIds}}, Data.reviews.Opts.subscribedUsers, (e, r) => {
       if (e) return cb(e)
-      cb(null, {post,users})
+      cb(null, r)
     })
   },
 

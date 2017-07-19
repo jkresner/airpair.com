@@ -1,0 +1,104 @@
+<section id="drafts" ng-if="!ui.main.loading">
+
+
+  <div class="header">
+    <h1>Drafts <small> in progress</small></h1>
+  </div>
+
+
+  <section class="ribbon">
+    <i></i>
+    <div>
+      <ul class="stats">
+        <li style="opacity:0.75">
+          <label>Ideas</label>
+          <var>{{rough.length}}</var>
+        </li>
+        <li style="opacity:0.8">
+          <label>In Review</label>
+          <var>{{inreview.length}}</var>
+        </li>
+        <li style="opacity:0.8">
+          <label>Words</label>
+          <var>{{stats.words|number}}</var>
+        </li>
+        <li>
+          <img ng-src="{{session.avatar}}&s=100" class="usr" />
+        </li>
+      </ul>
+
+    </div>
+  </section>
+
+
+
+ <section class="my">
+
+    <ul class="inreview" ng-if="inreview.length > 0">
+      <li ng-repeat="p in inreview">
+
+        <a href="/editor/{{p._id}}" title="edit" class="edit">
+          <div class="df">
+            <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+          </div>
+          <img class="usr author" ng-src="{{p.by.avatar}}?s=60" />
+        </a>
+
+        <cite class="title">{{p.title}}</cite>
+
+       <span ng-class="status(p)">
+          <a ng-href="https://www.airpair.com/posts/review/{{p._id}}"" target="_blank">{{status(p)}}</a> <small ng-if="p.stats.words > 1"> {{p.stats.words}} words</small>
+        </span>
+
+        <div>
+          <time><b>Submitted</b> {{p.history.submitted | dateFormat}} |
+            <small>
+            <b>{{p.lastTouched.action}}ed</b>
+            {{p.lastTouched.utc | timeAgoShort }}</small>
+          <a ng-href="/collaborate/{{p._id}}" target="_blank">Collaborate</a> for 3 reviews to publish
+          </time>
+        </div>
+
+      </li>
+    </ul>
+
+
+     <ul class="ideas" ng-if="rough.length > 0">
+      <li ng-repeat="p in rough">
+        <a href="/editor/{{p._id}}" title="edit" class="edit">
+          <div class="df">
+            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+          </div>
+          <img class="usr author" ng-src="{{p.by.avatar}}?s=60" />
+        </a>
+
+        <cite class="title">{{p.title}}</cite>
+
+
+       <span ng-class="status(p)">
+          <a ng-href="/editor/{{p._id}}" target="_blank">{{status(p)}}</a> <small ng-if="p.stats.words > 1"> {{p.stats.words}} words</small>
+        </span>
+        <div>
+          <time><b>Created</b>
+            {{p.history.created | dateFormat}}
+
+            <small>|
+                <b>{{p.lastTouched.action}}</b>
+                {{p.lastTouched.utc | timeAgoShort }}
+            </small>
+          </time>
+        </div>
+
+      </li>
+    </ul>
+
+  </section>
+
+</div>
+
+</section>
+
+<style type="text/css">
+  .main-wrap { background-image:linear-gradient(to bottom, #FFFFF2 10px, #ffffff 30px); }
+</style>
+

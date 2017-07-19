@@ -1,0 +1,150 @@
+<section id="me" ng-if="!ui.main.loading">
+
+
+  <section id="setup" class="author-info">
+    <h2>Author setup</h2>
+
+    <section ng-if="mine.lenth == 0" class="alert alert-warning">
+      <code>
+        <comment>// Get a feel for "authoring" mode</comment>
+        <var>var</var> firstUp = <a href="/new" target="_self">newDraft</a>(your1stPost)
+
+        <br /><br />
+        <comment>// Tip: Use drafts to keep track of in-progress ideas</comment>
+
+      </code>
+    </section>
+
+    <section ng-if="!scopes" class="alert alert-warning">
+      <div>
+        <h4>var required = reauth_github('public_repo')</h4>
+        <p>
+          Something isn't quite right with your GitHub token.
+          A fresh token granting with write permissions to your public repos is required.
+          <a href="/auth/github/callback"><b>GitHub OAuth again now...</b></a>
+        </p>
+      </div>
+    </section>
+
+
+    <section ng-if="drafts.length > 0 && scopes" class="scopes"><h5><em>GitHub publishing permissions</em> Look'in good</h5></section>
+
+
+  </section>
+
+    <section id="views" ng-if="mine.length > 0">
+      <h3>
+        Stats this week
+        <span ng-if="published.length > 0">{{published.length}} <b class="published">published</b></span>
+        <span ng-if="inreview.length > 0">{{inreview.length}} <b class="submitted">in review</b></span>
+        <span ng-if="drafts.length > 0">{{drafts.length}} <b class="draft">drafts</b></span>
+      </h3>
+
+      <table class="table table-striped table-stats" ng-repeat="p in published" ng-if="p.views > 0">
+        <thead>
+          <tr>
+            <th>{{p.views}}</th>
+            <th>{{p.title}}</th>
+          </tr>
+        </thead>
+        <tr ng-repeat="r in p.ref">
+          <td>{{r.split(':')[0]}}</td>
+          <td>{{r.split(':')[1]}}</td>
+        </tr>
+      </table>
+
+    </section>
+
+
+<section id="review">
+
+  <section id="start" ng-if="my.length == 0">
+
+    <h2>Better content</h2>
+
+    <p><b>Thank you</b> for being a part of this!</p>
+
+  </section>
+
+  <section id="my" ng-if="my.length > 0">
+
+    <h3>{{my.length}} reviews by you</h3>
+
+    <table class="table table-striped">
+      <tbody><tr ng-repeat="p in my"><td>
+
+        <a href="/activity/{{p._id}}" class="editreview">
+          <img class="usr author" ng-src="{{p.by.avatar}}" />
+          <img class="rv" ng-src="https://static.airpair.com/img/author/review-white.png" />
+          <img class="usr me" ng-src="{{session.avatar}}" />
+        </a>
+
+        <cite class="title">{{p.title}}</cite>
+
+        <div>
+          <span ng-class="status(p)">{{status(p)}}</span>
+          <div class="stars-tiny" ng-if="p.stats.reviews > 0">
+            <stars val="p.stats.rating"></stars> by {{p.stats.reviews}}
+          </div>
+        </div>
+
+      </td></tr></tbody>
+    </table>
+
+  </section>
+
+</section>
+
+
+<section id="contribs" ng-if="forked > 0 || reviewed > 0 && mine.length > 0">
+  <h3>Contributions</h3>
+  <h5><em>{{forked||0}}</em> forks + <em>{{reviewed||0}}</em> reviews by you</h5>
+</section>
+
+<section id="reviews" ng-if="reviews.length > 0" class="min640">
+  <h3>Latest feedback</h3>
+  <ul>
+    <li ng-repeat="r in reviews">
+      <time>{{r._id | idToDate | dateFormat : 'MMM DD' }} </time><label> {{r.on}}</label>
+       {{r.by.n}}
+      <b>{{r.gave}} star</b> {{r.said}}
+    </li>
+  </ul>
+</section>
+
+
+
+<!--
+<div class="col side">
+
+  <section class="suggestions">
+    <h3>Suggestions</h3>
+
+    <h6>Recent submissions</h6>
+    <ul>
+      <li ng-repeat="p in suggests">
+        <header>
+          <a ng-href="/activity/{{p._id}}" class="btn btn-review"></a>
+          <label ng-if="p.stats.reviews > 0">
+            <u>{{p.stats.rating}}<span>/5</span></u>
+            <em><span>by</span> {{p.stats.reviews||0}}</em>
+          </label>
+        </header>
+        <a ng-href="{{p.url}}" target="_blank">
+          <img class="usr" ng-src="{{p.by.avatar}}&s=50" />
+          <div>{{p.title}}</div>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+</div>
+
+</section>
+
+ -->
+
+
+</section>
+
+

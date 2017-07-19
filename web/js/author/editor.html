@@ -1,0 +1,68 @@
+<section id="posteditor" ng-if="!ui.main.loading">
+
+  <div ng-if="data" class="editor-wrap" ng-class="editorCss(ui.preview.mode)">
+
+    <section ng-if="aceLoaded" class="editor" ng-class="editorCss(ui.preview.mode)">
+
+      <div id="aceeditor" ng-model="data.md" ui-ace="{
+        useWrapMode:false,
+        theme:'dawn',
+        mode:'markdown',
+        onLoad: aceLoaded,
+        onChange: aceChanged,
+        onBlur: aceChanged
+      }"></div>
+
+    </section>
+
+    <section class="preview s{{ui.preview.w}}" ng-if="preview && ui.preview.mode != 'off'">
+      <div id="post" preview> </div>
+    </section>
+
+  </div>
+
+ <footer ng-class="editorCss(ui.preview.mode)">
+
+    <span ng-if="ui.saved" class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span>
+
+    <form ng-if="!ui.saved">
+
+      <textarea ng-if="post.history.submitted && !ui.saved" type="text" ng-model="data.commitMessage" placeholder="Enter a commit message" class="form-control"></textarea>
+
+      <button class="btn btn-save" ng-click="save()" ng-if="!ui.saved">
+        <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span>
+      Save edits</button>
+
+       <p ng-if="!post.history.submitted">Quick <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">markdown refresher</a>?</p>
+
+
+      <button class="btn-publish" ng-if="toPublish" ng-click="redirectPublish(_id)" ng-disabled="!saved">Publish</button>
+
+      <label ng-if="isAuthor && post.history.submitted && !ui.md.synced" class="unsaved">Unpublished changes
+        <a class="repo" ng-if="ui.status.submitted" ng-href="{{ui.md.repo.head}}" target="_blank">in GIT</a>
+        <a class="btn btn-sync" ng-click="sync()"  ng-if="ui.saved && !ui.md.synced">Sync HEAD</a>
+      </label>
+
+      <label ng-if="ui.md.repo.fork && !ui.md.merged && ui.saved" class="unsaved"> Unmerged edits
+        <a class="repo" ng-if="ui.status.submitted" ng-href="{{ui.md.repo.head}}" target="_blank">in Fork</a> &nbsp;
+        <a class="btn btn-pr" ng-href="{{ui.PRUrl}}" target="_blank">Open Pull Request</a>
+      </label>
+
+    </form>
+
+  </footer>
+
+</section>
+
+<nav class="edit" ng-if="post && ui">
+  <header edit-header post="post" step="'edit'" editing="!ui.saved" wordcount="ui.wordcount"></header>
+  <footer author-footer>
+    <p ng-if="ui.md.isNew">
+      <span class="glyphicon glyphicon-text-width" aria-hidden="true"></span>
+      A great way to start is to organize your high level ideas into a <b>heading structure / hierarchy</b></p>
+    <p ng-if="!ui.md.isNew && preview && underWordcount && !post.submitted"> {{post.submitted}}
+      You can <i class="del">delete</i> posts up until they are submitted for community review </p>
+    <todo-helper ng-if="!ui.md.isNew" md="data.md" post="post" todo="todo"></todo-helper>
+  </footer>
+
+</nav>

@@ -1,19 +1,24 @@
 module.exports = function(app, mw, {rules}) {
   if (!rules) return;
 
+  app.get('/posts/thumb/:id', mw.$.badBot, (req,res,next) => {
+    var post = cache.posts[req.params.id]
+    post ? res.redirect(301, post.ogImg) : res.status(404)
+  })
+
   var cached = cache['rules']
 
 // https://coderwall.com/p/dbndpq/help-review-this-article-the-easy-way-to-integrate-stripe-payments
 // https://www.bing.com/webmaster/help/bing-content-removal-tool-cb6c294d
-// Hackerfall
 // hackhands.com/building-instagram-clone-angularjs-satellizer-nodejs-mongodb/
 
-  var agg = { '410':cached['410'],'501':cached['501'],
-    'ban':cached['ban'],
-    'bait':cached['bait'],
-    '301':{},
-    '302':{},
-    'rewrite':[] }
+  var agg = { '301':{},
+              '302':{},
+              '410':cached['410'],
+              '501':cached['501'],
+              'ban':cached['ban'],
+              'bait':cached['bait'],
+              'rewrite':[] }
 
   cached['301'].forEach(r =>
     agg['301'][r.to] = _.union(agg['301'][r.to]||[],[r.url]) )
@@ -27,6 +32,7 @@ module.exports = function(app, mw, {rules}) {
     LOG('cfg.route', `${status}                >`, to.green)
     return (req, res, next) => {
       if (req.url.match('^/v1/api/')) return next()
+      $log('redir', to, status, agg['301'][to])
       res.redirect( status, req.url.replace(req.url.split('?')[0], to) )
     }
   }

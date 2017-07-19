@@ -1,5 +1,5 @@
 {
-  "about":                     "package.json",
+  "about":                     "package.json:name,version,author,bugs,repository",
   "auth": {
     "appKey":                  "apcom",
     "oauth": {
@@ -12,6 +12,7 @@
         "clientSecret":        "f52d233259426f769850a13c95bfc3dbe7e3dbf2",
         "emails":              true,
         "userAgent":           "airpair.com",
+        "unlink":              false,
         "scope":               [ "user:email" ]
       },
       "google": {
@@ -60,6 +61,11 @@
     },
     "pwdm":                    false
   },
+  "authoring": {
+    "editors":                 "5175efbfa3802cc4d5a5e6ed,5333e0fd66a6f999a4651100",
+    "stale":                   "-145:day",
+    "wordcount":               400
+  },
   "comm": {
     "mode":                    "stub",
     "transports":              ["ses"]
@@ -68,15 +74,15 @@
     "static": {
       "host":                  "https://static.airpair.com",
       "bundles": {
-        "css/v1fonts.css":     "/2015/css/fonts.css",
-        "css/v1libs.css":      "/apcom/css/libs-914db4fa9b.css",
+        "css/author.css":      "/css/author.css",
+        "css/fonts.css":       "/css/fonts.css",
         "css/libs.css":        "/css/libs.css",
+        "css/posts.css":       "/css/posts.css",
         "css/index.css":       "/css/index.css",
-        "css/adm.css":         "/css/adm.css",
         "js/index.js":         "/js/index.js",
-        "js/adm.js":           "/js/adm.js"
+        "js/author.js":        "/js/author.js"
       },
-      "dirs":                  "public,build",
+      "dirs":                  "{{undefine}}",
       "sitemap":               true,
       "opts": {
         "index":               false,
@@ -85,9 +91,10 @@
     }
   },
   "log": {
-    "appKey":                  "AP",
-    "analytics": {      
+    "appKey":                  "apcom",
+    "analytics": {
       "on":                    true,
+      "ga":                    { "web": "UA-XXXXYYYY-N" },
       "model": {
         "collections":         { "event": "Event", "impression": "Impression", "view": "View", "issue": "Issue", "campaign": "Campaign" },
         "mongoUrl":            "mongodb://localhost/airpair_analytics",
@@ -95,19 +102,19 @@
       }
     },
     "it": {
+      "auth":                  { "link":"green" },
       "cfg":                   { "route": false },
       "mw":                    { "trace": false, "forbid": false, "api": false },
-      "modl":                  { "cache": "green" }
+      "modl":                  { "cache": "green" },
+      "wrpr":                  { "ghcall":"cyan", "ghretry":"yellow", "ghstep":"white" }
     },
     "errors": {
       "mail":                  { "sender": "ERR <team@airpair.com>", "to": "jk <jk@airpair.com>" }
     }
   },
-  "logic": {
-    "wax":                     { "dirs": "/author/shared" }
-  },
   "middleware": {
     "api":                     { "baseUrl": "/v1/api" },
+    "authd":                   { "returnTo": true },
     "ctx": {
       "ud": {
         "search":              "Applebot|archive.org|Baiduspider|bingbot|adsbot-google|Googlebot|Docoloc|Hackerfall|Hatena|msnbot-media|Qwantify|YandexBot|Yahoo! Slurp|Y!J-ASR",
@@ -127,9 +134,10 @@
       "throttle":              { "limit": 8 },
       "nonAdm":                { "allow": "54551be15f221efa174238d1" }
     },
+    "jsonLimit":               { "limit": "2mb" },
     "livereload":              { "port": 35729 },
     "session": {
-      "authdData":             "_id name email username avatar",
+      "authdData":             "_id name username avatar",
       "name":                  "aps",
       "secret":                "airyv1",
       "store":                 { "collection": "sessions_apcom" },
@@ -139,35 +147,31 @@
   },
   "model": {
     "cache": {
-      "require":               "tags:tags,tmpl:templates,rules:routes,ads:ads",
-      "inflate":               { "tags": "name slug short desc" }
-    }                  
+      "require":               "tags:tags,templates:templates,rules:routes,ads:ads",
+      "inflate":               { "tags": "name slug short desc url posts" }
+    }
   },
   "routes": {
-    "adm":                     { "api": { "mount": "/v1/api/adm" } },
     "ads": {
       "campaigns":             "7013A000000mKoyQAE:heroku:2016-q3-heroku",
-      "dir":                   "web/public/ads"
+      "dir":                   "web/static/ads"
     },
     "api":                     { "mount": "/v1/api" },
+    "author":                  { "on": true },
     "canonical":               { "async": "canonical", "posts": true, "tags": true },
     "landing": {
-      "tags": {
-        "dir":                 "web/public/img/tag",
-        "top":                 "android|aws|docker|ember.js|firebase|ios|ionic|javascript|keen-io|mean-stack|mongodb|neo4j|node.js|python|php|reactjs|rethinkdb|ruby|ruby-on-rails|selenium|swift|twilio"
-      },
-      "workshops":             { "on": true }
+      "tags":                  { "top": "android|aws|docker|ember.js|firebase|ios|ionic|javascript|keen-io|mean-stack|mongodb|neo4j|node.js|python|php|reactjs|rethinkdb|ruby|ruby-on-rails|selenium|swift|twilio" }
     },
     "static": {
-      "img":                   { "type": "img" },
-      "robots":                { "type": "text" }
+      "robots":                { "dir": "web/static/robots" }
     },
+    "reviews":                 { "on": false },
     "rules":                   { "on": true },
-    "rss":                     { "urls": "atom,data.atom,/data/atom,data/rss,data.rss,rss/posts,rss/workshops,.rss,rss.xml,rss" }
+    "rss":                     { "urls": "atom,data.atom,/data/atom,data/rss,data.rss,rss/posts,.rss,rss.xml,rss" }
   },
   "templates": {
     "dirs": {
-      "views":                 "tmpl,tmpl/page",
+      "views":                 "tmpl/layout,tmpl/page",
       "partials":              "tmpl/partial",
       "helpers":               "tmpl/helpers"
     },
@@ -180,6 +184,12 @@
       "accessToken":           "b93731e13c8660c7700aca6c3934660ea16fbd5f"
     },
     "cloudflare":              "team@airpair.com:c6abc4d5b9c3236a3f9b796aa8465d1e14c5b",
+    "gitPublisher": {
+      "scope":                 ["public_repo","user"],
+      "adminToken":            "{{required}}",
+      "org":                   "{{required}}",
+      "retry":                 { "delay": 1000, "max": 3 }
+    },
     "ses":                     { "accessKeyId": "--", "secretAccessKey": "--" },
     "smtp":                    { "service": "--", "auth": { "user": "--", "pass": "--" } },
     "stripe": {

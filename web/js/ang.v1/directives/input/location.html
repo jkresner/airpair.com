@@ -1,0 +1,19 @@
+<form id="locationForm" novalidate name="locationForm">
+  <div class="form-group">
+    <label class="control-label" for="location">Location / timezone </label>
+    <input id="location" name="location" class="form-control" type="text"
+      placeholder="{{ui.loaded ? 'Type your city' : ' '}}"
+      ng-model="ui.input" required ng-minlength="2" ng-maxlength="60" ng-keydown="onKeydown($event)" tabindex="tbIdx">
+    <p class="info">
+      <span ng-if="!data">Location not yet set ...</span>
+      <span ng-if="data">
+        <span class="saved">Saved:</span>
+        <span class="short">{{data.shortName}}</span>
+        <span class="timezone">
+          {{data.timeZoneId | tzIdToName }}
+          {{data.timeZoneId}}
+        </span>
+      </span>
+    </p>
+  </div>
+</form>

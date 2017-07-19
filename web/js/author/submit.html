@@ -1,0 +1,110 @@
+<section id="submit" class="edit" ng-if="!ui.main.loading">
+
+  <figure class="inreview" ng-if="!submission && !post.history.published">
+    <h1><em>Submitted</em> for Review!</h1>
+
+    <p><em>{{post.title}}</em> is listed for <a href="https://www.airpair.com/posts/in-community-review" target="_blank">community review</a>.
+    You have <em>{{post.stats.reviews||0}}/3</em> reviews required to publish.
+    Your 3 reviews will need a <em>{{post.stats.rating||0}}/3</em>/ 3 star rating.
+    <!--  with 3 or more up-votes each. -->
+    </p>
+
+    <!-- <p>Markdown is stored on the <code>edit</code> branch of <code>github.com/airpair/{{post.slug}}</code>. Avoid merging the edit branch into master. The simplest way to continue is to <b><a href="/editor/{{p._id}}">edit</a></b> via the AirPair editor. </p> -->
+
+  </figure>
+
+  <section ng-if="!submission && post.reviews">
+<!--
+    <section id="reviews"><h3>Reviews ({{post.stats.reviews||'none yet'}})</h3>
+      <p ng-if="ui.moreReviews > 0"><cite>{{post.title}}</cite> needs {{ui.moreReviews}} more review(s) to publish</p>
+    </section> -->
+
+    <footer class="blogpost">
+      <div class="reviews" post-reviews post="post"></div>
+    </footer>
+
+  </section>
+
+
+  <figure ng-if="submission" class="submission">
+    <h1>Submit for <em>"community review"</em></h1>
+    <p>It's time to start getting feedback and enabled
+    folks to help improve things.</p>
+    <img class="flow" src="//static.airpair.com/img/author/authoring-flow-store.png" />
+    <p>Choose a name for your new repo which will track all edits and versions from here.
+    </p><!-- A repo will be created on AirPair's Github organization account</p> -->
+  </figure>
+
+
+<section class="form">
+  <form ng-if="submission">
+    <!-- <div class="form-group">
+      <label>Author bio</label>
+      <textarea ng-model="data.assetUrl" type="text" class="form-control"
+          placeholder="About you"></textarea>
+    </div> -->
+
+    <div class="form-group">
+      <label>
+        <b ng-if="post.slug.length > 50">
+          <label class="label label-danger">too long... {{post.slug.length}} > chars</label>
+          <span class="invalid">{{post.slug}}</span>
+        </b>
+        <b ng-if="submission.valid === null" class="yellow">Repo name
+          <label class="label label-warning">checking...</label>
+          <span class="yellow">{{post.slug}}</span> </b>
+        <b ng-if="submission.valid === false">Repo name
+          <span class="invalid">{{post.slug}}</span> <label class="label label-warning">unavailable</label>
+          <span ng-bind-html="submission.invalid"></span></b>
+        <b ng-if="submission.valid">Repo name
+          <label class="label label-success">available</label><span class="valid">{{post.slug}}</span> </b>
+      </label>
+
+      <div class="input-group slug-group">
+        <div class="input-group-addon">
+        airpair.com/{{post.tags[0].slug}}/{{post.type}}/</div>
+        <input ng-model="post.slug" type="text" class="form-control"
+          ng-change="refreshSubmission()" />
+      </div>
+    </div>
+
+    <ul>
+      <li><h4>Before submitting</h4>
+      </li>
+      <li>
+        <span class="glyphicon glyphicon-check" aria-hidden="true"></span> The <em>repo name</em>  and <em>url</em> get fix from here. Choose something pretty url for SEO :)
+      </li>
+      <li>
+        <span class="glyphicon glyphicon-copyright-mark" aria-hidden="true"></span> Only submit <em>original work</em> that is <en>not published</em> elsewhere.
+      </li>
+    </ul>
+
+    <div ng-if="submission.valid">
+      <div class="form-actions">
+        <single-submit button-text="'Create repo'"
+          wait-text="Creating repo, this can take 30 seconds ..."
+          on-single-click="submitDeferred">
+        </single-submit>
+        <p>Once created:
+          <br /><label>Repo url</label>
+          <code>https://github.com/airpair/{{post.slug}}</code>
+          <br /><label>Post url</label>
+          <code>https://www.airpair.com/{{post.tags[0].slug}}/{{post.type}}/{{post.slug}}</code></p>
+      </div>
+    </div>
+  </form>
+</section>
+
+</section>
+
+<nav class="edit" ng-if="post">
+  <header edit-header post="post" step="'submit'"></header>
+  <footer>
+  <p>Have you checked out the
+      <a href="https://www.airpair.com/authoring-guide" target="_blank">Authoring Guide</a>? If not, nows a good time! You don't need to wait for other to keep improving things.</p>
+
+
+    <!-- <p ng-if="!post.submitted">Your posts "repo name" also makes up
+    part of its live url</p> -->
+  </footer>
+</nav>

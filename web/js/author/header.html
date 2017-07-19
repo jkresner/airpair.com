@@ -1,0 +1,58 @@
+
+<ol id="authorsteps" ng-if="author" class="navtip">
+  <li class="edge"></li>
+  <li ng-class="stepCss('info', editing)">
+    <label>Meta</label>
+    <a href="/post-info/{{id}}" target="_self">Info</a>
+    <a class="locked" title="Save your changes">Info</a>
+  </li>
+  <li ng-class="stepCss('edit', new)">
+    <label>Edit</label>
+    <a href="/editor/{{id}}">Edit</a>
+    <a class="locked" title="Edit post markdown">Edit</a>
+    <a ng-if="!new && !post.submitted" class="del" ng-confirm-click="delete(id)" confirm='Delete post "{{title}}"?'>delete</a>
+  </li>
+<!--   <li ng-class="stepCss('promote', true)">
+    <label>Promote</label>
+    <a class="locked" title="Complete post requirement to unlock submit">Promote</a>
+  </li> -->
+  <li ng-class="stepCss('collaborate', !submitted)">
+    <label>Contribs</label>
+    <a href="/collaborate/{{id}}" target="_self">Contribs</a>
+    <a class="locked" title="Submit your post to unlock social features">Contribs</a>
+  </li>
+  <li ng-class="stepCss('submit', !submittable)">
+    <label>Reviews</label>
+    <a href="/reviews/{{id}}" target="_self">Reviews</a>
+    <!-- <a href="/submit/{{id}}" ng-if="submitted">Reviews</a> -->
+    <a class="locked" title="Complete post requirement to unlock submit">Reviews</a>
+  </li>
+  <li class="edge" ng-class="stepCss('publish', !publishable)">
+    <label>Publish</label>
+    <a href="/publish/{{id}}">Publish</a>
+    <a class="locked" title="Complete post requirement to unlock submit">Publish</a>
+  </li>
+</ol>
+
+<ol ng-if="author === false">
+  <li class="edge"></li>
+  <li ng-if="!isAuthor || !id" ng-class="stepCss('review')" class="edge">
+    <label>Contribute</label>
+    <a ng-if="step!='review' && !editing" href="/activity/{{id}}">Contribute</a>
+  </li>
+  <li ng-class="stepCss('edit')">
+    <label>Edit</label>
+    <a href="/editor/{{id}}">Edit</a>
+  </li>
+</ol>
+
+<a id="authorexit" ng-href="{{author ? '/' : '/forks'}}" class="navtip {{author?'home':'forks'}}" target="_self"></a>
+
+<span class="status {{status}}" ng-if="status">{{status}}
+  <var ng-if="wordcount">{{ wordcount }} words</var></span>
+<cite>{{post.title||'New post'}}</cite>
+
+<div><style type="text/css">
+  body > footer { display:none }
+  body > header { display:none;background-color:white; }
+</style></div>

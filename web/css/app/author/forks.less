@@ -1,0 +1,111 @@
+section#forks {
+  padding:20px 5px 40px 5px;
+
+  section.ribbon {           height:78px;
+                             opacity:0.85;
+                             background-color:@orangepale;
+    > i {                    position:absolute;
+                             z-index:2;
+                             max-width:900px;
+                             width:180px;
+                             height:78px;
+                             display:inline-block;
+                             overflow:hidden;
+      &:after { .iicon;content:"\f2c0";color:white;font-size:100px;margin-left:15%;opacity:0.2;
+        color:@orangepale;border-radius:50%;line-height:110px;height:140px;width:140px;
+        text-align:center;margin-top:-5px;
+        background:white;
+      }
+    }
+    > div {                  position:relative;max-width:900px;margin:auto;padding:10px 0px;height:80px }
+    img.usr {                width:100%;height:100%;border:none;opacity:0.95 }
+    ul.stats {
+      li { border-color:@orangelight; }
+      var { color:@orangemedium;opacity:0.5;font-size:26px }
+    }
+  }
+
+  .btn-fork {
+    background-size:75%;
+    background-position:5px 4px;
+    padding:0;
+    margin-bottom:5px;
+  }
+
+  .my {
+    margin-top:150px;
+    > ul > li {
+      position:relative;
+      vertical-align:top;
+      padding-top:13px;
+      padding-bottom:10px;
+      margin:10px 20px 10px 20px;
+      border-bottom:solid 1px @orangepale;
+      display:block;width:100%;
+      min-height:98px;
+      .editfork {
+        width:120px;display:inline-block;
+        height:80px;
+        position:relative;
+        .fk {
+          position:absolute;
+          left:-8px;top:10px;
+          opacity:0.7;
+          width:34px;height:34px;
+          border-radius:50%;
+          background-position:2px 2px;
+          background-repeat:no-repeat;
+          background-size:31px;
+          margin-bottom:0px;
+          background-color:@bluegraydark;
+          boarder-color:@bluegraydark;
+          background-image:url('https://static.airpair.com/img/author/branch-white.png');
+        }
+        .author { opacity:0.9 }
+        .forker { display:none }
+        .usr {
+          position:absolute;
+          left:48px;top:0px;
+          width:58px;height:58px }
+
+        margin-left:-6px;
+        margin-right:16px;
+        &:hover {
+          .fk {
+            background-position:1px 1px;
+            background-color:@orange;
+            opacity:1;
+            background-image:url('@{static}/img/author/airpair-author-bw.png');
+          }
+          .author { display:none; }
+          .forker { display:inline-block;border-color:@orangehighlight }
+        }
+      }
+      cite {
+        display:inline-block;padding-top:2px;
+        padding-left:0px;margin-left:-10px;
+        font-size:22px;line-height:26px;
+        font-style:normal;
+        max-width:520px;position:absolute;
+      }
+      time { left:2px;bottom:15px;font-size:11px;position:absolute;color:@bluegraydark }
+      span {
+        opacity:0.7;
+        position:relative;top:3px;
+        padding:2px 10px;float:right;min-width:168px;
+        &:hover { opacity:1 }
+        a { text-transform:uppercase;font-size:14px }
+      }
+      nav {
+        padding:16px 19px;float:right;clear:right;
+        > div {
+          width:90%;
+          font-size:12px;
+          text-align:center;margin:12px auto;
+          position:absolute;top:20px;
+        }
+      }
+    }
+  }
+
+}

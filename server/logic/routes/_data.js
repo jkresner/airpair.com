@@ -3,7 +3,7 @@ const Views = {
 }
 
 const Query = {
-  postsPublished: p => 
+  postsPublished: p =>
     ({ 'history.published': { $exists:true, $lt: new Date } })
 }
 
@@ -13,16 +13,20 @@ const Opts = {
 
 const Projections = ({inflate},{chain,view}) => ({
 
-  tagged: r => 
-    assign(r, {tag: _.sortBy(r.tag.map(t => {
-      tag = assign(t, cache.tags[t._id])
-      var url = `/${t.slug}`.replace('++','\\+\\+')
-      if (t.slug == 'angularjs') url = `/${t.slug}/posts`
-      else
-        cache.rules['301'].push({url:`^${url}/((post)|(workshop))s$`, to: url })
-
-      return assign(t, { url })
-    }), 'name')})
+  //-- Sort tags into alphabetical list
+  tagged: r =>
+    assign(r, { tag:
+      _.sortBy(
+        r.tag.map(t => assign(cache.tags[t._id], t))
+             .map(t => {
+          var url = `/${t.slug}`.replace('++','\\+\\+')
+          if (t.slug == 'angularjs')
+            url = `/${t.slug}/posts`
+          else
+            cache.rules['301'].push({url:`^${url}/((post)|(workshop))s$`, to: url })
+          return assign(cache.tags[t._id], {url})
+      }), 'name')
+    })
 
 })
 

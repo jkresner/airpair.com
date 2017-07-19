@@ -4,7 +4,7 @@
 //! license : MIT
 //! github.com/moment/moment-timezone
 
-window.moment = require("../../components/moment/moment.js")
+window.moment = require("./moment-2.18.1.js")
 initTZ(moment)
 
 function initTZ(moment) {

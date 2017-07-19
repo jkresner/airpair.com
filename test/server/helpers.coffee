@@ -1,9 +1,3 @@
-{log} = config
-if log && process.env['LOG_APP_VERBOSE'] then log.app.verbose = process.env['LOG_APP_VERBOSE']
-if log && process.env['LOG_APP_MUTE'] then log.app.mute = process.env['LOG_APP_MUTE']
-# if (process.env[`LOG_${cfg.logFlag}`]) = cfg.logFlag ? 'white' : undefined
-
-
 global.UTIL =
   in:           (ms, fn) -> setTimeout(fn, ms)
   Date:         require("honeycombjs").Util.Date
@@ -13,25 +7,9 @@ global.UTIL =
     global.cache.iplog = {}
 
 
-global.L = ->
-  args = [].slice.call(arguments)
-  if (args[0].test||{}).title
-    args[0] = "#{'IT'.cyan.dim} " +"#{args[0].test.title.gray}\t"
-  else
-    args.splice(0,1,"@?\t".gray)
-  args[1] = "#{JSON.stringify(args[1])}".yellow
-  console.log.apply(null, args)
-
-
 """
 DB
 """
-
-
-DB.ensureExpert = (key, done) ->
-  DB.ensureDocs 'User', [FIXTURE.users[key]], (e) =>
-    DB.ensureDocs 'Expert', [FIXTURE.experts[key]], (ee) => done()
-
 
 DB.noSession = ({sessionID}, cb) ->
   a_uid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\,\-_]*).{24,}/
@@ -57,15 +35,10 @@ DB.expectSession = ({sessionID}, cb) ->
 DATA
 """
 
-DATA.newSession = (userKey) ->
-  suffix = DATA.timeSeed()
-  session = cookie:
-    originalMaxAge: 2419200000,
-    _expires: moment().add(2419200000, 'ms').subtract(1,'s')
-
-  # ?? not the best setting global here ....
-  cookieCreatedAt = util.momentSessionCreated(session)
-  assign({user:null,sessionID:"test#{userKey}#{suffix}"},{session})
+DATA.lotsOfWords = (seed) ->
+  words = (seed || "Start")
+  words += " stuff " for i in [0..501]
+  words
 
 
 DATA.defaultGH = (name, login, suffix) ->
@@ -77,53 +50,53 @@ DATA.defaultGH = (name, login, suffix) ->
   profile
 
 
-DATA.ghProfile = (login, uniquify) ->
-  suffix = DATA.timeSeed()
-  if uniquify is true
-    u = FIXTURE.users[FIXTURE.uniquify("users", login, 'username name email auth.gh.email auth.gh.login auth.gh.id auth.gp.id auth.gp.email')] if !u
-    # $log('u'.magenta, u.email)
-    $log("FIXTURE.users.#{login} MISSING") if !u
-    profile = u.auth.gh if u.auth && u.auth.gh
-    profile = DATA.defaultGH(u.name || login, login, suffix) if !profile
-    profile.emails = [{email:profile.email||u.email,verified:true,primary:true}]
-  else
-    profile = FIXTURE.users[login].auth.gh
-    profile = DATA.defaultGH(login, login, suffix) if !profile
-  # $log('profile', profile)
-  # expect(profile.emails, "FIXTURE.ghProfile #{login} missing emails").to.exist
-  profile
+# DATA.ghProfile = (login, uniquify) ->
+#   suffix = DATA.timeSeed()
+#   if uniquify is true
+#     u = FIXTURE.users[FIXTURE.uniquify("users", login, 'username name email auth.gh.email auth.gh.login auth.gh.id auth.gp.id auth.gp.email')] if !u
+#     # $log('u'.magenta, u.email)
+#     $log("FIXTURE.users.#{login} MISSING") if !u
+#     profile = u.auth.gh if u.auth && u.auth.gh
+#     profile = DATA.defaultGH(u.name || login, login, suffix) if !profile
+#     profile.emails = [{email:profile.email||u.email,verified:true,primary:true}]
+#   else
+#     profile = FIXTURE.users[login].auth.gh
+#     profile = DATA.defaultGH(login, login, suffix) if !profile
+#   # $log('profile', profile)
+#   # expect(profile.emails, "FIXTURE.ghProfile #{login} missing emails").to.exist
+#   profile
 
 
 """
 HTTP
 """
 
-
 global.ANONSESSION = (opts, cb) ->
   if !cb
     cb = opts
+    opts = {}
 
   global.COOKIE = null
   GET '/auth/session', opts, cb
 
 
-global.SIGNUP = (login, cb) ->
-  profile = DATA.ghProfile login, true
-  FIXTURE.users[profile.login] = {auth:{gh:profile}}
-  LOGIN profile, {retainSession:true}, cb
+# global.SIGNUP = (login, cb) ->
+#   profile = DATA.ghProfile login, true
+#   FIXTURE.users[profile.login] = {auth:{gh:profile}}
+#   LOGIN profile, {retainSession:true}, cb
 
 
-global.HTML = ({test}, match, opts) =>
-  status = (opts||{}).status || 200
-  nomatch = (opts||{}).no || []
-  PAGE test.title, { contentType: /html/, status }, (html) =>
-    expect(html).match(pattern) for pattern in match
-    expect(html).not.match(pattern) for pattern in nomatch
-    if test.parent.title.match(/noindex/i)
-      expect(html).to.have.string('<meta name="robots" content="noindex, follow">')
-    else if test.parent.title.match(/index/i)
-      expect(html).to.have.string('<meta name="robots" content="index, follow">')
-    DONE()
+# global.HTML = ({test}, match, opts) =>
+#   status = (opts||{}).status || 200
+#   nomatch = (opts||{}).no || []
+#   PAGE test.title, { contentType: /html/, status }, (html) =>
+#     expect(html).match(pattern) for pattern in match
+#     expect(html).not.match(pattern) for pattern in nomatch
+#     if test.parent.title.match(/noindex/i)
+#       expect(html).to.have.string('<meta name="robots" content="noindex, follow">')
+#     else if test.parent.title.match(/index/i)
+#       expect(html).to.have.string('<meta name="robots" content="index, follow">')
+#     DONE()
 
 
 global.IMG = ({test}, opts) =>
@@ -145,14 +118,14 @@ global.IMG = ({test}, opts) =>
 STUB(s)
 """
 
-analyticsCfg = _.clone(config.analytics)
-STUB.analytics =
-  stubbed: false,
-  mute: () -> config.analytics.log.trk.event = false
-  unmute: () -> config.analytics.log.trk.event = process.env['LOG_TRK_EVENT']
-  on: () -> config.analytics = analyticsCfg
-    # global.analytics = require('../../server/services/analytics')(global._analytics)
-  off: () -> config.analytics = false
+# analyticsCfg = _.clone(config.analytics)
+# STUB.analytics =
+#   stubbed: false,
+#   mute: () -> config.analytics.log.trk.event = false
+#   unmute: () -> config.analytics.log.trk.event = process.env['LOG_TRK_EVENT']
+#   on: () -> config.analytics = analyticsCfg
+#     # global.analytics = require('../../server/services/analytics')(global._analytics)
+#   off: () -> config.analytics = false
    # global.analytics = {
     # echo: ()=>{},
 #     event: ()=>{},
@@ -160,10 +133,17 @@ STUB.analytics =
 #     alias: ()=>{},
 #     # identify: ()=>{}
 #   }
+# STUB.analytics.mute()
 
 
-STUB.analytics.mute()
+STUB.allGitPublisherAPIcalls = () ->
+  _API = STUB.wrapper('GitPublisher').api
+  _API('repos.get').err('gh_repos_get_notfound')
+  _API('user.get').success('gh_user_scopes')
+  _API('repos.createFromOrg').success('gh_repos_createFromOrg_47260144')
+  _API('repos.createFile').success('gh_repos_createFile_1449060354_readme')
+  _API('gitdata.createReference').success('gh_gitdata_createReference_1449060354_editBranch')
+  _API('orgs.createTeam').success('gh_orgs_createTeam_1449067207')
+  _API('user.editOrganizationMembership').success('gh_user_editOrganizationMembership_JustASimpleTestOrg')
+  _API('orgs.addTeamMembership').success('gh_orgs_addTeamMembership_1862308_airpairtest1')
 
-
-STUB.Timezone = (key) ->
-  STUB.wrapper('Timezone').cb('getTimezoneFromCoordinates', key||'timezone_melbourne')

@@ -1,10 +1,11 @@
-<footer>
-  <ul>
-    <li><a href="/tos" target="_blank" class="tos">Terms of Service</a></li>
-    <li><a href="/privacy" target="_blank" class="pp">Privacy policy</a></li>
-{{!--     <li><a href="/logout" target="_blank" class="lg">Logout</a></li> --}}
-    <li>&copy; 2016 airpair, inc.</li>
-  </ul>
+<footer>{{#with about}}
+  <ul>{{#if name}}
+    <li class="nm"><span>{{name}}</span></li>{{/if}}{{!-- {{#if version}}
+    <li class="vr">v<var>{{version}}</var></li>{{/if}} --}}{{#if bugs}}
+    <li class="bg"><span><a href="{{bugs}}" target="_blank" rel="nofollow">Report bug</a></span></li>{{/if}}{{#if privacy}}
+    <li class="pr"><a href="{{privacy}}" target="_blank" rel="nofollow">Privacy</a></li>{{/if}}{{#if terms}}
+    <li class="ts"><a href="{{terms}}" target="_blank" rel="nofollow">Terms of Service</a></li>{{/if}}{{#if author}}
+    <li class="cp">&copy; 2017 {{author}}</li>{{/if}}{{#if contact}}
+    <li class="ct"><a href="{{contact}}" target="_blank" rel="nofollow">Contact</a></li>{{/if}}
+  </ul>{{/with}}
 </footer>
-{{#unless authenticated}}
-{{/unless}}

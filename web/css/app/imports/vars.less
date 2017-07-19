@@ -1,0 +1,43 @@
+@import "../../.lib/shared/colors";
+
+@pagewidth:1600px; // max
+@headerHeight:38px;
+@navbg:@bluepalest;
+@nava:@gray;
+@navcursor:@bluegraylight;
+@loaderbq:@bluepale;
+
+@colordraft:@yellowdark;
+@colorsubmitted:@bluegraydark;
+@colorpublished:@green;
+
+@static:'http://localhost:8000';
+@iconwhite:'/img/author/airpair-author-bw.png';
+
+@import "../../.lib/shared/icons";
+
+;
+body > header {
+  position:absolute;
+  z-index:2;
+  width:100%;
+}
+
+
+
+.iconfont {
+  position: relative;
+  top:0px;
+  display: inline-block;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.glyph {    .iconfont; font-family: 'Glyphicons Halflings';}
+.awesome {  .iconfont; font-family: 'FontAwesome'; }
+.moon {     .iconfont; font-family: 'icomoon'; }
+.iicon {    .iconfont; font-family: 'Ionicons'; }
+.octico {   .iconfont; font-family: 'Octicons'; }

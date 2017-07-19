@@ -39,7 +39,7 @@ const Projections = ({inflate,select},{chain,view}) => ({
       imgurMatch.test(r.assetUrl) ?
         r.assetUrl.replace(imgurMatch,'').split('.')[0] : ''}),
 
-  info: r => 
+  info: r =>
     chain(r, 'posts.url', 'imgur', inflate.tags, view.details),
   // activity: r =>
     // select.activity(chain(r, 'url', '$activity.stats')),
@@ -51,7 +51,7 @@ const Projections = ({inflate,select},{chain,view}) => ({
     var r = { todo: chain(d.post, 'todo').todo }
     // console.log('edit'.yellow, d.post)
     r.md = { live:d.post.md, head:d.headMD }
-    r.post = select(chain(d.post, inflate.tags, 'posts.bodyHtml'), '_id title by html history stats tags assetUrl references')
+    r.post = select(chain(d.post, inflate.tags, 'posts.toHtml'), '_id title by html history stats tags assetUrl references')
     r.post.tmpl = 'v2'
     // console.log('edit'.yellow, r)
     return r

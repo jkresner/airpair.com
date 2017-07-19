@@ -1,8 +1,4 @@
 {
-  "specs":                   "all",
-  "stubs": {
-    "on":                    true
-  },
   "colors": {
     "appload":               "white",
     "seed":                  "magenta",
@@ -10,12 +6,17 @@
     "error":                 "red",
     "expectederr":           "blue"
   },
+  "http": {
+    "api": {
+      "baseUrl":             "/v1/api"
+    }
+  },
   "mongo": {
     "collections":           ["Users","Experts","Posts","Redirects",
-                             "Requests","Tags","Templates","Views",
-                             "Impressions","Sessions","Events","Campaigns"],
+                              "Tags","Templates","Views",
+                              "Impressions","Sessions","Events","Campaigns"],
     "seed": {
-      "without":             "FIXTURE.users.jkap",
+      "without":             "FIXTURE.tags.angular",
       "timeout":             30000
     },
     "url":                   "mongodb://localhost/airpair_test"
@@ -25,10 +26,14 @@
     "fixtures":              "../data/fixtures",
     "stories":               "stories"
   },
-  "http": {
-    "api": {
-      "baseUrl":             "/v1/api"
+  "setup": {
+    "fail": {
+      "filter":              "supertest|next_tick|emitCloseNT"
     }
+  },
+  "specs":                   "all",
+  "stubs": {
+    "on":                    true
   }
 }
 

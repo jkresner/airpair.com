@@ -1,0 +1,115 @@
+<section id="forks" ng-if="!ui.main.loading">
+
+  <div class="header">
+    <h1>Forks <small> & contributions</small></h1>
+  </div>
+
+
+  <section class="ribbon" ng-if="my.length > 0">
+    <i></i>
+    <div>
+      <ul class="stats">
+        <li style="opacity:0.7">
+          <label>Forks</label><var>{{my.length}}</var>
+        </li>
+        <li style="opacity:0.85">
+          <label>Edits/PRs</label><var>8</var>
+        </li>
+        <li style="opacity:0.90">
+          <label>Contributions</label><var>{{my.acceptedPRs || 8}}</var>
+        </li>
+        <li>
+          <img ng-src="{{session.avatar}}&s=80" class="usr" />
+        </li>
+      </ul>
+
+    </div>
+  </section>
+
+
+  <section id="start" ng-if="my.length == 0">
+
+    <h2>Fork up!</h2>
+
+    <p><b>Thank you</b> for finding your way here!
+
+      Together, we can can create
+      highter quality content, exchange more accurate knowledge
+      and ultimately write better software than ever before.
+    </p>
+
+    <h3>Contributing to posts by others</h3>
+
+    <p>
+    Helping other authors with suggestions, spelling/gramma fixes and formatting
+    is easy.
+    </p>
+
+    <p>
+      Click "fork and edit" from any
+      post on the
+      <a href="https://www.airpair.com/software-experts"> AirPair Blog</a> or
+      hit the fork icon <a ng-href="/fork/{{p._id}}" class="btn btn-fork" disabled></a>
+      next ot one of the suggestions.
+    </p>
+
+    <!-- <img src="https://static.airpair.com/img/author/authoring-flow-review.png" /> -->
+    <p><b>Edit</b> your forks via the AirPair editor. When you want to submit your changes, send a pull request directly from the editor.</p>
+
+
+<!--   <section ng-if="forked" class="notifications">
+    <div id="postsubmitted">
+      <h2>Mother Forker!</h2>
+      <h3><a href="https://github.com/{{session.social.gh.username}}/{{forked.slug}}" target="_blank">{{ forked.title }}</a></b> has been forked to your github account.</h3>
+      <img src="/static/img/pages/posts/authoring-flow-review.png" />
+      <p>You can <b>edit</b> your forked version of the post via the AirPair editor. When you're happy with your changes, send a pull request from GitHub.com</p>
+    </div>
+  </section>
+ -->
+
+  </section>
+
+
+  <section class="my" ng-if="my.length > 0">
+
+    <ul>
+      <li ng-repeat="p in my">
+
+        <a href="/editor/{{p._id}}" title="edit" class="editfork">
+          <div class="fk"></div>
+          <img class="usr author" ng-src="{{p.by.avatar}}&s=60" />
+          <img class="usr forker" ng-src="{{session.avatar}}&s=60" />
+        </a>
+
+        <cite class="title">{{p.title}}</cite>
+
+        <span ng-class="status(p)">
+          <a ng-href="{{p.url}}" target="_blank">{{status(p)}}</a> <small ng-if="p.stats.words > 1"> {{p.stats.words}} words</small>
+        </span>
+        <nav>
+          <a ng-href="{{p.url}}" target="_blank">FORK
+          <small> {{p.stats.words}} words</small> </a>
+        </nav>
+
+        <div>
+          <time ng-if="p.meta">
+            {{p.meta.lastTouch.action}}ed
+            {{p.meta.lastTouch.utc | timeAgo | replace : 'month' : 'mth'  }}
+            <!-- <em ng-if="p.meta.lastTouch.by._id != session._id">
+              by {{p.meta.lastTouch.by.name }} </em> -->
+          </time>
+          <time ng-if="!p.meta">
+            updated  <!-- <div>{{ p.updated }}</div>  -->
+            {{ p.updated | timeAgo | replace : 'month' : 'mth'  }}
+          </time>
+        </div>
+
+      </li>
+    </ul>
+
+  </section>
+
+</div>
+
+</section>
+

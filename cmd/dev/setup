@@ -19,27 +19,37 @@ cd node_modules;
 ln -nsf meanair-build/node_modules/gulp
 cd ../;
 
-# printf "${CMD}SYMLINK meanair-build/build/cmd/${NC}\n"
-# mkdir -p cmd/build;
-# cd cmd/build;
-# for l in $(find . -type l); do unlink $l;done;
-# for f in $(ls -d ../../node_modules/meanair-build/cmd/build/*); do ln -nsf $f;done;
-# cd ../../;
-# mkdir -p cmd/dev;
-# cd cmd/dev;
-# for l in $(find . -type l); do unlink $l;done;
-# for f in $(ls -d ../../node_modules/meanair-build/cmd/dev/*); do ln -nsf $f;done;
-# cd ../../;
 
-# printf "${CMD}SETUP git hooks${NC}\n"
-# rm -rf .git/hooks;
-# mkdir .git/hooks;
-# cd .git/hooks;
-# ln -nsf ../../cmd/dev/git-hook/pre-push;
-# cd ../../;
+# printf "${CMD}SYMLINK meanair-build/build/cmd/${NC}\n"
+mkdir -p cmd/build;
+cd cmd/build;
+for l in $(find . -type l); do unlink $l;done;
+for f in $(ls -d ../../node_modules/meanair-build/cmd/build/*); do ln -nsf $f;done;
+cd ../../;
+mkdir -p cmd/dev;
+cd cmd/dev;
+for l in $(find . -type l); do unlink $l;done;
+for f in $(ls -d ../../node_modules/meanair-build/cmd/dev/*); do ln -nsf $f;done;
+cd ../../;
+
+# Link server/.lib source files for nodemon change/restart
+printf "${CMD}honey source sym-linked under${NC} /server/.lib\n"
+mkdir -p server/.lib;
+cd server/.lib;
+for l in $(find . -type l); do unlink $l;done;
+for f in $(ls -d ../../node_modules/honeycombjs/lib/*.js);do ln -nsf $f;done;
+for f in $(ls -d ../../node_modules/honeycombjs/lib/**/*.js);do ln -nsf $f;done;
+for f in $(ls -d ../../node_modules/honeycombjs/lib/**/**/*.js);do ln -nsf $f;done;
+cd ../../
+
+printf "${CMD}SETUP git hooks${NC}\n"
+rm -rf .git/hooks;
+mkdir .git/hooks;
+cd .git/hooks;
+ln -nsf ../../cmd/dev/git-hook/pre-push;
+cd ../../;
 
 # bower install;
-
 # printf "${CMD}COPY JS web/components${NC}\n"
 # rm -rf web/components;
 # mkdir -p web/components;
@@ -48,18 +58,10 @@ cd ../;
 # cd ../../;
 
 
-
 # # printf "${CMD}UNLINK web/js|css${NC}\n"
 # # rm -rf web/js/.lib/;printf "${CYAN}CMD/setup: unlink${NC} web/js/.lib\n"
 # # rm -rf web/css/.lib/;printf "${CYAN}CMD/setup: unlink${NC} web/css/.lib\n"
 
-# # Link server/.lib source files
-# # mkdir -p shared/.lib;
-# # cd shared/.lib;
-# # for l in $(find . -type l); do unlink $l;done;
-# # for f in $(ls -d ../../node_modules/meanair-shared/lib/*.js);do ln -nsf $f;done;
-# # printf "${CMD}Shared source sym-linked under${NC} /shared/.lib\n"
-# # cd ../../
 
 # STATIC_CSS='../../../../../static/src/css'
 # LESS='web/css/app/posts';mkdir -p "${LESS}";cd "${LESS}";for l in $(find . -type l); do unlink $l;done;printf "${CYAN}CMD/setup: link  ${NC} /${LESS}/*.less\n"
@@ -77,6 +79,3 @@ cd ../;
 # printf "${CMD}source sym-linked error.less${NC} /css/dist\n"
 # ln -nsf ../../../../../static/host/public/ico/author/favicon.ico;
 # printf "${CMD}Symlink favicon.ico ${NC}\n"
-
-
-

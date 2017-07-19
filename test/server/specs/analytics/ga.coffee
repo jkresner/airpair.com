@@ -1,8 +1,15 @@
 
-IT 'ga script rendered on pages', ->
-
-  ANONSESSION (anon) ->
-    PAGE '/login', {}, (html) ->
-      expect(html).inc("ga('create', 'UA-40569487-1', 'auto')")
-      expect(html).inc("ga('send', 'pageview');")
+IT 'ga script renders for anonymous session', ->
+  expect(global.COOKIE).to.be.null
+  PAGE '/', {authenticated:false}, (html) ->
+    expect(global.COOKIE).to.exist    
+    # {sessionID} = SESSION()
+    # OI('sessionID', sessionID)    
+    expect(html).inc("ga('create', 'UA-40569487-1', 'auto')")
+    expect(html).inc("ga('send', 'pageview');")    
+    PAGE '/login', {}, (html2) ->          
+      # OI('html2', html2)
+      expect(html2).inc("ga('create', 'UA-40569487-1', 'auto')")
+      expect(html2).inc("ga('send', 'pageview');")
+      # expect(html2).inc("session: {\"id\": \"#{sessionID}\"")  
       DONE()

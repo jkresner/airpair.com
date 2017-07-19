@@ -1,11 +1,11 @@
-<title>{{#if htmlHead}}{{{htmlHead.title}}}{{else}}airpair | Coding help{{/if}}</title>
+<title>{{#if htmlHead}}{{{htmlHead.title}}}{{else}}airpair | Software jobs{{/if}}</title>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="{{#if noindex }}no{{/if}}index, follow">{{#if htmlHead}}{{#with htmlHead}}{{#if description }}<meta name="description" content="{{ description }}"/>{{/if}}<meta property="og:locale" content="en_US"/>{{#if ogType }}<meta property="og:type" content="{{ogType}}"/>{{else}}<meta property="og:type" content="article"/>{{/if}}{{#if ogTitle }}<meta property="og:title" content="{{ogTitle}}"/>{{/if}}{{#if ogDescription }}<meta property="og:description" content="{{ogDescription}}"/>{{/if}}{{#if ogImage }}<meta property="og:image" content="{{ogImage}}"/>{{/if}}{{#if ogUrl }}<meta property="og:url" content="{{ogUrl}}"/>{{/if}}{{#if canonical }}<link rel="canonical" href="{{ canonical }}" />{{/if}}{{/with}}{{/if}}{{#if htmlHead.css}}{{#each htmlHead.css}}
 <link rel="stylesheet" href="{{ this }}" type="text/css" />{{/each}}{{else}}
-<link rel="stylesheet" href="{{ css.v1fonts }}" type="text/css" />
-<link rel="stylesheet" href="{{ css.libs }}" type="text/css" />
-<link rel="stylesheet" href="{{ css.index }}" type="text/css" />{{/if}}
+<link rel="stylesheet" href="{{ @css.fonts }}" type="text/css" />
+<link rel="stylesheet" href="{{ @css.libs }}" type="text/css" />
+<link rel="stylesheet" href="{{ @css.index }}" type="text/css" />{{/if}}
 <link rel="shortcut icon" type="image/png" href="https://static.airpair.com/ico/favicon-16x16.png">{{#if ud.android}}<link rel="icon" type="image/png" sizes="16x16" href="https://static.airpair.com/ico/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://static.airpair.com/ico/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="96x96" href="https://static.airpair.com/ico/favicon-96x96.png">

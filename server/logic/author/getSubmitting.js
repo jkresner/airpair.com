@@ -1,4 +1,4 @@
-module.exports = ({Post}, Data, {role,TypesUtil}) => ({
+module.exports = ({Post}, Data, {role,validSlug,defaultSlug}) => ({
 
 
   validate(user, post, slug) {
@@ -15,7 +15,7 @@ module.exports = ({Post}, Data, {role,TypesUtil}) => ({
     if (user.auth.gh.scopes.indexOf("user") == -1)
       return `Token for [${user._id}][${user.auth.gh.username}] Missing valid 'user' scope`
 
-    if (slug && !TypesUtil.post.validSlug(slug))
+    if (slug && !validSlug(slug))
       return `Slug[${slug}] not valid`
 
     if (slug && slug.length > 50)
@@ -29,7 +29,7 @@ module.exports = ({Post}, Data, {role,TypesUtil}) => ({
 
 
   exec(original, slug, cb) {
-    if (!slug) slug = TypesUtil.post.defaultSlug(original)
+    if (!slug) slug = defaultSlug(original)
     Post.getByQuery({slug}, { select: 'title slug' }, (ee, fromDb) => {
       assign(original,{slug})
       if (fromDb)

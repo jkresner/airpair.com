@@ -1,2 +1,2 @@
 
-SKIP "Tracks single impression for 2 x repeat of same ad on page"
+it "Tracks single impression for 2 x repeat of same ad on page"

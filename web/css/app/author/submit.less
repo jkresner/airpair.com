@@ -1,0 +1,48 @@
+section#submit {
+
+  form {
+    // border-top:solid 1px @bluegray;
+    margin-top:50px;padding-top:30px  }
+
+  .valid { color:green }
+  .invalid { color:@error }
+
+  .slug-group {
+    font-family:courier;
+    .input-group-addon { padding-right:0px;
+      background:@bluegraypale;color:@bluegraydark;opacity:0.6;
+    }
+    .form-control { padding-left:3px;color:@bluegray;border-left-color:@bluegraylight; }
+  }
+
+  .form-actions p { font-size:14px;label { display:block;margin:8px auto 0px auto } }
+
+  figure.submission {
+    h1 { font-size:38px;margin-bottom:10px }
+    max-width:720px;
+    img.flow { width:100%; }
+    p { font-size:18px;margin:20px 10px }
+  }
+
+
+section.form { padding-top:10px }
+  form { margin-top:0;max-width:640px;margin:auto }
+
+  form > ul {
+    .infoblock;z-index:2;background-color:white;
+    span {  color:@redmedium;padding-right:5px }
+  }
+  label b span { float:right; }
+  .label { float:right;color:white;display:inline-block;width:100px;margin-left:10px }
+  input { color:@bluegrayhighlight }
+  .btn { background-color:@orangehighlight;opacity:0.8; }
+
+  @media @vpMobileLandscape {
+    form { margin-top:0px;padding-top:10px }
+  }
+
+
+  figure.inreview {
+    p { margin-top:15px }
+  }
+}

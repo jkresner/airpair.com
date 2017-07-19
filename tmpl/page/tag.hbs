@@ -65,7 +65,7 @@
 {{#if r.related}}
   <h3>Software Technologies related to {{r.name}}</h3>
   <ul class="related">
-    {{#each r.related}}<li><a href="/{{slug}}">{{name}}</a> ({{posts}})</li>{{/each}}
+    {{#each r.related}}<li><a href="{{url}}">{{name}}</a> ({{posts}})</li>{{/each}}
   </ul>
   <a href="/learn-code">Learn code by programming tag<a/>
 {{/if}}

@@ -26,8 +26,8 @@ module.exports = (DAL, Data, DRY) => ({
       return `Already submitted [${original.history.submitted}]`
     if (!slug)
       return `Slug required`
-    if (!DRY.post.validSlug(slug))
-      return `Slug ${slug} is not a valid repo name`
+    if (!DRY.validSlug(slug))
+      return `Slug [${slug}] not a valid repo name`
     if (slug.length > 50)
       return `Slug ${slug} is too long`
     if (slug.indexOf('--') != -1)
@@ -43,6 +43,7 @@ module.exports = (DAL, Data, DRY) => ({
 
 
   exec(original, slug, cb) {
+    var {user} = this
     var {_id,md,htmlHead,history,meta} = original
     history.submitted = new Date()
     htmlHead = htmlHead || {}
@@ -50,19 +51,20 @@ module.exports = (DAL, Data, DRY) => ({
 
     // TODO add subscribed
 
-    meta = DRY.touchMeta(meta, 'submit', this.user)
+    meta = DRY.touchMeta(meta, 'submit', user)
 
-    DAL.Template.getByQuery({key:'post-repo-readme'}, (e, tmpl) => {
-      var readmeMD = honey.Composer.handlebarIt(tmpl.markdown, original)
-      Wrappers.GitPublisher.setupPostRepo(this.user, slug, _id, md, readmeMD, (e, repoInfo) => {
-        if (e) return cb(e)
-        var {stats} = original
-        assign(stats, {reviews:0,comments:0,forkers:0,acceptedPRs:0,closedPRs:0,openPRs:0,views:0})
-        DAL.Post.updateSet(_id, {htmlHead,meta,slug,history,github:{repoInfo}}, cb)
+    var tmpl = honey.templates.get('repo:post-readme')
 
-        // $log('Queue.postSubmit'.magenta, original.title, 'nothing impl yet')
-        // Queue.postSubmit(assign(original,{slug}))
-      })
+    var readmeMD = tmpl.raw(original)
+
+    // $log('Queue.postSubmit'.magenta, original.stats)
+    Wrappers.GitPublisher.setupPostRepo(user, slug, _id, md, readmeMD, (e, repoInfo) => {
+      if (e) return cb(e)
+      var stats = {reviews:0,comments:0,forkers:0,acceptedPRs:0,closedPRs:0,openPRs:0,views:0}
+
+      DAL.Post.updateSet(_id, {htmlHead,meta,slug,history,github:{repoInfo},stats}, cb)
+      // $log('Queue.postSubmit'.magenta, original.title, 'nothing impl yet')
+      // Queue.postSubmit(assign(original,{slug,stats}))
     })
   },
 

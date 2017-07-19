@@ -1,0 +1,19 @@
+<ul class="stats">
+  <li class="rating">
+      <label>Rated</label>
+      <var>{{post.stats.rating||0|number:1}}<span>/5</span></var>
+  </li>
+  <li class="reviews">
+    <label>Reviews</label>
+    <var>{{post.stats.reviews}}</var>
+  </li>
+  <li class="forks">
+    <label>Forks</label>
+    <var>{{post.stats.forkers}}</var>
+  </li>
+  <li class="contribs">
+    <label>Contributions</label>
+    <var>{{post.stats.acceptedPRs}}</var>
+  </li>
+  <!-- <li class="views"><label>Reviewed</label><span>{{post.stats.views || '-'}}</span></li> -->
+</ul>

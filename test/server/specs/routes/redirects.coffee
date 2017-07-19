@@ -140,6 +140,7 @@ moved302 = ->
   ]
 
   IT 'ANON', -> temp_to [
+    ['/author/new', '/login?returnTo=/author/new']
     ['/account', '/login?returnTo=/account']
     ['/home', '/login?returnTo=/home']
     ['/requests', '/login?returnTo=/requests']
@@ -174,6 +175,15 @@ moved302 = ->
     ['/me/kn0tch','/aws/posts/ntiered-aws-docker-terraform-guide']
     ['/me/glockjt', '/node.js/posts/nodejs-framework-comparison-express-koa-hapi']
   ]
+
+  IT '/ 302 to /home', ->
+    LOGIN {key:'tst1'}, (session) =>
+      EXPECT.equalIdAttrs(session, FIXTURE.users.tst1)
+      expect(session.name).to.equal('Air PairOne')
+      PAGE '/', { status: 302 }, (text) =>
+        expect(text).to.equal('Found. Redirecting to /home')
+        DONE()
+
 
 
 beforeEach ->

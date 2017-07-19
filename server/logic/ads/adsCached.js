@@ -1,4 +1,4 @@
-module.exports = (DAL, DATA, Shared) => ({
+module.exports = (DAL, DATA, DRY) => ({
 
   exec(cb) {
     var $in = config.routes.ads.campaigns.split(',').map(c => c.split(':')[0])

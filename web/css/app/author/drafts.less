@@ -1,0 +1,123 @@
+section#drafts {
+  padding:20px 5px 40px 5px;
+
+  section.ribbon {           height:78px;
+                             opacity:0.85;
+                             background-color:@yellowmedium;
+    > i {                    position:absolute;
+                             z-index:2;
+                             max-width:900px;
+                             // margin:auto;
+                             width:180px;
+                             height:78px;
+                             display:inline-block;
+                             overflow:hidden;
+      &:after { .glyph;content:"\e142";color:white;font-size:82px;
+        margin-left:20%;opacity:0.2;
+        color:@yellowmedium;border-radius:50%;line-height:96px;height:128px;width:128px;
+        text-align:center;margin-top:-14px;padding:10px;
+        background:white;
+      }
+    }
+    > div {                  position:relative;max-width:900px;margin:auto;height:80px;padding:10px 0 }
+    img.usr {                width:100%;height:100%;border:none;opacity:0.95 }
+    ul.stats {
+      li { border-color:@yellowdark; }
+      var { color:@yellowdark;opacity:0.5;font-size:26px }
+    }
+  }
+
+  section.submitposts {
+    .btn-publish {
+      .btn-icon-wmark;
+      background-image:url('@{static}/img/icons/ap-white.png');
+      background-size:75%;
+      background-position:5px 4px;
+      padding:0;
+      margin-bottom:5px;
+    }
+  }
+
+
+  .my {
+
+    margin-top:150px;
+    .inreview > li {         border-bottom:solid 1px @bluegraypale; }
+    .ideas > li {            border-bottom:solid 1px @yellowpale; }
+
+    ul {                     margin:40px 0 }
+    > ul > li {
+      position:relative;
+      vertical-align:top;
+      padding-top:14px;
+      padding-bottom:10px;
+      margin:10px 20px 10px 20px;
+      display:block;width:100%;
+      min-height:98px;
+      .edit {
+        width:120px;display:inline-block;
+        height:80px;
+        position:relative;
+        .df {
+          position:absolute;
+          left:-8px;top:2px;
+          // opacity:0.7;
+          width:34px;
+          height:34px;
+          border-radius:50%;
+          // background-position:2px 2px;
+          // background-repeat:no-repeat;
+          // background-size:31px;
+          // margin-bottom:0px;
+          background-color:@bluegray;
+          boarder-color:@bluegray;
+          span {
+            display:block;padding:6px 9px;
+            color:white;font-size:18px;
+            // background-image:url('https://static.airpair.com/img/author/branch-white.png');
+          }
+        }
+        .author { opacity:0.9 }
+        .usr {
+          position:absolute;
+          left:48px;top:0px;
+          width:58px;height:58px }
+
+        margin-left:-6px;
+        margin-right:16px;
+        &:hover {
+          .df { background-color:@orange }
+          .author {
+            border-color:@orange;
+            opacity:1;
+          }
+        }
+      }
+      cite {
+        color:@graydark;
+        display:inline-block;padding-top:2px;
+        padding-left:0px;margin-left:-10px;
+        font-size:22px;line-height:26px;
+        font-style:normal;
+        max-width:520px;position:absolute;
+      }
+      time {
+        left:2px;bottom:12px;font-size:11px;
+        position:absolute;
+        color:@graymedium;
+        float:left;
+        b { color:@yellowdark }
+      }
+      > span {
+        opacity:0.7;
+        position:relative;top:3px;
+        padding:2px 8px;float:right;min-width:168px;
+        &:hover { opacity:1 }
+        a { text-transform:uppercase;font-size:14px }
+        small { display:block;float:right;text-align:right;max-width:50%;padding:2px 0px }
+      }
+
+    }
+  }
+
+}

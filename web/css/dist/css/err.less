@@ -1,0 +1,128 @@
+@pageWidth:620px;
+@static:'https://static.airpair.com';
+
+@orange:#ce5424;
+@orangehighlight:#ff5f2e;
+@bluegray:#c8d6d3;
+@bluegraypale:#f5f9fc;
+@gray:#4d4e4e;
+@graycomment:#708090;
+@graytext:#3f4549;
+@graygit:#f7f7f7;
+@redmedium:#a94442;
+@redreallypale:#F2E1E1;
+
+body {                       width:100%;
+                             padding:0;margin:0;
+                             font-size:14px;
+                             font-family:sans-serif }
+
+header {                     height:38px;
+                             background-color:@redreallypale;
+  > div {                    max-width:@pageWidth;
+                             margin:auto;
+                             vertical-align:middle;
+                             display:block;
+    > a {                    margin:8px 0;
+                             background-image:url('@{static}/img/header/logo.png');
+                             background-position:0px 0px;
+                             background-size:84px 24px;
+                             background-repeat:no-repeat;
+                             display:inline-block;
+                             vertical-align:middle;
+                             width:90px;
+                             height:24px } } }
+
+
+a {                          color:@orange;
+                             text-decoration:none;
+  &:hover {                  color:@orangehighlight }
+  &.btn {                    border:solid 2px @orange;
+                             border-radius:7px;
+                             padding:5px 10px 4px 10px;
+                             min-width:140px;
+                             display:inline-block;
+                             line-height:25px;
+                             font-style:20px;
+                             font-weight:600;
+                             text-align:center;
+                             text-transform:uppercase;
+    span {                   color:@redmedium;
+                             font-size:11px;
+                             line-height:20px;
+                             text-transform:none }
+    &:hover {                border-color:@orangehighlight } } }
+
+main {                       max-width:@pageWidth;
+                             margin:30px auto;
+                             vertical-align:middle;
+                             display:block;
+                             padding-bottom:50px;
+  var {                      float:right;
+                             text-decoration:none;
+                             font-style:normal;
+                             font-weight:bold;
+                             color:@redmedium }
+}
+
+
+h1 {                         font-size:22px;
+                             font-family:courier;
+                             letter-spacing:-1px;
+                             line-height:26px;
+                             color:@redmedium;
+                             font-weight:400 }
+h2 {                         color:@graycomment;
+                             font-size:26px;
+                             font-weight:300;
+                             margin:0 0 20px 0 }
+pre {                        max-width:100%;
+                             padding:6px 10px 10px 10px;
+                             background-color:black;
+                             color:lightgreen;
+                             letter-spacing:-1px;
+                             font-size:13px;
+                             overflow-x:scroll }
+
+
+section#report {             border-top:solid 2px @graygit;
+                             margin:30px 0px;
+                             padding:20px 2px;
+                             text-align:center;
+                             p { margin:30px }
+}
+
+footer {                     position:fixed;
+                             bottom:0;left:0;right:0;
+                             background:@graygit;
+                             color:@graytext;
+                             height:80px;
+                             padding-top:4px;
+                             text-align:center;
+                             vertical-align:middle;
+
+  ul {                       padding:0px;margin:auto;
+                             vertical-align:middle;
+                             font-size:15px;
+    li {                     margin-right:20px;
+                             height:80px;
+                             line-height:80px;
+                             vertical-align:middle;
+                             display:inline-block;
+                             padding:0px 0 2px 0 } }
+}
+
+@media only screen and (max-width:630px) {
+  header { padding-left:10px }
+  main { max-width:96%;margin:20px auto 0 auto;padding-bottom:0 }
+  h1 { line-height:20px;font-size:20px;text-align:center; }
+  h2 { font-size:16px;font-weight:500 }
+  section#report {
+    // margin:0;
+    padding:20px 0 30px 0;
+    position:fixed;
+    botttom:0;
+    width:100%;
+    background:@bluegraypale; p { display:none } }
+  footer { display:none }
+}

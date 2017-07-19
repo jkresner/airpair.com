@@ -1,0 +1,128 @@
+<section id="info" class="edit" ng-if="!ui.main.loading">
+
+  <figure class="authoring" ng-if="!preview">
+    <h1><em>"author mode"</em> is easy</h1>
+
+    <ul class="infoblock">
+      <li class="exiticon">
+        <a ng-mouseleave="lightup(false)" ng-mouseover="lightup('exit')"> <span class="glyphicon">
+        <img src="https://static.airpair.com/img/author/airpair-author.png" /></span></a>
+        Exit <a ng-mouseleave="lightup(false)" ng-mouseover="lightup('exit')"> top left </a> back to the dashboard anytime
+      </li>
+      <li>
+        <span class="glyphicon glyphicon-flag" aria-hidden="true"></span>
+        Follow the <a ng-mouseleave="lightup(false)" ng-mouseover="lightup('steps')">top nav</a><span> steps through to <b>Publish</b></span></li>
+      <li>
+        <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+        Hover <a ng-mouseleave="lightup(false)" ng-mouseover="lightup('tips')">bottom right</a>  to see the next footer tip
+      </li>
+      <li>
+        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+        Hover-out to hide <a ng-mouseleave="lightup(false)" ng-mouseover="lightup('footer')"> footer tips</a>
+      </li>
+    </ul>
+    <!-- <img class="flowpic" src="//static.airpair.com/img/author/authoring-flow-start.png" /> -->
+    <!-- <h5>A blank canvas... endless possibilites!</h5> -->
+  </figure>
+
+
+  <figure class="authoring" ng-if="preview">
+  <section  class="preview s400">
+    <div id="post" class="" preview></div>
+    <header>Preview <b>header</b> <!-- | <a href="">footer</a> --> (Mobile Landscape 400px)</header>
+  </section>
+  </figure>
+
+<section class="form">
+
+  <form>
+    <legend>Post info</legend>
+
+
+    <div ng-if="data._id">
+
+      <div class="form-group">
+
+        <div class="form-group" style="position:inherit">
+          <label>Tags <span class="info">up to 3</span></label>
+          <div input-tags data="data.tags"></div>
+        </div>
+
+        <label>Feature img
+          <span class="info">imgur speeds load times with on the fly resizing</span>
+          <a class="temp" ng-click="exampleImage()">set placeholder</a>
+        </label>
+
+        <div class="input-group">
+          <div class="input-group-addon">https://imgur.com/</div>
+          <input type="text" class="form-control" ng-model="data.imgur" placeholder="imgur id">
+        </div>
+
+<!--         <input ng-model="data.assetUrl" type="text" class="form-control"
+          placeholder="https img url" />
+ -->
+      </div>
+
+    </div>
+
+
+    <div class="form-group title-group">
+      <label ng-if="data._id">Title of your post</label>
+      <input ng-model="data.title" type="text" class="form-control" placeholder="Type a title for your post <h1>" ng-focus="clearDefaultTitle()" />
+    </div>
+
+    <div class="form-group title-group">
+      <label ng-if="data.type">Format</label>
+      <select ng-model="data.type" class="form-control input-lg">
+        <option value="comparison">Framework Comparison</option>
+        <option value="dive">Deep Dive</option>
+        <option value="docs">Framework / API docs</option>
+        <option value="guide">Comprehensive Guide</option>
+        <option value="index">Resource Collection</option>
+        <option value="review">Technology Review</option>
+        <option value="show">Show n' Tell</option>
+        <option value="tips">Tips and Tricks</option>
+        <option value="tutorial">Tutorial / Quick-start</option>
+      </select>
+    </div>
+
+
+    <div class="form-actions">
+
+      <!-- fuck angular v1 sometimes seriously -->
+      <button ng-if="!savable(data)" class="btn" disabled>Save</button>
+      <button ng-if="savable(data)" class="btn" ng-click="save(data)">Save</button>
+      <p ng-if="!data._id">(you can change this info later)</p>
+
+    </div>
+
+  </form>
+</section>
+
+</section>
+
+<nav class="edit">
+
+  <div class="overlay navtip"></div>
+  <header edit-header post="data" step="'info'" id="authornav" class="navtip"></header>
+  <footer id="authortips" class="navtip" author-footer>
+    <p ng-if="!preview">
+      Save a title to unlock the <span class="locked">Edit</span>or.
+      You can change it anytime by returning to this step via top nav.
+    </p>
+
+
+    <p ng-if="!post.assetUrl">
+      The <b>Feature img</b> is used for your post's
+      "thumbnail view" around airpair.com and also when
+      shared on social media.
+    </p>
+
+  <!--   <p ng-if="preview && !preview.submitted">
+      New posts start in <b>DRAFT</b> mode. Everything including title and markdown
+      are 100% editable plus <i class="info">only</i> visible to you. When you're ready to <em>collaborate</em> with peers via forks and pull requests we'll walk you through submitting.
+    </p>
+   -->
+  </footer>
+</nav>
+

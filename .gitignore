@@ -29,6 +29,10 @@ node_modules
 
 server/app.prod.env
 
+# Sym lnks
+.lib*
+cmd/build
+
 web/build/*
 web/components/*
 

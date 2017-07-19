@@ -1,0 +1,56 @@
+<header>
+  <img ng-src="{{r.by.pic}}?s=40" class="usr" />
+  <label>{{r.by.name}}</label>
+  <time>
+  {{r._id | idToDate |timeAgo }}
+  <!--   <span ng-if="r.updated">+ updated {{ r.updated }}</span> -->
+  </time>
+  <stars val="r.val"></stars>
+</header>
+<div>{{r.said | html }}</div>
+<footer>
+  <menu>
+<!--
+    <li class="voting" data-role="voting">
+       <span class="updatable count" data-role="likes" ng-if="r.votes.length > 0">{{r.votes.length}} Vote<span ng-if="r.votes.length > 1">s</span></span>
+
+      <a ng-if="canVote(r)" ng-click="upVote(r._id)" class="vote-up count-0" data-action="upvote" title="Vote up">
+        <span class="control">Upvote</span>
+      </a>
+
+      <a ng-if="isEditor" ng-click="deleteReview(r._id)" class="vote-up count-0">
+        <span class="control">- Delete</span>
+      </a>
+
+    <span role="button" class="vote-down  count-0" title="Vote down">
+    <span class="control"><i aria-hidden="true" class="icon icon-arrow"></i></span>
+    <span class="tooltip">You must sign in to down-vote this post.</span>
+    </span>
+</li>
+    <li ng-if="r.votes.length > 0 || canVote(r)" class="bullet" aria-hidden="true">-</li>
+
+    <li class="reply" data-role="reply-link">
+      <a ng-click="toggleReply(r._id)" data-action="reply">
+        <i class="icon icon-mobile icon-reply"></i>
+          <span ng-if="!replyOpen" class="text">Reply</span>
+          <span ng-if="replyOpen" class="text">Cancel reply</span>
+      </a>
+    </li>
+     <li class="bullet" aria-hidden="true">•</li>
+
+ <li class="share">
+    </li> -->
+
+  </menu>
+  <ul class="replies">
+    <li ng-repeat="reply in r.replies">
+      <img ng-src="{{reply.by.pic}}?s=40" class="usr" />
+      <label>{{reply.by.username||reply.by.name}}</label>
+      <time>{{reply._id | idToDate | timeAgo }}</time>
+      <p>{{reply.said| html }}</p>
+    </li>
+  </ul>
+  <textarea textarea-grow class="form-control" ng-if="replyOpen"
+    ng-keypress="($event.which === 13)?sendReply(r._id, reply):0"
+    ng-model="reply"></textarea>
+</footer>

@@ -83,9 +83,53 @@ DESCRIBE 'CLIENT (authed APP)', ->
     expect(txt).to.equal('Found. Redirecting to /home')
     DONE()
 
+  IT '/home OK', ->
+    LOGIN 'tst1', (session) =>
+      PAGE '/home', {}, (html) =>
+        expect(html).to.inc ['ng-view',
+                'window.pageData = { session: {"_id":"5649cf5beb1811be02f0ec39","name":"Air PairOne"']
+        DONE()
 
-  SKIP '/account'
-  SKIP '/home'
-  SKIP '/requests'
-  SKIP '/billing'
-  SKIP '/bookings/12334'
+
+  IT '/author contains no sensitive data', ->
+    STUB.wrapper('GitPublisher').api('user.get').success('gh_user_scopes')
+    LOGIN {key:'tiag'}, (jk) =>
+      GET "/me/author", (lib) =>
+        for p in lib.mine
+          expect(p._id).to.exist
+          expect(p.title).to.exist
+          expect(p.history).to.be.undefined
+          expect(p.stats).to.exist
+          expect(p.meta).to.be.undefined
+          # expect(p.meta.lastTouch).to.exist
+          # expect(p.meta.lastTouch).to.be.undefined
+          # {feedback,forkers,github} = p
+          # if github
+          #   expect(p.github.stats).to.be.undefined
+          #   expect(p.github.events).to.be.undefined
+          # if forkers
+          #   for f in p.forkers
+          #     expect(f.email).to.be.undefined
+          #     expect(f._id).to.exist
+          #     expect(f.userId).to.exist
+          #     expect(f.name).to.exist
+          #     expect(f.avatar).to.exist
+          #     expect(f.gh).to.exist
+          # if feedback
+          #   for r in feedback
+          #     expect(r.by.email).to.be.undefined
+          #     if r.votes
+          #       for v in r.votes
+          #         expect(v._id).to.exist
+          #         expect(v.val).to.exist
+          #         expect(v.by).to.exist
+          #         expect(v.by.email).to.be.undefined
+          #         expect(v.by.mail).to.be.undefined
+          #     if r.replies
+          #       for rp in r.replies
+          #         expect(rp._id).to.exist
+          #         expect(rp.said).to.exist
+          #         expect(rp.by).to.exist
+          #         expect(rp.by.email).to.be.undefined
+          #         expect(rp.by.mail).to.be.undefined
+        DONE()

@@ -1,7 +1,7 @@
 const Views = {
   anon:       'authenticated sessionID',
   session:     config.middleware.session.authdData,
-  full:        '_id name avatar username email ' +
+  full:        '_id name avatar username ' +
                'photos emails ' +
                'location initials bio cohort.engagement ' +
                'auth.gh.login auth.so.link auth.bb.username auth.in.id auth.tw.screen_name auth.al.angellist_url auth.gp.id auth.gp.link auth.gp.url auth.gp.email auth.sl.username' +
@@ -15,16 +15,16 @@ const Opts = {
 
 module.exports = { Views, Opts,
 
-  Projections: ({select}, {view}) => ({
+  Projections: ({gravatar}, {view}) => ({
 
     session: view.session,
-    
+
     full: r => {
       if (!r._id && r.sessionID) return r
       r.email = (_.find(r.emails, em => em.primary)||{}).value
       if (!r.email) r.email = r.emails[0].value
-      r.avatar = (r.photos ? r.photos[0].value : md5.gravatarUrl(r.email)).split('?')[0]
-      return chain(select.full(r))
+      r.avatar = (r.photos ? r.photos[0].value : gravatar(r.email)).split('?')[0]
+      return view.full(r)
     }
 
   })

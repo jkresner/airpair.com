@@ -1,0 +1,152 @@
+section#posteditor {         .absolutelyStreched;
+                             top:38px;
+                             z-index:50;
+                             border-top:solid 1px @bluegray;
+
+  @editorbg:#F9F9F9;
+  .editor-wrap {
+    .absolutelyStreched;
+    // z-index:1;opacity:.5;
+    background-color:@editorbg;
+    &.wk_saved {
+      border-top:solid 1px @greenlight;
+      background-image: linear-gradient(to bottom, @greenpalest, @editorbg 15%);
+    }
+    &.wk_unsaved {
+      border-top:solid 1px @yellowlight;
+      background-image: linear-gradient(to bottom, @yellowpale 0, @editorbg 70px);
+     // .unsaved;background:;
+   }
+  }
+
+  .editor {
+    .absolutelyStreched;
+    top:20px;
+    left:20px;
+    bottom:0px;
+    right:20px;
+    z-index:90;
+    .ace-dawn {
+      background-color:transparent;
+    }
+    .ace_editor {
+      .absolutelyStreched;
+      // padding:24px 20px;
+      font-size:15px;
+      letter-spacing:-0.60px;
+      .ace_content { }
+    }
+    .ace_gutter { display:none }
+    .ace_print-margin {
+      background-color:@danger
+    }
+    &.solo { .ace_editor { font-size:16px } }
+    &.s640 { .ace_editor { font-size:14px } }
+    &.s900 { .ace_editor { font-size:13px } }
+    &.s1200 { .ace_editor { font-size:13px } }
+    &.s1600 { .ace_editor { font-size:13px } }
+  }
+
+
+
+  > footer {
+    position:absolute;
+    bottom:0;left:0;
+    text-align:left;
+    z-index:90;
+    p { text-align:left;margin:0;padding:0 }
+
+    &.wk_saved {
+      height:48px;
+      .glyphicon-floppy-saved {
+        position:absolute;
+        z-index:190;
+        bottom:0;
+        left:0;
+        width:52px;
+        height:48px;
+        overflow:hidden;
+        color:white;
+        font-size:24px;
+        line-height:32px;
+        background:@greendark;
+        border-top-right-radius:60%;
+        opacity:0.6;
+        padding:12px 0px 0 10px;
+      }
+    }
+    &.wk_unsaved {
+      border-top:solid 1px @yellowdark;
+      // background-color:white;
+      height:120px;
+      padding:5px 0px 0 20px;
+      opacity:0.95;
+      width:100%;
+      background:@bluedark;
+      // right:10px;
+    }
+    &:hover { opacity:1 }
+
+    form {                   display:inline-block;
+                             // padding:0px 0px 0px 10px;
+                             opacity:0.95;
+                             position:absolute;
+                             left:20px;
+                             bottom:10px;
+                             min-height:48px;
+                             z-index:60;
+                             text-align:right;
+                             // border:solid 1px white;
+      p {                    display:block;padding-top:15px;color:@graypale }
+      label {                padding:0px 6px;
+                             text-transform:uppercase;
+                             vertical-align:middle;
+                             line-height:30px;
+                             font-size:12px;
+        > q, a {             quotes:none;
+                             font-weight:200;
+                             // font-size:14px
+                             } }
+      * > { display:inline-block;vertical-align:top }
+
+      .btn {                 position:relative;
+                             margin:3px 0px 0 0;
+                             width:220px;
+                             padding:7px 20px 5px 20px;
+                             opacity:0.85;
+                             background-repeat:no-repeat;
+                             background-color:@orangehighlight;
+                             overflow:hidden;
+        .glyphicon {         position:absolute;left:2px;top:2px;opacity:0.6;
+                             font-size:36px;
+                             line-height:32px;}
+        &:hover              { opacity:1 } }
+      textarea {             display:block;
+                             width:310px;
+                             margin:3px 1px;
+                             font-size:13px }
+      .btn-sync { background-image:url('@{static}/img/icons/gh-white.png');background-size:34%;background-position:3px 3px }
+      .btn-pr { background-image:url('@{static}/img/author/pr-white.png');
+                background-size:10%;
+                background-position:6px 2px;
+                padding-left:28px;
+                             width:180px }
+
+    }
+
+  }
+
+  @media @vpMobileLandscape {
+    top:38px;bottom:0px;margin:0px 5px 0px 5px;
+    .preview, span.modes { display:none; }
+    > nav {               position:fixed;
+                          bottom:0;top:auto; }
+    .editor {             top:5px;bottom:30px;overflow:scroll;
+      .ace_content {      font-size:14px; } }
+  }
+
+  @media @vpTiny {
+    .posteditor { display:none; }
+  }
+}
+

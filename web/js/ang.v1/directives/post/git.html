@@ -1,0 +1,25 @@
+
+<header>
+  <span>
+    <img src="https://static.airpair.com/img/author/branch-black.png">{{post.stats.forkers}} Forks
+    <ul ng-if="post.forkers" class="forkers">
+      <li ng-repeat="f in post.forkers">
+        <img ng-src="{{f.avatar}}?s=20" class="usr" />
+      </li>
+    </ul>
+  </span>
+  <div>
+    <span><img src="https://static.airpair.com/img/author/sm-icon-fork.png">{{post.stats.openPRs}} Open</span>
+    <span><img src="https://static.airpair.com/img/author/sm-icon-fork.png" style="opacity:0.6">{{post.stats.closedPRs}} Closed</span>
+    <span><img src="https://static.airpair.com/img/author/merge-black.png" style="opacity:0.6">{{post.stats.acceptedPRs}} Merged</span>
+  </div>
+</header>
+<ul class="prs" ng-if="post.PRs">
+  <li ng-repeat="pr in post.PRs">
+    <a href="{{pr.html_url}}" target="_blank">
+      <img ng-src="{{pr.user.avatar_url}}&s=36" />
+      <label>{{pr.title}}</label>
+      <time>#{{pr.number}} {{pr.created_at | timeAgo }} by {{pr.user.login}}</time>
+    </a>
+  </li>
+</ul>

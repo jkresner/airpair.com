@@ -100,18 +100,18 @@ IT '"ruby on rails" (spaces, no capital letters)', ->
 
 DESCRIBE "301 Shady Support old url format (limited)", ->
 
-  IT '"mon"', ->
-    GET '/tags/search/mon', RES(301,/text/), (t) ->
-      expect(t).to.inc ' /v1/api/tags/search?q=mon'
-      GET '/tags/search?q=mon', {}, (s) ->
-        expect(s.length).to.equal(3)
-        expect(s[2].name).to.equal('MongoDB')
-        DONE()
+  IT.skip '"mon"', ->
+    # GET '/tags/search/mon', RES(301,/text/), (t) ->
+    #   expect(t).to.inc ' /v1/api/tags/search?q=mon'
+    #   GET '/tags/search?q=mon', {}, (s) ->
+    #     expect(s.length).to.equal(3)
+    #     expect(s[2].name).to.equal('MongoDB')
+    #     DONE()
 
 
-  IT '"ios"', ->
-    GET '/tags/search/ios', RES(301,/text/), (t) ->
-      expect(t).to.inc ' /v1/api/tags/search?q=ios'
-      # expect(s1.length).to.equal(4)
-      # expect(s1[0].name).to.equal('iOS')
-      DONE()
+  IT.skip '"ios"', ->
+    # GET '/tags/search/ios', RES(301,/text/), (t) ->
+    #   expect(t).to.inc ' /v1/api/tags/search?q=ios'
+    #   # expect(s1.length).to.equal(4)
+    #   # expect(s1[0].name).to.equal('iOS')
+    #   DONE()

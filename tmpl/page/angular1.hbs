@@ -1,0 +1,11 @@
+<div class="main-wrap">
+<div ng-if="ui" loader show="ui.main.loading"></div>
+<main ng-view>
+  {{{body}}}
+</main>
+<script>
+  window.pageData = { session: {{{ JSON session }}} }
+</script>
+<script type="text/javascript" src="{{js.author}}"></script>
+<h1></h1>
+</div>

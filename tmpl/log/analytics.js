@@ -70,11 +70,11 @@ module.exports = function(type, d, {sId,ip,ua,ud,user,ref}) {
 
   var uID = !user ? `anon${ud=='other'?'':':'+ud}`.cyan : `${user.name||user._id}`.white
 
-  console.log( `${(sId||'_ _ _ _ _ _ _').substr(0,11)} ${ip+'                '.slice(ip, 16-ip.length).dim}`.cyan
-            , label
-            , uID
-            , info
-    // ua,
-    // d
-  )
+  var str = `${(sId||'_ _ _ _ _ _ _').substr(0,11)} ${ip+'                '.slice(ip, 16-ip.length).dim}`.cyan
+            + `${label} ${uID} ${info}`
+
+  if (config.log.it.trk[type])
+    console.log(str)
+
+  return str
 }

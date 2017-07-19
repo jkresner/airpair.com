@@ -11,9 +11,12 @@ module.exports = ({Post,User}, {Project,Opts,Query}, DRY) => ({
     var q = Query.published(Query.byUrl(url))
     Post.getByQuery(q, Opts.published, (e, post) => {
       if (e || !post) return cb(e, post)
-      DRY.postSubscribedUsers(post, (e, post) => {
-        if (e) return cb(e)
-        DRY.similarPosts({post,limit:3}, (e, similar) => e ? cb(e) : cb(null, {post,similar}))
+      DRY.postSubscribedUsers(post, (ee, users) => {
+        // $log('DRY.postSubscribedUsers'.cyan, users)
+        if (ee) return cb(ee)
+        DRY.similarPosts({post,limit:3}, (eee, similar) =>
+          eee ? cb(eee) : cb(null, assign({post,similar,users}))
+        )
       })
     })
   },

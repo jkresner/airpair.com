@@ -1,10 +1,11 @@
 module.exports = ->
 
+
   before (done) ->
-    {admin,ricd} = FIXTURE.users
-    DB.ensureDocs 'User', [admin,ricd], ->
-    DB.ensureExpert 'byrn', ->
-    done()
+    {admin,gnic} = FIXTURE.users
+    DB.removeDocs 'View', {}, ->
+    DB.ensureDocs 'User', [admin,gnic], done
+
 
   beforeEach ->
     UTIL.clearIP()

@@ -1,0 +1,111 @@
+
+<section id="published" ng-if="!ui.main.loading">
+
+  <div class="header">
+    <h1>Published <small>by you </small></h1>
+  </div>
+
+
+  <section class="ribbon" ng-if="stats.posts > 0">
+    <i></i>
+    <div>
+      <ul class="stats">
+        <li class="pub" style="opacity:0.7">
+          <label>Published</label><var>{{stats.posts}}</var>
+        </li>
+        <li class="word" style="opacity:0.75">
+          <label>Words</label><var>{{stats.words| number}}</var>
+        </li>
+        <li class="comm" style="opacity:0.8">
+          <label>Comments</label><var>{{stats.comments}}</var>
+        </li>
+        <li class="apr" style="opacity:0.85">
+          <label>Merged PRs</label><var>{{stats.acceptedPRs}}</var>
+        </li>
+        <li class="rate" style="opacity:0.9">
+          <label>AVG Rating</label><var>{{stats.rating | number : 2}}</var>
+        </li>
+        <li>
+          <img ng-src="{{session.avatar}}&s=80" class="usr me" />
+        </li>
+      </ul>
+
+    </div>
+  </section>
+
+ <section class="my">
+
+    <ul ng-if="live.length > 0">
+      <li ng-repeat="p in live">
+        <a href="/edit/{{p._id}}" title="edit" class="edit">
+          <div class="pb">
+            <span class="glyphicon glyphicon-share" aria-hidden="true"></span>
+          </div>
+          <img class="usr author" ng-src="{{p.by.avatar}}&s=60" />
+        </a>
+
+        <cite class="title">{{p.title}}</cite>
+<!--         <p>{{htmlHead.description}}</p> -->
+        <nav>
+          <span class="stars-sm" ng-if="p.stats.reviews > 0">
+            <stars val="p.stats.rating"></stars>
+            <label class="label label-success">
+              <a class="collab" href="/reviews/{{p._id}}">{{p.stats.reviews}} reviews</a></label>
+          </span>
+        </nav>
+        <div>
+          <time>
+            <small ng-if="p.meta">
+            {{p.meta.lastTouch.action}}ed
+            {{p.meta.lastTouch.utc | timeAgo | replace : 'month' : 'mth'  }}</small>
+            <b>Published</b> <i>first</i> {{p.history.published | dateFormat }} |
+            <i><a ng-href="{{p.url}}" target="_blank">current</a></i> {{p.history.live.published | dateFormat }} |
+            <small ng-if="p.stats.words > 1"> {{p.stats.words}} words</small>
+            <u ng-if="p.stats.forkers > 0">
+              | <b>{{p.stats.forkers}}</b> <i class="ionicons ion-fork-repo"></i>
+              <b>{{p.stats.acceptedPRs}}</b> <i class="ionicons ion-merge"></i>
+            </u>
+          </time>
+        </div>
+      </li>
+    </ul>
+
+    <ul ng-if="unpublished.length > 0">
+      <li ng-repeat="p in unpublished" class="unpublished">
+        <a href="/publish/{{p._id}}" title="republish" class="republish">
+          <div class="rp">
+            <span class="glyphicon glyphicon-open-file" aria-hidden="true"></span>
+          </div>
+          <img class="usr author" ng-src="{{p.by.avatar}}&s=60" />
+        </a>
+
+        <cite class="title">{{p.title}}</cite>
+        <nav>
+          <span class="stars" ng-if="p.stats.reviews > 0">
+            <stars val="p.stats.rating"></stars>
+            <!-- <label class="label label-success">
+              <a class="collab" href="/reviews/{{p._id}}">{{p.stats.reviews}} reviews</a></label>
+          </span> -->
+        </nav>
+        <div>
+          <time>
+            <small ng-if="p.meta">
+            {{p.meta.lastTouch.action}}ed
+            {{p.meta.lastTouch.utc | timeAgo | replace : 'month' : 'mth'  }}</small>
+            <b>First publish</b> {{p.history.published | dateFormat }} |
+            <small ng-if="p.stats.words > 1"> {{p.stats.words}} words</small>
+          </time>
+        </div>
+      </li>
+    </ul>
+
+  </section>
+
+</div>
+
+</section>
+
+<style type="text/css">
+  .main-wrap { border-top:none;background-image:linear-gradient(to bottom, #F2FCF4 2px, white 30px); }
+</style>
+

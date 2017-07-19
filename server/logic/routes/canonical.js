@@ -3,9 +3,9 @@ module.exports = (DAL, {Query, Opts, Project}, DRY) => ({
 
   exec(cb) {
     var cfg = honey.cfg('routes.canonical')
-    if (!cfg.posts) return cb(null, {})
+    if (!(cfg||{}).posts) return cb(null, {})
 
-    DAL.Post.getManyByQuery(Query.postsPublished(), Opts.postTiles, (e, posts) => {        
+    DAL.Post.getManyByQuery(Query.postsPublished(), Opts.postTiles, (e, posts) => {
       //-- used for post/thumb/{_id}
       cache.posts = {}
       posts.forEach(p => cache.posts[p._id] =

@@ -1,0 +1,22 @@
+<!-- <div post-review-from></div> -->
+<section class="reviews" ng-if="reviews">
+
+  <header>
+    <h4>Reviews ({{reviews.length}})
+      <span ng-if="reviews.length > 0">
+        Rating {{post.stats.rating | number:1 }}/5</span>
+    </h4>
+  </header>
+
+  <p ng-if="reviews.length == 0" class="none">
+    No reviews yet ...
+  </p>
+
+  <ul class="reviews" ng-if="reviews.length > 0">
+    <li ng-repeat="r in reviews | orderBy : 'votes.length':true" class="{{r._id}}"  review="r" post-id="post._id" post-review></li>
+  </ul>
+
+</section>
+
+
+

@@ -1,0 +1,63 @@
+<div ng-if="data && userId && post.by._id != userId" class="review">
+
+
+<form name="postreview">
+
+  <div data-key="rating" class="question multiple-choice stars form-group">
+    <label class="control-label" for="postRating">How do you rate this post?</label>
+    <select class="form-control" id="postRating" name="rating" ng-model="data.rating" required tabindex="1203">
+      <option value="1">1 star (not ready)</option>
+      <option value="2">2 stars (needs works)</option>
+      <option value="3">3 stars (average)</option>
+      <option value="4">4 stars (good)</option>
+      <option value="5">5 stars (exceptional)</option>
+    </select>
+    <!-- <div class="error" ng-if="formGroup.showError(postReviewForm.rating)" ng-messages="postReviewForm.rating.$error">
+      <div ng-message="required">Star rating required</div>
+    </div> -->
+  </div>
+
+  <div class="question paragraph" data-key="feedback" class="form-group">
+    <label class="control-label" for="postFeedback" style="display:none">Overall comment</label>
+    <textarea textarea-grow class="form-control" id="postFeedback" name="feedback" ng-model="data.feedback" placeholder="Why did you give this post {{data.rating}} stars?" required tabindex="1204" ng-disabled="!data.rating"></textarea>
+     <!-- ng-if="formGroup.showError(postReviewForm.feedback)" ng-messages="postReviewForm.feedback.$error" -->
+     <div class="error">
+      <div ng-if="feedbackRequired">Feedback required</div>
+     </div>
+  </div>
+
+  <div ng-class="savedCss(data, save)">
+    <input ng-disabled="!data.feedback" type="submit" value="Save review" class="btn"
+      ng-click="save(data)"
+     />
+    <p>Review saved. Edit it any time right from this widget.</p>
+  </div>
+
+
+</form>
+
+
+</div>
+
+
+<!-- <form ng-if="data && show" id="postReviewForm" novalidate name="postReviewForm" ng-submit="submitReview(postReviewForm.$valid, data)">
+
+  <div ng-if="session._id" class="question paragraph" data-key="feedback" form-group>
+    <label class="control-label" for="postFeedback" style="display:none">Overall comment</label>
+    <textarea textarea-grow form-control id="postFeedback" name="feedback" ng-model="data.feedback"  placeholder="Why did you give this post {{data.rating}} stars?" required tabindex="1204" ng-disabled="!data.rating"></textarea>
+    <div class="error" ng-if="formGroup.showError(postReviewForm.feedback)" ng-messages="postReviewForm.feedback.$error">
+      <div ng-message="required">Feedback required</div>
+    </div>
+  </div>
+
+  <div ng-if="session._id" ng-class="unsaved(data, existing) ? 'unsaved' : 'saved'">
+    <input ng-disabled="!data.feedback" type="submit" value="Save review" class="btn" />
+    <p class="edit">Review saved. Edit it any time right from this widget.</p>
+  </div>
+
+  <a href="/auth/github/callback?returnTo=/posts/review/{{post._id}}" rel="nofollow" class="btn" ng-if="!session._id" target="_self">Login to save {{data.rating}} star review</a>
+
+  <div form-errors></div>
+
+</form>
+ -->
