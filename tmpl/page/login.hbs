@@ -1,0 +1,56 @@
+<main id="login">
+
+  <section class="overview">
+    <div>
+      <h1>Content <em>collaboration</em> with  <i class="fa fa-git" title="git" aria-hidden="true">git</i></h1>
+      <p>Write and contribute to <b>peer-polished posts</b>
+         using familiar coding concepts like <kbd>forks</kbd> and <kbd>pull requests</kbd>.
+         Earn even greater <b>developer recognition</b> publishing higher quality work.</p>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="flow">
+      <img src="{{@static.host}}/img/author/authoring-flow.png" />
+    </div>
+
+
+{{#if authenticated}}
+  <a href="/logout" target="_self">Logout</a>
+{{else}}
+
+<div class="login">
+
+  <ul>
+    <li><h4>Login requirements</h4>
+    </li>
+    <li>
+      <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+      Your GitHub profile must already be linked with an
+      <b><a href="https://www.airpair.com/auth/github/callback">airpair.com account</a></b>
+      (30 seconds)
+    </li>
+    <li>
+      <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+      author.airpair needs write permission to <i class="min640">your</i> public repositories.
+    </li>
+
+    <li>
+      <span class="glyphicon glyphicon-copyright-mark" aria-hidden="true"></span>
+      You agree to submit only your original work, not previously published elsewhere.
+    </li>
+  </ul>
+
+  <a href="/auth/github/callback" target="_self" class="btn btn-icon-wmark btn-solo">
+    <label>GitHub</label>
+    <b>Login</b>
+    <span>to start</span>
+  </a>
+
+</div>
+{{/if}}
+
+  </section>
+
+</main>
+

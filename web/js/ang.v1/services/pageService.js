@@ -8,6 +8,7 @@ angular.module("AirPair.Services.Page", [])
   if (window.pageData)
   {
     var session = window.pageData.session
+    // console.log('window.pageData.session', window.pageData.session)
     // if (d.tag) $rootScop1e.tag = d.tag
 
     if (session) {
@@ -22,10 +23,10 @@ angular.module("AirPair.Services.Page", [])
 
 
   function toggleLoading(show) {
-    console.log('toggleLoading', show)
+    // console.log('toggleLoading', show)
     if (show == null) show = !$rootScope.ui.main.loading
     if (show === false || show === true) $rootScope.ui.main.loading = show
-    console.log('toggleLoading.show', show, $rootScope.ui.main.loading)
+    // console.log('toggleLoading.show', show, $rootScope.ui.main.loading)
   }
 
 
@@ -44,7 +45,6 @@ angular.module("AirPair.Services.Page", [])
         setData(data, cb) {
           Object.keys(data).forEach(key => scope[key] = data[key])
           // var ui = ($rootScope.ui||{}).main
-          console.log('setData.ui.main', $rootScope.ui.main)
           // if (ui && ui.loading) $rootScope.ui.main.loading = false
           // var uiWrapped = fn => function() {
             // if (ui) $rootScope.ui.main.loading = false
@@ -65,7 +65,8 @@ angular.module("AirPair.Services.Page", [])
         },
         uiWatch(fn) {
           $rootScope.watch('ui.page', state => fn(state))
-        }
+        },
+        toggleLoading
       }
     }
   }

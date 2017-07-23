@@ -72,22 +72,19 @@
   },
   "http": {
     "static": {
-      "host":                  "https://static.airpair.com",
       "bundles": {
-        "css/author.css":      "/css/author.css",
-        "css/fonts.css":       "/css/fonts.css",
+        "css/app.css":         "/css/app.css",
         "css/libs.css":        "/css/libs.css",
-        "css/posts.css":       "/css/posts.css",
-        "css/index.css":       "/css/index.css",
-        "js/index.js":         "/js/index.js",
-        "js/author.js":        "/js/author.js"
+        "js/app.js":           "/js/app.js"
       },
-      "dirs":                  "{{undefine}}",
-      "sitemap":               true,
+      "dirs":                  false,
+      "favicon":                { "root": "web/static" },
+      "host":                  "https://static.airpair.com",
       "opts": {
         "index":               false,
         "redirect":            false
-      }
+      },
+      "sitemap":               true
     }
   },
   "log": {
@@ -113,7 +110,7 @@
     }
   },
   "middleware": {
-    "api":                     { "baseUrl": "/v1/api" },
+    "api":                     { "baseUrl": "/api" },
     "authd":                   { "returnTo": true },
     "ctx": {
       "ud": {
@@ -173,7 +170,7 @@
     "dirs": {
       "views":                 "tmpl/layout,tmpl/page",
       "partials":              "tmpl/partial",
-      "helpers":               "tmpl/helpers"
+      "helpers":               "tmpl/helper"
     },
     "model":                   "domain"
   },

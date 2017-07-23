@@ -43,15 +43,15 @@ module.exports = ({Post}, {Project,Opts,Query}, DRY) => ({
       if (e) return cb(e)
       for (var p of r) p.url = p.history.published ? p.htmlHead.canonical : `/posts/review/${p._id}`
 
-      var featured = _.filter(r, p => _.contains(feat,p.slug))
+      var featured = r.filter(p => feat.indexOf(p.slug) > 0)
       r = _.difference(r, featured)
       var latest = r.splice(0,6)
       var top = _.take(_.sortBy(r, p => (!p.stats) ? 0
         :  -1*(p.stats.rating-2)*(p.stats.reviews+2) ), 8)
       r = _.difference(r, top)
-      var popular = _.filter(r, p => _.contains(pop,p.slug))
-      var comp = _.filter(r, p => _.contains(com,p.slug))
-      var hottag = _.filter(r, p => _.contains(hot,p.slug))
+      var popular = r.filter(p => pop.indexOf(p.slug) > 0)
+      var comp = r.filter(p => com.indexOf(p.slug) > 0)
+      var hottag = r.filter(p => hot.indexOf(p.slug) > 0)
       var archive = _.difference(r, _.union(popular,comp,hottag))
 
       cb(null, { latest, featured, top, popular, comp, archive, hottag })

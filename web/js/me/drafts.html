@@ -37,7 +37,7 @@
     <ul class="inreview" ng-if="inreview.length > 0">
       <li ng-repeat="p in inreview">
 
-        <a href="/editor/{{p._id}}" title="edit" class="edit">
+        <a href="/author/editor/{{p._id}}" title="edit" class="edit">
           <div class="df">
             <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
           </div>
@@ -55,7 +55,7 @@
             <small>
             <b>{{p.lastTouched.action}}ed</b>
             {{p.lastTouched.utc | timeAgoShort }}</small>
-          <a ng-href="/collaborate/{{p._id}}" target="_blank">Collaborate</a> for 3 reviews to publish
+          <a ng-href="/author/collaborate/{{p._id}}" target="_blank">Collaborate</a> for 3 reviews to publish
           </time>
         </div>
 
@@ -65,7 +65,7 @@
 
      <ul class="ideas" ng-if="rough.length > 0">
       <li ng-repeat="p in rough">
-        <a href="/editor/{{p._id}}" title="edit" class="edit">
+        <a href="/author/editor/{{p._id}}" title="edit" class="edit">
           <div class="df">
             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
           </div>
@@ -76,7 +76,7 @@
 
 
        <span ng-class="status(p)">
-          <a ng-href="/editor/{{p._id}}" target="_blank">{{status(p)}}</a> <small ng-if="p.stats.words > 1"> {{p.stats.words}} words</small>
+          <a ng-href="/author/editor/{{p._id}}" target="_blank">{{status(p)}}</a> <small ng-if="p.stats.words > 1"> {{p.stats.words}} words</small>
         </span>
         <div>
           <time><b>Created</b>

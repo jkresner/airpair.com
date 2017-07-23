@@ -1,78 +1,64 @@
 {{> siteNav }}
 
-<section id="allposts">
+<section id="posts">
 
-  <h1 class="underline">Learn code from {{#if tag}}{{tag.name}}{{else}}software{{/if}} experts</h1>
+  <h1>Top {{#if tag}}{{tag.name}}{{else}}software{{/if}} experts</h1>
 
   {{#with r}}
 
 {{#if featured}}
   <div class="nobookmarks">
-    {{#each featured}}{{> postListItem this}}{{/each}}
+    {{#each featured}}{{> postTile this}}{{/each}}
   </div>
 {{/if}}
 
 {{#if hottag}}
-  <h2 class="underline">Explore {{hot}} resources or browse
-    <a href="/learn-code" class="btn btn-inverse" target="_self">{{r.stats.tags}} programming tags</a>
+  <h2 class="underline">Browse <span>{{hot}}</span> &
+    {{{ stats.tags }}} + <a href="/learn-code" target="_self"> niche programming specialties.</a>
   </h2>
 
   <div class="popular nobookmarks">
-    {{#each hottag}}{{> postListItem this}}{{/each}}
+    {{#each hottag}}{{> postTile this}}{{/each}}
   </div>
-
-  <hr style="clear:both" />
 {{/if}}
 
 
 {{#if latest}}
-  <h2 class="underline">Latest software tutorials & guides
-{{!--     <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a> --}}
-  </h2>
-
+  <h2 class="underline">Latest software tutorials & guides</h2>
   <div class="popular nobookmarks">
-    {{#each latest}}{{> postListItem this}}{{/each}}
+    {{#each latest}}{{> postTile this}}{{/each}}
   </div>
 
-  <hr style="clear:both" />
 {{else}}
   <p>No posts authored for <code>{{tag.name}}</code>. <a href="https://author.airpair.com/">Be the first!</a></p>
 {{/if}}
 
 {{#if top}}
   <div>
-    <h2 class="underline">Highest rated posts
-      {{!-- <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a>--}}
-    </h2>
-    {{#each top}}{{> postListItem this}}{{/each}}
+    <h2>Highest rated posts</h2>
+    {{#each top}}{{> postTile this}}{{/each}}
   </div>
 {{/if}}
 
 
 {{#if popular}}
-  <div class="popular nostars nobookmarks">
-    <h2 class="underline">Popular software blog posts
-{{!--       <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a> --}}
-    </h2>
-    {{#each popular}}{{> postListItem this}}{{/each}}
+  <div class="popular nobookmarks">
+    <h2>Popular software blog posts</h2>
+    {{#each popular}}{{> postTile this}}{{/each}}
   </div>
 {{/if}}
 
 
 {{#if comp}}
   <div class="popular nobookmarks">
-    <h2 class="underline">2015 Writing Competition Prize winners
-      <a href="/100k-writing-competition" class="btn btn-inverse" target="_self">See all winners</a>
-    </h2>
-    {{#each comp}}{{> postListItem this}}{{/each}}
+    <h2>Writing Competition Prize winners</h2>
+    {{#each comp}}{{> postTile this}}{{/each}}
   </div>
 {{/if}}
 
 
 {{#if archive}}
-  <h2 class="underline">All software tutorials
-{{!--     <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a> --}}
-  </h2>
+  <h2>All software tutorials</h2>
 
   <ul class="archive-posts">
     {{#each archive}}

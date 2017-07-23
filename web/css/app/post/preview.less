@@ -1,0 +1,89 @@
+.preview {
+  padding-top:0px;
+  background:white;
+
+  main#preview {
+
+    position:absolute;
+    z-index:100;
+    top:@header_height;
+    margin-top:15px;
+    // padding:0;
+    bottom:0px;
+    right:15px;
+    overflow-y:scroll;
+    background:white;
+    border:solid 1px @graypale;
+    border-left-width:3px;
+    border-top-width:2px;
+    border-top-left-radius:6px;
+    border-top-right-radius:3px;
+
+    > header {
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      margin:0;
+      padding:2px 4px;
+      height:@header_height;
+      width:100%;
+      display:inline-block;
+      background-color:@graylight;
+      background-image:url('@{static}/img/header/logo.png');
+      background-repeat:no-repeat;
+      background-size:114px;
+      background-position:8px 4px;
+      opacity:0.15;
+    }
+
+    article#post {
+      margin-top:@header_height;
+    }
+
+    padding:15px 50px 20px 50px;
+    &.s640 { padding:15px 60px 15px 60px; > header { background-position-x:68px } article#post { width:640px } }
+    &.s900 { padding:15px 70px 10px 70px; > header { background-position-x:78px } article#post { width:900px } }
+    &.s1200 { padding:15px 80px 10px 80px; > header { background-position-x:88px } article#post { width:12000px } }
+
+    > menu {
+                             position:fixed;
+                             top:58px;right:18px;
+                             z-index:130;
+                             height:30px;
+                             background-color:white;
+                             opacity:0.5;
+                             border-radius:10px;
+                             .min640;
+                             font-weight:300;
+                             font-size:14px;
+                             padding:2px 8px 5px 12px;
+                             margin:0;
+                             letter-spacing:-0.68px;
+      .glyphicon {           font-size:12px;line-height:24px;margin:1px  }
+      &:hover { opacity:.9 }
+      small {                font-size:11px;color:@greendark }
+      a {                    display:inline-block;padding:0px 3px;
+                             cursor:pointer;
+                             // cursor:url('@{static}/img/author/branch-white.png'),auto;
+        & + label {          font-size:14px;font-weight:normal;
+                             display:none;color:@graydark;padding:0;margin:0;
+        }
+        &.current {          display:none;
+          & + label {        display:inline-block; } } }
+    }
+
+    > div { overflow-x:hidden; }
+
+    &.off {
+      position:inherit;
+      background:transparent;
+      border:none;
+      > header { display:none }
+      > div {  display:none }
+      > menu { top:@header_height;margin-top:10px; }
+    }
+
+  }
+
+}

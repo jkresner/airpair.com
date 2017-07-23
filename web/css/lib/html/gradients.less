@@ -1,0 +1,203 @@
+@rg1:white;
+@rg1p:30%;
+@rg2:@graypalest;
+@rg2p:60%;
+@rg3:@graypale;
+@rg3p:90%;
+
+._radial_gray {
+  background: @rg1; /* For browsers that do not support gradients */
+  background: -webkit-radial-gradient(@rg1 @rg1p, @rg2 @rg2p, @rg3 @rg3p); /* Safari 5.1-6.0 */
+  background: -o-radial-gradient(@rg1 @rg1p, @rg2 @rg2p, @rg3 @rg3p); /* For Opera 11.6-12.0 */
+  background: -moz-radial-gradient(@rg1 @rg1p, @rg2 @rg2p, @rg3 @rg3p); /* For Firefox 3.6-15 */
+  background: radial-gradient(@rg1 @rg1p, @rg2 @rg2p, @rg3 @rg3p); /* Standard syntax */
+}
+
+._linear_gray_bottom {
+  background-image:linear-gradient(to bottom, @graypalest, white 95%);
+}
+
+
+
+@lineardown_gray:linear-gradient(to bottom, #f4f4f5 0%, #ffffff 100%);
+@lineardown_ok:linear-gradient(to bottom, @greenpalest 0%, #ffffff 5%);
+
+
+legend {
+  display:inline-block;
+  margin:2% 2% 3% 4%;
+  width:42%;
+  background-color:white;
+  border-top:solid 1px @graypale;
+  border-right:solid 1px @graypale;
+  h4 { margin:20px 0 20px 30px;padding:0;font-weight:bold;font-size:16px;text-transform:uppercase; }
+  ul { margin:0 35px;padding:15px 10px;background:white; }
+  ul li { display:block;padding:2px;font-size:16px; }
+  ul li > * { display:inline-block;line-height:17px;font-size:15px; }
+  b { text-transform:lowercase; }
+  .label { display:inline-block;width:88px;border-radius:3px;border:solid 2px white;font-size:14px;line-height:17px;margin:2px }
+  .btn { width:94px;margin:2px 5px;border-radius:7px;padding:5px 2px 5px 0px;line-height:17px;font-size:15px;opacity:0.8;
+         span { margin-right:6px }
+         &:hover { opacity:1 } }
+  .btn-inverse { width:80px;margin:2px 5px;padding:3px;
+    border-radius:6px;font-size:15px;line-height:17px;opacity:0.9;
+    &:hover { opacity:1;font-weight:bold } }
+}
+
+legend.orange, article.orange { border-left:solid 3px @orangemedium; }
+legend.orange, section.orange, article.orange {
+  background-image:linear-gradient(to bottom, @orangepalest 15%, #ffffff 75%);
+  .label, .btn { background-color:@orange; }
+  .label { border-color:@orangepalest;color:@orangepalest }
+  .btn { &:hover { box-shadow:@graylight 0px 0px 2px 0px} }
+  h4, b, .btn-inverse { color:@orange } .btn-inverse { border-color:@orange; }
+  .highlight { .label, .btn { background-color:@orangehighlight }
+    b, .btn-inverse { color:@orangehighlight } .btn-inverse { border-color:@orangehighlight; } }
+  .dark { .label, .btn { background-color:@orangedark }
+    b, .btn-inverse { color:@orangedark } .btn-inverse { border-color:@orangedark; } }
+  .medium { .label, .btn { background-color:@orangemedium }
+    b, .btn-inverse { color:@orangemedium } .btn-inverse { border-color:@orangemedium; } }
+  .light { .label, .btn { background-color:@orangelight }
+    b, .btn-inverse { color:@orangelight } .btn-inverse { border-color:@orangelight; } }
+  .pale { .label, .btn { background-color:@orangepale }
+    b, .btn-inverse { color:@orangepale } .btn-inverse { border-color:@orangepale; } }
+  .palest { .label, .btn { background-color:@orangepalest }
+    b, .btn-inverse { color:@orangepalest } .btn-inverse { border-color:@orangepalest; } }
+}
+
+legend.red, article.red { border-left:solid 3px @redmedium; }
+legend.red, section.red, article.red {
+  background-image:linear-gradient(to bottom, @redpale 0%, #ffffff 55%);
+  .label { border-color:@redpalest;color:@redpalest }
+  .label, .btn { background-color:@red }
+  h4, b, .btn-inverse { color:@red } .btn-inverse { border-color:@red; }
+  .highlight { .label, .btn { background-color:@redhighlight }
+    b, .btn-inverse { color:@redhighlight } .btn-inverse { border-color:@redhighlight; } }
+  .dark { .label, .btn { background-color:@reddark }
+    b, .btn-inverse { color:@reddark } .btn-inverse { border-color:@reddark; } }
+  .medium { .label, .btn { background-color:@redmedium }
+    b, .btn-inverse { color:@redmedium } .btn-inverse { border-color:@redmedium; } }
+  .light { .label, .btn { background-color:@redlight }
+    b, .btn-inverse { color:@redlight } .btn-inverse { border-color:@redlight; } }
+  .pale { .label, .btn { background-color:@redpale }
+    b, .btn-inverse { color:@redpale } .btn-inverse { border-color:@redpale; } }
+  .palest { .label, .btn { background-color:@redpalest }
+    b, .btn-inverse { color:@redpalest } .btn-inverse { border-color:@redpalest; } }
+}
+
+legend.blue, article.blue { border-left:solid 3px @bluemedium; }
+legend.blue, section.blue, article.blue {
+  background-image:linear-gradient(to bottom, @bluepale 10%, #ffffff 75%);
+  .label, .btn { background-color:@blue }
+  h4, b, .btn-inverse { color:@blue } .btn-inverse { border-color:@blue; }
+  .highlight { .label, .btn { background-color:@bluehighlight }
+    b, .btn-inverse { color:@bluehighlight } .btn-inverse { border-color:@bluehighlight; } }
+  .dark { .label, .btn { background-color:@bluedark }
+    b, .btn-inverse { color:@bluedark } .btn-inverse { border-color:@bluedark; } }
+  .medium { .label, .btn { background-color:@bluemedium }
+    b, .btn-inverse { color:@bluemedium } .btn-inverse { border-color:@bluemedium; } }
+  .light { .label, .btn { background-color:@bluelight }
+    b, .btn-inverse { color:@bluelight } .btn-inverse { border-color:@bluelight; } }
+  .pale { .label, .btn { background-color:@bluepale }
+    b, .btn-inverse { color:@bluepale } .btn-inverse { border-color:@bluepale; } }
+  .palest { .label, .btn { background-color:@bluepalest }
+    b, .btn-inverse { color:@bluepalest } .btn-inverse { border-color:@bluepalest; } }
+}
+
+legend.bluegray, article.bluegray { border-left:solid 3px @bluegray; }
+legend.bluegray, section.bluegray, article.bluegray {
+  background-image:linear-gradient(to bottom, @bluegraylight 6%, #ffffff 75%);
+  .label, .btn { background-color:@bluegray }
+  h4, b, .btn-inverse { color:@bluegray } .btn-inverse { border-color:@bluegray; }
+  .highlight { .label, .btn { background-color:@bluegrayhighlight }
+    b, .btn-inverse { color:@bluegrayhighlight } .btn-inverse { border-color:@bluegrayhighlight; } }
+  .dark { .label, .btn { background-color:@bluegraydark }
+    b, .btn-inverse { color:@bluegraydark } .btn-inverse { border-color:@bluegraydark; } }
+  .medium { .label, .btn { background-color:@bluegraymedium }
+    b, .btn-inverse { color:@bluegraymedium } .btn-inverse { border-color:@bluegraymedium; } }
+  .light { .label, .btn { background-color:@bluegraylight }
+    b, .btn-inverse { color:@bluegraylight } .btn-inverse { border-color:@bluegraylight; } }
+  .pale { .label, .btn { background-color:@bluegraypale }
+    b, .btn-inverse { color:@bluegraypale } .btn-inverse { border-color:@bluegraypale; } }
+  .palest { .label, .btn { background-color:@bluegraypalest }
+    b, .btn-inverse { color:@bluegraypalest } .btn-inverse { border-color:@bluegraypalest; } }
+}
+
+
+legend.green, article.green { border-left:solid 3px @greenmedium; }
+legend.green, section.green, article.green {
+  background-image:linear-gradient(to bottom, @greenpalest 40%, #ffffff 85%);
+  .label, .btn { background-color:@green }
+  h4, b, .btn-inverse { color:@greendark } .btn-inverse { border-color:@green; }
+  .highlight { .label, .btn { background-color:@greenhighlight }
+    b, .btn-inverse { color:@greenhighlight } .btn-inverse { border-color:@greenhighlight; } }
+  .dark { .label, .btn { background-color:@greendark }
+    b, .btn-inverse { color:@greendark } .btn-inverse { border-color:@greendark; } }
+  .medium { .label, .btn { background-color:@greenmedium }
+    b, .btn-inverse { color:@greenmedium } .btn-inverse { border-color:@greenmedium; } }
+  .light { .label, .btn { background-color:@greenlight }
+    b, .btn-inverse { color:@greenlight } .btn-inverse { border-color:@greenlight; } }
+  .pale { .label, .btn { background-color:@greenpale }
+    b, .btn-inverse { color:@greenpale } .btn-inverse { border-color:@greenpale; } }
+  .palest { .label, .btn { background-color:@greenpalest }
+    b, .btn-inverse { color:@greenpalest } .btn-inverse { border-color:@greenpalest; } }
+}
+
+
+legend.yellow, article.yellow { border-left:solid 3px @yellowmedium; }
+legend.yellow, section.yellow, article.yellow {
+  background-image:linear-gradient(to bottom, @yellowpale 15%, #ffffff 85%);
+  .label, .btn { background-color:@yellow }
+  h4, b, .btn-inverse { color:@yellowdark } .btn-inverse { border-color:@yellowmedium; }
+  .highlight { .label, .btn { background-color:@yellowhighlight }
+    b, .btn-inverse { color:@yellowhighlight } .btn-inverse { border-color:@yellowhighlight; } }
+  .dark { .label, .btn { background-color:@yellowdark }
+    b, .btn-inverse { color:@yellowdark } .btn-inverse { border-color:@yellowdark; } }
+  .medium { .label, .btn { background-color:@yellowmedium }
+    b, .btn-inverse { color:@yellowmedium } .btn-inverse { border-color:@yellowmedium; } }
+  .light { .label, .btn { background-color:@yellowlight }
+    b, .btn-inverse { color:@yellowlight } .btn-inverse { border-color:@yellowlight; } }
+  .pale { .label, .btn { background-color:@yellowpale }
+    b, .btn-inverse { color:@yellowpale } .btn-inverse { border-color:@yellowpale; } }
+  .palest { .label, .btn { background-color:@yellowpalest }
+    b, .btn-inverse { color:@yellowpalest } .btn-inverse { border-color:@yellowpalest; } }
+}
+
+legend.gray, article.gray { border-left:solid 3px @graylight; }
+legend.gray, section.gray, article.gray {
+  background-image:linear-gradient(to bottom, @graypalest 5%, #ffffff 75%);
+  .label, .btn { background-color:@gray }
+  h4, b, .btn-inverse { color:@gray } .btn-inverse { border-color:@gray; }
+  .highlight { .label, .btn { background-color:@grayhighlight }
+    b, .btn-inverse { color:@grayhighlight } .btn-inverse { border-color:@grayhighlight; } }
+  .dark { .label, .btn { background-color:@graydark }
+    b, .btn-inverse { color:@graydark } .btn-inverse { border-color:@graydark; } }
+  .medium { .label, .btn { background-color:@graymedium }
+    b, .btn-inverse { color:@graymedium } .btn-inverse { border-color:@graymedium; } }
+  .light { .label, .btn { background-color:@graylight }
+    b, .btn-inverse { color:@graylight } .btn-inverse { border-color:@graylight; } }
+  .pale { .label, .btn { background-color:@graypale }
+    b, .btn-inverse { color:@graypale } .btn-inverse { border-color:@graypale; } }
+  .palest { .label, .btn { background-color:@graypalest }
+    b, .btn-inverse { color:@graypalest } .btn-inverse { border-color:@graypalest; } }
+}
+
+legend.black, article.black { border-left:solid 3px @blacklight; }
+legend.black, section.black, article.black {
+  background-image:linear-gradient(to bottom, @blackpalest 5%, #ffffff 75%);
+  .label, .btn { background-color:@black }
+  h4, b, .btn-inverse { color:@black } .btn-inverse { border-color:@black; }
+  .highlight { .label, .btn { background-color:@blackhighlight }
+    b, .btn-inverse { color:@blackhighlight } .btn-inverse { border-color:@blackhighlight; } }
+  .dark { .label, .btn { background-color:@blackdark }
+    b, .btn-inverse { color:@blackdark } .btn-inverse { border-color:@blackdark; } }
+  .medium { .label, .btn { background-color:@blackmedium }
+    b, .btn-inverse { color:@blackmedium } .btn-inverse { border-color:@blackmedium; } }
+  .light { .label, .btn { background-color:@blacklight }
+    b, .btn-inverse { color:@blacklight } .btn-inverse { border-color:@blacklight; } }
+  .pale { .label, .btn { background-color:@blackpale }
+    b, .btn-inverse { color:@blackpale } .btn-inverse { border-color:@blackpale; } }
+  .palest { .label, .btn { background-color:@blackpalest }
+    b, .btn-inverse { color:@blackpalest } .btn-inverse { border-color:@blackpalest; } }
+}
+

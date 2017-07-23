@@ -1,0 +1,34 @@
+{{!-- in use [2015.12.06] --}}
+<article class="posttile" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+  <a href="{{ url }}" title="{{ title }}" target="_self" rel="bookmark">
+    <header class="entry-header">
+      <img class="entry-header-image" itemprop="image" src="{{ htmlHead.ogImage }}" align="left" />
+      <div class="glass"></div>
+      <p>
+        <span class="entry-categories">
+        {{#each tags}}
+          <em>{{ slug }}</em>
+        {{/each}}
+        </span>
+        {{ htmlHead.description }}
+      </p>
+    </header>
+
+    <div class="entry-content" itemprop="text">
+{{#if stats.reviews}}
+      <h6><b>{{stats.reviews}}</b> x</h6>
+{{/if}}
+      {{post_stars stats.rating}}
+      <h2 class="entry-title" itemprop="headline">{{ title }}</h2>
+
+      <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+        <span class="entry-author-name" itemprop="name">{{ by.name }}</span>{{#if by.publisher}}<span class="entry-publisher" itemprop="publisher">{{by.publisher}}</span>
+          </span>{{/if}}
+      </span>
+
+    </div>
+  </a>
+  <footer class="entry-footer">
+    <img class="entry-author-img" itemprop="image" src="{{ by.avatar }}?s=50" />
+  </footer>
+</article>

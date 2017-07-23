@@ -13,9 +13,10 @@ require('meanair-build')(gulp, cfg).configure({
   },
   less: less => {
     Object.assign(less, {
+      base:    cfg.dirs.web,
       src:     join(cfg.dirs.web, less.src, '*.less'),
       dest:    join(cfg.dirs.web, less.dest),
-      imports: less.imports.map(p => join(cfg.dirs.web, p, '**/*.less'))
+      imports: less.imports.map(p => join(cfg.dirs.web, p)) //, '**/*.less'
     })
   },
   nodemon: nodemon => {
@@ -28,8 +29,8 @@ require('meanair-build')(gulp, cfg).configure({
     //   browserify.dest = cfg.dirs.dist
     // else
     browserify.dest = join(cfg.dirs.web, browserify.dest)
-    browserify.watch = !!cmd.match(/watch|dev/)
-    browserify.dist = !!cmd.match(/dist/)
+    browserify.watch = /(watch|default)/i.test(cmd)
+    browserify.dist = /dist/i.test(cmd)
   },
   watch: watch => {
     watch.path.less = cfg.less.imports
@@ -39,30 +40,7 @@ require('meanair-build')(gulp, cfg).configure({
   dist: dist => {
     dist.src = cfg.dirs.web
     dist.dest = cfg.dirs.dist
+    if (/dist/.test(cmd))
+      cfg.less.imports[1] = cfg.less.imports[1].replace('dev','dist')
   }
 }).run()
-
-// var timestart     = new Date().getTime()
-// var timeLast      = new Date().getTime()
-// global.$time      = function(msg) {
-//   var subLapsed   = (new Date().getTime() - timeLast).toString()
-//   timeLast        = new Date().getTime()
-//   var lapsed      = (timeLast-timestart).toString()
-//   console.log(
-//       (lapsed+"      a".substring(0,6-lapsed.length)).magenta,
-//       (subLapsed+"        b".substring(0,8-subLapsed.length)).green,
-//       msg.magenta
-//     )
-// }
-// gulp.task('devsetup:googletoken', initRunTasks(['googletoken']))
-// gulp.task('less:all', initRunTasks(['less'], null, {section:'all'}) )
-// gulp.task('less:libs', initRunTasks(['less'], null, {section:'libs'}) )
-// gulp.task('less:adm', initRunTasks(['less'], null, {section:'adm'}) )
-// gulp.task('less:index', initRunTasks(['less'], null, {section:'index'}) )
-// gulp.task('build:clean', initRunTasks(['clean']))
-// gulp.task('build', initRunTasks(['dist']))
-// gulp.task('default', initRunTasks(['watch'], ['nodemon','less'], {section:'all'}) )
-// gulp.task('index', initRunTasks(['watch'], ['nodemon','less'], {section:'index'}) )
-// gulp.task('adm', initRunTasks(['watch'], ['nodemon','less'], {section:'adm'}) )
-// gulp.task('test', initTasks(['less'],['nodemontest']))
-

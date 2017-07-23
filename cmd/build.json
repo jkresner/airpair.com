@@ -7,20 +7,19 @@
     },
     "src":                   "web/js",
     "dest":                  "build",
-    "entries":               ["index.js","adm.js"]
+    "entries":               ["app.js"]
   },
-  "default":                 ["nodemon","watch"],
-  "dist":                    {},
   "dirs": {
     "web":                   "web",
     "dev":                   "web/build",
     "dist":                  "web/dist",
     "server":                "server"
   },
+  "dist":                    {},
   "less": {
     "src":                   "css",
     "dest":                  "build/css",
-    "imports":               ["css"]
+    "imports":               ["css","css/env/dev"]
   },
   "log": {
     "config":                false,
@@ -28,14 +27,14 @@
     "wire":                  false
   },
   "nodemon": {
-    "dirs":                  ["server","server/.lib","shared"],
+    "dirs":                  ["server","server/.lib","es","tmpl"],
     "config": {
       "restartable":         false,
       "verbose":             true,
       "ignore":              ["*DS_Store","web/*","test/*","cmd/*"],
       "stdout":              true,
       "stdin":               true,
-      "execMap":             { "js": "node --harmony_destructuring" },
+      "execMap":             { "js": "node" },
       "script":              "index.js",
       "ext":                 "js json hbs env"
     }
@@ -43,11 +42,12 @@
   "watch": {
     "livereload":            { "port": 35729 },
     "path": {
-      "browserify":          ["ang/**/*.js",
-                              "ang/**/*.html",
-                              "web/.lib/**/*.js",
-                              "web/.lib/**/*.html"],
-      "livereload":          ["server/templates/*",
+      "browserify":          ["es/*.js",
+                              "web/js/*.js",
+                              "web/js/**/*.html",
+                              "web/js/**/*.js"],
+      "livereload":          ["tmpl/**/*.hbs",
+                              "tmpl/**/*.js",
                               "web/build/css/*.css",
                               "web/build/js/*.js"]
     }

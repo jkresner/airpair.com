@@ -1,7 +1,10 @@
 <header>
-  <a href="https://www.airpair.com/" tile="Learn CODE - from top software developers | AirPair" target="_self"></a>
-  {{!-- <ul>{{#with session}}{{#if avatar}}
-    <li class="usr"><a href="/account" target="_self" style="background-image('{{avatar}}?s=20')"></a></li>{{/if}}
-  </ul>{{/with}} --}}
-{{!--   <div errors-header></div> --}}
+  <a href="https://www.airpair.com/" tile="Top software developers | AirPair" target="_self"></a>
+
+  <ul>
+    <li><a href="/jobs" target="_self">Jobs</a></li>
+    <li><a href="/author" target="_self">Author</a></li>
+    <li><a href="/software-experts" target="_self">Software experts</a></li>{{#with session}}{{#if avatar}}
+    <li class="usr"><a href="/account" target="_self"><img src="{{avatar}}?s=32" /></a></li>{{/if}}{{/with}}
+  </ul>
 </header>

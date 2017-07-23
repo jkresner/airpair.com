@@ -4,7 +4,8 @@ module.exports = ->
   before (done) ->
     {admin,gnic} = FIXTURE.users
     DB.removeDocs 'View', {}, ->
-    DB.ensureDocs 'User', [admin,gnic], done
+    DB.removeDocs 'User', {'auth.gh.id':gnic.auth.gh.id}, ->
+      DB.ensureDocs 'User', [admin,gnic], done
 
 
   beforeEach ->

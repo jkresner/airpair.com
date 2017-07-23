@@ -1,0 +1,93 @@
+.social {
+  background-repeat:no-repeat;
+}
+
+.gh-white {
+  .social;
+  background-image:url('@{static}/img/icons/gh-white.png');
+  background-color: #3B3B3B;
+}
+.tw-white {
+  .social;
+  background-image: url('@{static}/img/icons/tw-white.png');
+  background-color: #00AFEA;
+}
+.bb-white {
+  .social;
+  background-image: url('@{static}/img/icons/bb-white.png');
+  background-color: #1A4F7E;
+}
+.in-white {
+  .social;
+  background-image: url('@{static}/img/icons/in-white.png');
+  background-color: #0081AF;
+}
+.so-white {
+  .social;
+  background-image: url('@{static}/img/icons/so-white.png');
+  background-color: #FFA43C;
+}
+.gp-white {
+  .social;
+  background-image: url('@{static}/img/icons/gp-white.png');
+  background-color: #FF4747;
+}
+.al-white {
+  .social;
+  background-image: url('@{static}/img/icons/al-white.png');
+  background-color:black;
+}
+.hm-white {
+   .social;
+  background-image: url('@{static}/img/icons/hm-white.png');
+  background-color: #25DBBF;
+}
+
+// .sociallinks {
+//   .icon { width:25px;height:25px;display:inline-block;
+//     background-size:25px;
+//    }
+// }
+
+.connect-icons {
+  .oauth { width:200px;display:inline-block;margin:5px;position:relative; }
+  .oauth a { width:100%;height:50px;display:block;color:white;
+    background-repeat:no-repeat;
+    background-size:39%;
+    padding:15px 0 0 88px;
+    font-size:15px }
+  .oauth a.none { background-color:@graylight!important;color:@orange }
+  .oauth a:hover { background-color:@orangehighlight!important;color:white }
+  .oauth a.unlink { display:none }
+  .oauth.gh a { .gh-white }
+  .oauth.tw a { .tw-white }
+  .oauth.bb a { .bb-white }
+  .oauth.in a { .in-white }
+  .oauth.so a { .so-white }
+  .oauth.gp a { .gp-white }
+  .oauth.al a { .al-white }
+  .oauth:hover {
+    a.unlink {
+      opacity:0.6;
+      line-height:15px;
+      position:absolute;bottom:0;right:0;
+      width:16px;height:16px;
+      text-align:center;
+      background-color:white!important;
+      color:red;display:block;
+      padding:0 0 0 2px;z-index:2;
+      border-top-left-radius:50%;
+    }
+    a.unlink:hover {
+      opacity:1.0;
+    }
+  }
+}
+
+
+
+// .sociallinks {
+//   .icon { width:25px;height:25px;display:inline-block;
+//     background-size:25px;
+//    }
+// }

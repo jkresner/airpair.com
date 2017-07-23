@@ -7,18 +7,24 @@ module.exports = (app, mw) =>
   //   }
 
   ({tmpl,css}) => function(req,res,next) {
-    tmpl = tmpl||req.locals.r.tmpl||'v2'
-
+    req.locals.css = css || { body: 'blogpost' }
+    let name = `post_${tmpl||req.locals.r.tmpl||'v2'}`
 
     // $log('pagePost:req.locals'.yellow, req.locals)
-    // $log('pagePost:req.r'.yellow, req.r)
-    if (tmpl == 'faq')
+
+    var {post,subscribed,similar,adTag} = req.locals.r
+
+    // $log('pagePost:req.r'.yellow, tmpl, post.tmpl)  //req.r)
+    if (tmpl == 'faq' || post.tmpl == 'faq') {
       req.locals.noindex = true
+      req.locals.css.body = 'blogpost faq'
+    }
 
-    // req.locals.head = assign(req.locals.r.htmlHead||{},{title:req.locals.r.title})
+    req.locals.htmlHead = req.locals.r.post.htmlHead
     // assign(req.locals, {css})
+    // console.log('pagePost'.yellow, req.locals.r)
 
-    mw.res.page(`post_${tmpl}`, assign({layout:'posts'},req.locals))(req,res,next)
+    mw.res.page(name, assign({layout:'hybrid'},req.locals))(req,res,next)
   }
 
 

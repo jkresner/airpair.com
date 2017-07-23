@@ -1,0 +1,154 @@
+body > header {              position:absolute;
+                             top:0;
+                             z-index:2;
+                             width:100%;
+
+                             height:@header_height;
+                             background-color:@header_bgcolor;
+
+  // > div {                    max-width:@body_main_maxwidth;
+                             // margin:auto;
+                             // vertical-align:middle; }
+
+  a {                        display:inline-block;
+                             vertical-align:middle; }
+
+  > a {                      margin:1px 0px 0px 25px;
+                             padding:2px 24px 2px 0px;
+                             background:url('@{static}/@{header_logo}') no-repeat;
+                             background-position:5px center;
+                             background-size:90px 26px;
+                             width:140px;
+                             height:@header_height;
+                             float:left; }
+
+  ul {                       padding:0px 10px 0px 8px;
+                             margin:0;
+                             float:right;
+                             list-style:none;
+    li {                     text-transform:lowercase;
+                             margin:0px 10px;
+                             height:@header_height;
+
+    a {                      font-size:14px;
+                             font-weight:400;
+                             color:@header_acolor;
+                             line-height:@header_height;
+      &:hover {              color:@orange } } }
+
+    li.usr {                 margin:0px 0px 0px 5px;
+      img {                  width:32px;height:32px;
+                             background-color:white;
+                             padding:2px;
+                             border:solid 2px @bluegray;
+                             border-radius:50%;
+                             opacity:0.9;
+        &:hover {            border-color:@orangehighlight;
+                             background-color:@orangepale;
+                             opacity:0.85 } } } }
+
+  @media @vp_mobile_ls {
+  //     padding:4px 4px 4px 0px;
+    > a {
+  //       padding:0px;
+        // background-position:5px 3px;
+  //       width:100px;
+      margin-left:6px;
+    }
+    ul { display:none;
+        // padding:2px 6px 2px 2px;
+    }
+  //     li { margin:0; }
+  //     li { a { padding:5px 10px;display:block;font-size:13px } }
+  //     div { display:none }
+  //     .login { display:none }
+  //   }
+  // }
+  }
+}
+
+
+body > header + * {
+  padding-top:@header_height;
+}
+
+// body > header {
+  // border-bottom:solid 1px @lightgray;
+
+// .header_lilast {             margin-right:0;
+//                              width:inherit;
+//   a {                        width:inherit;
+//                              text-align:right;
+//                              padding:0 5px 0 30px;
+//                              font-weight:normal } }
+
+// body > header {
+//     // &:last-child {           .header_lilast }
+//     a {                      text-align:center;
+//                              color:@header_acolor;
+//                              font-size:14px;
+//                              font-weight:bold;
+//                              letter-spacing:0.5px;
+//                              padding-left:30px; }
+// }
+
+
+body.author > header {
+
+//   .nw {
+//                              // display:inline-block;
+//                              // width:63px;
+//                              // border-radius:6px;
+//                              // background-image:url('@{static}/img/author/airpair-author-bw.png');
+//                              // background-color:@orangelight;
+//                              // background-repeat:no-repeat;
+//                              // background-position:37px -1px;
+//                              // background-size:24px;
+//                              // padding:4px 12px 3px 28px;
+//                              // padding:1px 1px 3px 1px;
+//                              // margin:7px 2px 6px 2px;
+//                              // height:22px;
+//                              // text-align:left;
+//                              // opacity:0.95;
+//   a {                        font-weight:bold;
+//                              font-size:12px;
+//                              letter-spacing:-.5px;
+//                              text-transform:uppercase;
+//                              color:@bluepalest;
+//                              text-align:left;
+//                              display:inline-block;
+//                              padding:0;
+//                              width:100%;
+//                              line-height:18px;
+//                              height:20px;
+//                              margin:1px;
+//                              position:relative;
+//    div {                     position:absolute;
+//                              // background-color:@graylight;
+//                               // background-color:@orangepale;
+//                              left:0;
+//                              top:0;
+//                              display:block;
+//                              // opacity:.9;
+//                              margin:0px 0px;
+//                              padding:2px 1px 0px 3px;
+//                              border-right:solid 1px @orangepale;
+//                              border-top-left-radius:5px;
+//                              border-bottom-left-radius:5px;
+//                              line-height:16px;
+//                              width:36px; } }
+//   &:hover {                  background-color:@orangehighlight;opacity:0.7; }
+//     // a div {  } }
+}
+
+
+//   > div {
+//     > a {
+//       height:22px;
+//       margin:8px 0;
+//       width:103px;
+//       background-image:url('@{static}/img/header/logo-author.png');
+//       background-size:95px 24px;
+//     }
+//   }
+// }

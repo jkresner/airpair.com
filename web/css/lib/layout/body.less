@@ -1,0 +1,83 @@
+html, body {                 height:100%; }
+
+body {                       width:100%;
+                             background-color:@body_bgcolor;
+                             color:@body_color;
+                             font-family:@body_font }
+
+// .main-wrap
+//
+// Set vertical margins for main body part
+// <body>
+//   ...
+//   <div class="main-wrap">
+//     <main>{{{body}}}</main>
+//   </div>
+div.main-wrap {
+  margin:0;
+  width:100%;
+  padding-bottom:50px;
+  // &+hr { clear:both;border:white;padding:2px }
+  @media @vp_mobile_ls {
+    padding-bottom:10px
+  }
+}
+
+// main
+//
+// Set main width and center align
+main {                       max-width:@body_main_maxwidth;
+                             margin:0;
+                             padding:0;
+  > section {                margin:0 0 20px 0;
+                             width:100%;
+    > * {                    padding:0 1% 0 1%; }
+    > img {                  max-width:100%; } }
+
+  // border:solid 1px white; // used to fix a rendering prob
+
+  // > header {
+  //   color:@gray;
+  //   height:35px;
+  //   width:100%;
+  //   margin:0px auto 0px -1px;
+  //   padding:0px 5px 0 5px;
+  //   font-size:11px;
+  //   line-height:13px;
+  //   text-transform:uppercase;
+  //   white-space:nowrap;
+
+  //   .breadcrumb {
+  //     background:none;
+  //     padding:10px 0 5px 0;
+  //     margin:none;
+
+  //     > li + li:before {
+  //       content: "> ";
+  //       padding:0px 4px;
+  //    }
+  //   }
+  // }
+
+  // @media @vpTablet {
+    // width:640px;
+    // > header { padding:0px; }
+  // }
+
+  // @media @vpMobileLandscape {
+    // width:320px;
+    // > * { margin-left:3px }
+    // div.col h3, div.col h2 { margin-top:2px;font-size:20px;padding-top:0px }
+    // > section { margin:0 auto 20px auto;width:96% }
+    // .btn-primary { width:100% }
+    // .edit hr { display:none }
+    // .display h2 { font-size:16px }
+    // .display h2 span { display:none }
+    // > header {
+    //   // margin-left:0;
+    //   width:320px;
+    //   padding:0px 8px;
+    //   .breadcrumb { margin:-15px auto 10px auth;padding:1px 8px }
+    // }
+  // }
+}

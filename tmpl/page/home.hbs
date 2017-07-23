@@ -1,36 +1,37 @@
-{{> siteNav }}
-
 <main id="home">
 
-  <section class="header">
-    <img src="{{static.host}}/img/brand/logo.png" />
-    <table>
-      <tr>
-        <td><span>{</span></td>
-        <td>
-          <h2>
-          Multiply <i class="nomob">your</i> <b>software development</b> productivity
-          </h2>
-          <h4>
-          with on-demand software expertise and
-          free programming resources.
-          </h4>
-        </td>
-        <td><span>}</span></td>
-      </tr>
-    </table>
+{{!--   <section class="overview">
+    <div>
+      <h1>The world's best software experts and opportunities</h1>
+      <p>Top companies <em>find and hire software developers</em> for full-time, contract and micro-consulting jobs using airpair.
+    </div>
+
+    <div class="login">
+      <a href="/auth/github/callback" target="_self" class="btn btn-icon-wmark btn-solo">Login</a>
+    </div>
+  </section> --}}
+
+  <section id="tags">
+    <h2>Find software talent by technology</h2>
+    <a href="/node.js"><img src="{{static.host}}/img/software/node.js.icon.png"/></a>
+    <a href="/posts/tag/angularjs"><img src="{{static.host}}/img/software/angularjs.icon.png"/></a>
+    <a href="/python"><img src="{{static.host}}/img/software/python.icon.png"/></a>
+    <a href="/android"><img src="{{static.host}}/img/software/android.png"/></a>
+    <a href="/reactjs"><img src="{{static.host}}/img/software/reactjs.png"/></a>
+    <a href="/ruby"><img src="{{static.host}}/img/software/ruby.png"/></a>
+    <a href="/php"><img src="{{static.host}}/img/software/php.icon.png"/></a>
+    <a href="/swift"><img src="{{static.host}}/img/software/swift.icon.png"/></a>
+    {{!-- <a href="/twilio"><img src="{{static.host}}/img/software/twilio.png"/></a>
+    {{!-- <a href="/neo4j"><img src="{{static.host}}/img/software/neo4j.png"/></a>
+    <a href="/mongodb"><img src="{{static.host}}/img/software/mongodb.png"/></a>
+  --}}
   </section>
 
+  <section id="trending">
+    <h2>Trending software experts</h2>
 
-
-
-  <section id="about">
-{{!--
-  <div class="vr"></div>
-  <h2>Learn from our <a href="/software-experts">Software Experts</a></h2> --}}
-  <div class="vr"></div>
-  <div class="nobookmarks">
-    <article class="posttile" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+    <div>
+    <article class="posttile orange" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
       <a href="https://www.airpair.com/reactjs/posts/reactjs-a-guide-for-rails-developers" title="React.js - A guide for Rails developers" target="_self" rel="bookmark">
         <header class="entry-header">
           <img class="entry-header-image" itemprop="image" src="https://i.imgur.com/UUHYW6o.png" align="left">
@@ -45,10 +46,12 @@
         </header>
 
         <div class="entry-content" itemprop="text">
+          <ul class="stars"><li></li><li></li><li></li><li></li><li></li></ul>
           <h2 class="entry-title" itemprop="headline">React.js - A guide for Rails developers</h2>
 
           <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
             <span class="entry-author-name" itemprop="name">Fernando Villalobos</span>
+            <span class="entry-publisher" itemprop="publisher">airpair.com</span>
           </span>
 
         </div>
@@ -56,9 +59,9 @@
       <footer class="entry-footer">
         <img class="entry-author-img" itemprop="image" src="https://0.gravatar.com/avatar/f3d872377f757084e22ab15b7955a73d?s=50">
       </footer>
-
     </article>
-    <article class="posttile" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+
+    <article class="posttile green" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
       <a href="http://www.airpair.com/js/javascript-framework-comparison" title="AngularJS vs. Backbone.js vs. Ember.js" target="_self" rel="bookmark">
         <header class="entry-header">
           <img class="entry-header-image" itemprop="image" src="https://airpair-blog.s3.amazonaws.com/wp-content/uploads/2014/08/urishaked-jscompare-2.png" align="left">
@@ -75,10 +78,12 @@
         </header>
 
         <div class="entry-content" itemprop="text">
+          <ul class="stars"><li></li><li></li><li></li><li></li><li></li></ul>
           <h2 class="entry-title" itemprop="headline">AngularJS vs. Backbone.js vs. Ember.js</h2>
 
           <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
             <span class="entry-author-name" itemprop="name">Uri Shaked</span>
+            <span class="entry-publisher" itemprop="publisher">medium.com</span>
           </span>
 
         </div>
@@ -88,7 +93,7 @@
       </footer>
 
     </article>
-    <article class="posttile" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+    <article class="posttile yellow" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
       <a href="https://www.airpair.com/javascript/posts/the-mind-boggling-universe-of-javascript-modules" title="The mind-boggling universe of JavaScript Module strategies" target="_self" rel="bookmark">
         <header class="entry-header">
           <img class="entry-header-image" itemprop="image" src="https://openmerchantaccount.com/img/lego-adjusted.jpg" align="left">
@@ -106,10 +111,12 @@
         </header>
 
         <div class="entry-content" itemprop="text">
+          <ul class="stars"><li></li><li></li><li></li><li></li><li class="half ng-scope"></li></ul>
           <h2 class="entry-title" itemprop="headline">The mind-boggling universe of JavaScript Module strategies</h2>
 
           <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
             <span class="entry-author-name" itemprop="name">Tiago Romero Garcia</span>
+            <span class="entry-publisher" itemprop="publisher">medium.com</span>
           </span>
 
         </div>
@@ -119,7 +126,7 @@
       </footer>
 
     </article>
-    <article class="posttile" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+    <article class="posttile black" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
       <a href="https://www.airpair.com/ionic-framework/posts/ionic-firebase-camera-app" title="Upload Camera Images To Firebase Using Ionic Framework" target="_self" rel="bookmark">
         <header class="entry-header">
           <img class="entry-header-image" itemprop="image" src="https://img.youtube.com/vi/uvPlTzZxFcI/hqdefault.jpg" align="left">
@@ -140,12 +147,13 @@
         </header>
 
         <div class="entry-content" itemprop="text">
+          <ul class="stars"><li></li><li></li><li></li><li></li><li></li></ul>
           <h2 class="entry-title" itemprop="headline">Upload Camera Images To Firebase Using Ionic Framework</h2>
 
           <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
             <span class="entry-author-name" itemprop="name">Nic Raboy</span>
+            <span class="entry-publisher" itemprop="publisher">medium.com</span>
           </span>
-
         </div>
       </a>
       <footer class="entry-footer">
@@ -153,39 +161,9 @@
       </footer>
 
     </article>
-    <article class="posttile" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
-      <a href="https://www.airpair.com/ionic-framework/posts/push-notifications-using-ionic-framework" title="Build an iOS app with Push Notifications using Ionic Framework" target="_self" rel="bookmark">
-        <header class="entry-header">
-          <img class="entry-header-image" itemprop="image" src="https://dl.dropboxusercontent.com/u/17828362/ionic-push-notifications/push_notifications.png" align="left">
-          <div class="glass"></div>
-          <p>
-            <span class="entry-categories">
-              <em>ionic</em>
-              <em>angularjs</em>
-              <em>mongodb</em>
-              <em>push-notification</em>
-              <em>node.js</em>
-              <em>cordova</em>
-            </span>
-            Unfortunately, there are a lot of bad things happening every day. So we are going to create an iOS application to show some good news with push notifications.
-          </p>
-        </header>
 
-        <div class="entry-content" itemprop="text">
-          <h2 class="entry-title" itemprop="headline">Build an iOS app with Push Notifications using Ionic Framework</h2>
 
-          <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
-            <span class="entry-author-name" itemprop="name">Oleksandr Telnov</span>
-          </span>
-
-        </div>
-      </a>
-      <footer class="entry-footer">
-        <img class="entry-author-img" itemprop="image" src="https://0.gravatar.com/avatar/eed006e4f965a673444400199c1b6b62?s=50">
-      </footer>
-
-    </article>
-    <article class="posttile" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+    <article class="posttile gray" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
       <a href="https://www.airpair.com/node.js/posts/getting-started-with-docker-for-the-nodejs-dev" title="Getting Started with Docker for the Node.js Developer" target="_self" rel="bookmark">
         <header class="entry-header">
           <img class="entry-header-image" itemprop="image" src="https://d262ilb51hltx0.cloudfront.net/max/1600/1*_MtS4HqN2srTcrSyet61DQ.jpeg" align="left">
@@ -201,10 +179,12 @@
         </header>
 
         <div class="entry-content" itemprop="text">
+          <ul class="stars"><li></li><li></li><li></li><li></li></ul>
           <h2 class="entry-title" itemprop="headline">Getting Started with Docker for the Node.js Developer</h2>
 
           <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
             <span class="entry-author-name" itemprop="name">Heitor Tashiro Sergent</span>
+            <span class="entry-publisher" itemprop="publisher">medium.com</span>
           </span>
 
         </div>
@@ -215,30 +195,8 @@
 
     </article>
 
-  </div>
-  <br /><br />
-
-
-  <section id="tags">
-    <div class="vr"></div>
-    <h2>Explore by software technology</h2>
-    <a href="/node.js"><img src="{{static.host}}/img/software/node.js.png"/></a>
-    <a href="/posts/tag/angularjs"><img src="{{static.host}}/img/software/angularjs.png"/></a>
-    <a href="/python"><img src="{{static.host}}/img/software/python.png"/></a>
-    <a href="/android"><img src="{{static.host}}/img/software/android.png"/></a>
-    <a href="/reactjs"><img src="{{static.host}}/img/software/reactjs.png"/></a>
-    <a href="/ruby"><img src="{{static.host}}/img/software/ruby.png"/></a>
-    <a href="/php"><img src="{{static.host}}/img/software/php.png"/></a>
-    <a href="/ionic"><img src="{{static.host}}/img/software/ionic.png"/></a>
-    <a href="/swift"><img src="{{static.host}}/img/software/swift.png"/></a>
-    <a href="/twilio"><img src="{{static.host}}/img/software/twilio.png"/></a>
-    <a href="/keen-io"><img src="{{static.host}}/img/software/keen-io.png"/></a>
-    <a href="/neo4j"><img src="{{static.host}}/img/software/neo4j.png"/></a>
-    <a href="/rethinkdb"><img src="{{static.host}}/img/software/rethinkdb.png"/></a>
-    <a href="/firebase"><img src="{{static.host}}/img/software/firebase.png"/></a>
-    <a href="/mongodb"><img src="{{static.host}}/img/software/mongodb.png"/></a>
-  </section>
-
+    </div>
+    </section>
 
   </main>
 

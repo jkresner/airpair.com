@@ -95,7 +95,7 @@ testBan = ({test}) =>
 ban = ->
 
   beforeEach ->
-    STUB.wrapper('Cloudflare').api('get').fix('cloudflare_block_ip_ok')
+    STUB.wrapper('Cloudflare').api('get').success('cloudflare_block_ip_ok')
 
 
   SKIP "GoooleWebsnippet https://developers.google.com/+/web/snippet/)", ->

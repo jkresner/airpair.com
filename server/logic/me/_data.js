@@ -84,7 +84,7 @@ const Opts = {
 
 module.exports = { Views, Query, Opts,
 
-  Projections: ({inflate,map,md5,select}, {chain,view}) => ({
+  Projections: ({select,inflate,map,md5,util}, {chain,view}) => ({
 
     profile: d => {
       var r = view.profile(d)
@@ -95,7 +95,6 @@ module.exports = { Views, Query, Opts,
       r.photos = d.photos.map(p => assign({url:
         p.type == 'github' ? p.value.split('?')[0]
                            : `https://0.gravatar.com/avatar/${p.value}`}, p))
-
 
       return r
     },
@@ -108,20 +107,20 @@ module.exports = { Views, Query, Opts,
     //   )) }),
 
     forks: ({userId,my,suggests}) => ({
-      my: map(my, p => chain(p, view.forks, 'posts.url', inflate.tags)),
-      suggests: map(suggests, p => chain(p, 'posts.url', inflate.tags))
+      my: chain(my, inflate.tags, 'posts.url', view.forks),
+      suggests: chain(suggests, inflate.tags, 'posts.url')
     }),
 
 
     drafts: d => {
       var r = {rough:[],inreview:[],stats:{words:0}}
-      var posts = d.posts.map(p=>chain(p,'posts.url','posts.words',inflate.tags,view.tile))
+      var posts = chain(d.posts,'posts.url','posts.words',inflate.tags, view.tile)
       for (var p of posts) {
         p.history.submitted ? r.inreview.push(p) : r.rough.push(p)
-        // console.log('p.stats'.yellow, p.title, p.stats)
         r.stats.words += p.stats.words
         p.lastTouched = { action: `${p.meta.lastTouch.action}ed` }
-        p.lastTouched.utc = p.meta.lastTouch.utc || honey.util.BsonId.toDate(p.meta.lastTouch._id)
+        // console.log('p.stats'.yellow, p.title, p.stats, util)
+        p.lastTouched.utc = p.meta.lastTouch.utc || util.BsonId.toDate(p.meta.lastTouch._id)
         delete p.meta
         // console.log('p.meta'.yellow, p.meta.lastTouch)
       }

@@ -1,7 +1,14 @@
+.absolutelyStreched {
+  position:absolute;
+  top:0;bottom:0;left:0;right:0;
+}
+
+
 section#posteditor {         .absolutelyStreched;
                              top:38px;
                              z-index:50;
                              border-top:solid 1px @bluegray;
+                             margin-bottom:0;
 
   @editorbg:#F9F9F9;
   .editor-wrap {
@@ -136,16 +143,17 @@ section#posteditor {         .absolutelyStreched;
 
   }
 
-  @media @vpMobileLandscape {
+  @media @vp_mobile_ls {
     top:38px;bottom:0px;margin:0px 5px 0px 5px;
-    .preview, span.modes { display:none; }
+    .preview,
+    span.modes { display:none; }
     > nav {               position:fixed;
                           bottom:0;top:auto; }
     .editor {             top:5px;bottom:30px;overflow:scroll;
       .ace_content {      font-size:14px; } }
   }
 
-  @media @vpTiny {
+  @media @vp_tiny {
     .posteditor { display:none; }
   }
 }

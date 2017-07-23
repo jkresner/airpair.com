@@ -1,6 +1,6 @@
 angular.module("AirPair.Util.Window", [])
 
-.factory('WINDOW', function apWindow($rootScope, APMarkdown) {
+.factory('WINDOW', function apWindow($rootScope, MD) {
 
     // console.log('Prism.highlightElement', element, config);
     // function addBlockGutter() {
@@ -28,7 +28,7 @@ angular.module("AirPair.Util.Window", [])
         opts = opts || {}
         var elements = document.querySelectorAll(opts.selector || 'pre > code')
         for (var i=0, elm; elm = elements[i++];) {
-          var config = APMarkdown.getCodeBlockConfig(elm)
+          var config = MD.getCodeBlockConfig(elm)
           if (config && config.lang) {
             elm.className = 'language-'+config.lang
             if (config.linenums) elm.parentNode.className = 'line-numbers'

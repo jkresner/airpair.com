@@ -14,11 +14,11 @@ module.exports = ->
 
 
   DESCRIBE "Root",                 -> require("./routes/root")
-  # DESCRIBE "Rules",                -> require("./routes/rules")
-  # DESCRIBE "Redirects",            -> require("./routes/redirects")
-  # DESCRIBE "Posts",                -> require("./routes/redirects.posts")
+  DESCRIBE "Rules",                -> require("./routes/rules")
+  DESCRIBE "Redirects",            -> require("./routes/redirects")
+  DESCRIBE "Posts",                -> require("./routes/redirects.posts")
 
 
-  # DESCRIBE "Pages (anon)",         -> require("./routes/pages.anon")
-  # DESCRIBE "Pages (bots)",         -> require("./routes/pages.bots")
-  # DESCRIBE "Pages (authd)",        -> require("./routes/pages.authd")
+  DESCRIBE "Pages (anon)",         -> require("./routes/pages.anon")
+  DESCRIBE "Pages (bots)",         -> require("./routes/pages.bots")
+  DESCRIBE "Pages (authd)",        -> require("./routes/pages.authd")

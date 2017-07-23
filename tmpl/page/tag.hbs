@@ -1,6 +1,8 @@
 {{> siteNav }}
 
-<section id="allposts">
+    {{!-- <img src="/static/img/css/tags/{{r.slug}}.png" class="{{r.slug}}" /> --}}
+
+<section id="tag">
 
   <h1>Learn {{r.name}} from top {{r.short}} developers</h1>
 
@@ -8,34 +10,29 @@
 
 {{#if featured}}
   <div class="nobookmarks">
-    {{#each featured}}{{> postListItem this}}{{/each}}
+    {{#each featured}}{{> postTile this}}{{/each}}
   </div>
 
   {{#if latest}}
-    <h2 class="underline">Latest {{name}} software tutorials & guides
-      <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a>
+    <h2 class="underline">Latest {{../name}} software tutorials & guides
+  {{!--     <a href="/author/new" class="btn btn-inverse" target="_self">Contribute a post</a> --}}
     </h2>
   {{/if}}
-
 {{/if}}
 
 {{#if latest}}
-
   <div class="popular nobookmarks">
-    {{#each latest}}{{> postListItem this}}{{/each}}
+    {{#each latest}}{{> postTile this}}{{/each}}
   </div>
-
-  <hr style="clear:both" />
 {{else}}
-  <p>No posts authored for <code>{{tag.name}}</code>. <a href="https://author.airpair.com/">Be the first!</a></p>
+  <p>No posts authored for <code>{{tag.name}}</code>.
+  <a href="/author/new">Be the first!</a></p>
 {{/if}}
 
 {{#if top}}
   <div>
-    <h2 class="underline">Highest rated posts
-      {{!-- <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a>--}}
-    </h2>
-    {{#each top}}{{> postListItem this}}{{/each}}
+    <h2 class="underline">Highest rated posts</h2>
+    {{#each top}}{{> postTile this}}{{/each}}
   </div>
 {{/if}}
 
@@ -45,7 +42,7 @@
     <h2 class="underline">Popular software blog posts
       <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a>
     </h2>
-    {{#each popular}}{{> postListItem this}}{{/each}}
+    {{#each popular}}{{> postTile this}}{{/each}}
   </div>
 {{/if}}
 
@@ -55,57 +52,25 @@
     <h2 class="underline">2015 Writing Competition Prize winners
       <a href="/100k-writing-competition" class="btn btn-inverse" target="_self">See all winners</a>
     </h2>
-    {{#each comp}}{{> postListItem this}}{{/each}}
+    {{#each comp}}{{> postTile this}}{{/each}}
   </div>
 {{/if}}
 
   {{/with}}
 
+</section>
+
+<section id="tags">
 
 {{#if r.related}}
   <h3>Software Technologies related to {{r.name}}</h3>
-  <ul class="related">
+  <ul class="related tags">
     {{#each r.related}}<li><a href="{{url}}">{{name}}</a> ({{posts}})</li>{{/each}}
   </ul>
-  <a href="/learn-code">Learn code by programming tag<a/>
+{{!--   <a href="/learn-code">Learn code by programming tag<a/> --}}
 {{/if}}
-
 
 </section>
 
 
-{{!-- <section id="tag"> --}}
-
-{{!--   <section class="header">
-  {{{this.r.name}}}
-    <hr />
-    <img src="/static/img/css/tags/{{r.slug}}.png" class="{{r.slug}}" />
-
-    <h1>Enjoy our <code>{{r.name}}</code> resources,</h1>
-
-    <div class="share">
-      <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">
-        <a class="pw-button-facebook pw-look-native"></a>
-        <a class="pw-button-twitter pw-look-native"></a>
-        <a class="pw-button-googleplus pw-look-native"></a>
-        <a class="pw-button-linkedin pw-look-native"></a>
-      </div>
-    </div>
-    <hr />
-
-  <section class="about">
-    <h2>{{ about.tagline }}</h2>
-    <blockquote>
-      <img src="{{ about.byPic }}?s=160" />
-      <p>{{ about.quote }}</p>
-      <cite>{{ about.by }}</cite>
-    </blockquote>
-  </section>
-
-
-  <section id="tagworkshops" class="workshops">
-    <h2>{{tag.name}} Workshops</h2>
-  </section>
-
---}}
 

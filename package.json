@@ -29,6 +29,7 @@
     "twit": "2.2.9"
   },
   "devDependencies": {
+    "colors": "1.0.2",
     "meanair-build": "0.7.0",
     "screamjs": "0.7.0"
   }

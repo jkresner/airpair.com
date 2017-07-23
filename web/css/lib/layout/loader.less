@@ -1,0 +1,84 @@
+// div.loader {           display:none; }
+div.loader > ins {           display:none;
+                             position:fixed;
+                             top:40%;
+                             right:0;
+                             left:0;
+                             width:256px;
+                             height:128px;
+                             line-height:52px;
+                             margin:auto;
+                             opacity:0.75;
+                             text-align:center;
+                             // TODO swap to font instead of image
+                             // background:url('@{static}@{iconwhite}') center no-repeat @navbg;
+                             background:center no-repeat @loaderbq;
+                             background-size:96px 96px;
+                             border:dashed 2px @navcursor;
+                             border-radius:12px;
+                             font-size:22px;
+                             vertical-align:middle;
+                             margin:auto;
+
+  b {                        width:256px;
+                             height:128px;
+                             line-height:100px;
+                             // .icoap32;
+                             // margin:-31px auto 0 auto;
+                             font-weight:normal;
+                             letter-spacing:5px;
+                             text-align:center;
+                             color:@grayhighlight;
+                         }
+  span {                     font-size:28px;
+                             width:30px;
+                             line-height:20px;
+                             display:inline-block;
+                              }
+}
+
+// div.loading {                 display:block }
+div.loading > ins {           display:block; }
+
+// progress, progress[role] {   //appearance:none;
+//                              -moz-appearance:none;
+//                              -webkit-appearance:none;
+//                              display:block;
+//                              opacity:0.70;
+//                              width:260px;
+//                              height:48px;
+//                              line-height:52px;
+//                              border:dashed 2px @navcursor;
+//                              border-radius:12px;
+//                              // TODO swap to font instead of image
+//                              background:url('@{static}@{iconwhite}') center no-repeat @navbg;
+//                              background-size:56px 56px;
+//                              text-align:center;
+//                              vertical-align:middle;
+//   & + b {                    display:none;
+//                              width:260px;
+//                              height:48px;
+//                              margin:-31px auto 0 auto;
+//                              padding-left:15px;
+//                              font-weight:normal;
+//                              font-size:11px;
+//                              letter-spacing:5px;
+//                              text-align:center;
+//                              color:@blue }
+//   &.loading {
+//                              margin:100px auto 0 auto;
+//                              border:solid 2px green;
+//                              position:relative;
+//     & + b {                  display:block; } }
+// }
+
+// .progressbar {               background-color:@navbg;
+//                              border:none;
+//                              background:red;
+//                              height:0px }
+
+// progress::-moz-progress-bar {         -moz-appearance:none;.progressbar }
+// progress::-webkit-progress-bar {   -webkit-appearance:none;.progressbar }
+// progress::-webkit-progress-value {                         .progressbar }
+
+

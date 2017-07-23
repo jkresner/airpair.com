@@ -3,13 +3,12 @@ thumbUrl = "/posts/thumb/#{FIXTURE.posts.higherOrder._id}"
 describe " HUMANS".spec, ->
 
   IT '/post/thumb/:id', -> PAGE thumbUrl, {status:301,contentType:/text/}, (txt) -> DONE()
-  IT '/img/software/android.png', -> IMG @
+  IT '/favicon.ico', -> IMG @
   IT '/ad/heroku/900x90.q2-1.node.js.png', -> IMG @
   IT '/visit/heroku-160411-ruby', ->
     PAGE @test.title, {status:302,contentType:/text/}, (txt) ->
       expect(txt).to.inc "Found. Redirecting to https://signup.heroku.com/ruby"
       DONE()
-
 
   IT 'sitemap.xml', ->
     optsExpect = contentType: /text/, status:200
@@ -26,7 +25,7 @@ describe " HUMANS".spec, ->
     DONE()
 
   IT '/robots.txt', -> PAGE '/robots.txt', { contentType: /text/ }, (txt) ->
-    expect(txt).to.inc(['User-agent: *','Disallow: /'])
+    expect(txt).to.inc(['User-agent: *','Disallow: /airconf'])
     DONE()
 
   IT '/rss', ->
@@ -51,7 +50,7 @@ describe " SEARCH".spec, ->
   beforeEach -> @optsExpect = ua: FIXTURE.http.UA.search.Google
 
   IT '/post/thumb/:id', -> PAGE thumbUrl, assign({status:301},@optsExpect), (txt) -> DONE()
-  IT '/img/software/android.png', -> IMG @, assign({status:200,contentType:/image/},@optsExpect)
+  # IT '/img/software/android.png', -> IMG @, assign({status:200,contentType:/image/},@optsExpect)
   IT '/ad/heroku/900x90.q2-1.node.js.png', -> IMG @, assign({status:200,contentType:/text/},@optsExpect), (txt) ->
     expect(text).to.equal('')
     DONE()
@@ -95,9 +94,9 @@ describe " BANNED".spec, ->
 
 
   IT '/post/thumb/:id', -> PAGE thumbUrl, @optsExpect, (txt) -> DONE()
-  IT '/img/software/android.png', -> IMG @, @optsExpect
-  IT '/ads/heroku/900x90.q2-1.node.js.png', -> IMG @
-  IT '/ad/heroku/900x90.q2-1.node.js.png', -> IMG @, @optsExpect
+  # IT '/img/software/android.png', -> IMG @, @optsExpect
+  # IT '/ads/heroku/900x90.q2-1.node.js.png', -> IMG @, @optsExpect
+  # IT '/ad/heroku/900x90.q2-1.node.js.png', -> IMG @, @optsExpect
   IT '/visit/heroku-160411-ruby', -> PAGE @test.title, @optsExpect, (txt) -> DONE()
 
   IT 'sitemap.xml', ->

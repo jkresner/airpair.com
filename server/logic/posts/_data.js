@@ -1,22 +1,20 @@
+const Util = require('../../../es/post')
+
+
 const Views = {
   display: '_id by stats htmlHead meta.lastTouch github.repoInfo'
            + ' reviews forkers title tmpl slug tags assetUrl'
            + ' url html toc similar adtag history',
   list:    '_id by history htmlHead.canonical htmlHead.description htmlHead.ogImage github.repoInfo title url slug tags stats',
-  cache:   '_id by.name by.avatar title htmlHead.canonical htmlHead.ogImage history.subscribed history.published',
+  cache:   '_id by.name by.avatar title htmlHead.canonical htmlHead.ogImage history.submitted history.published',
   sub:     '_id name email avatar username auth.gh.login photos'
 }
-
-var lib = require('../../../es/post')
-
 
 
 const Query = {
 
-  byUrl(url) {
-    var match = new RegExp(`${url.split('?')[0].replace(/\+\+/g,'\\+\\+')}$`, 'i')
-    return { 'htmlHead.canonical': match }
-  },
+  byUrl: url => ({ 'htmlHead.canonical':
+    new RegExp(`${url.split('?')[0].replace(/\+\+/g,'\\+\\+')}$`, 'i') }),
 
   cached: { $or: [
     { 'history.submitted' : {'$exists': true }},
@@ -34,77 +32,12 @@ const Query = {
                     {'tmpl' : { '$ne': 'faq' }},
                     {'by._id' : { '$ne': '52ad320166a6f999a465fdc5' }} ]},
 
-  submitted(opts) {
-    opts = opts || {}
-    // var [amount,measure] = config.authoring.stale.split(':')
-    // var staleTime = moment().add(amount, measure).toDate()
-
-    // var $or = [      { 'meta.lastTouch.utc': { '$gt': staleTime } },
-                     // { 'history.submitted':  { '$gt': staleTime } } ]
-    var q = { $and: [{ 'history.submitted' : {'$exists': true }},
-                     { 'history.published' : {'$exists': false }},
-  //     { '$or': [
-  //         {'submitted': {'$gt': moment().add(-10,'day').toDate() }},
-  //         {'updated':   {'$gt': moment().add(-10,'day').toDate() }}
-  //       ]
-  //     }
-                     ] }
-
-        return q
-  }
+  submitted: () =>
+    ({ $and: [{ 'history.submitted' : {'$exists': true }},
+              { 'history.published' : {'$exists': false }}
+  //   history.updated': {'$gt': moment().add(-10,'day').toDate() }}
+                     ] })
 }
-
-
-// var query = {
-
-  // posts published before now or readyForReview
-  // publishedReviewReady(andCondition) {
-  //   var query = {$or: [
-  //     {'submitted' : {'$exists': true}},
-  //     {$and:
-  //       [{'published' : { '$exists': true }},
-  //       {'published': { '$lt': new Date() }}]}]}
-
-  //   return andQuery(query, andCondition)
-  // },
-
-  // inReview(andCondition) {
-  //   var query = [
-  //     { 'submitted': {'$exists': true } },
-  //     { 'published': {'$exists': false } },
-
-  //   ]
-  //   return andQuery(query, andCondition)
-  // },
-
-  // stale(andCondition) {
-  //   var query = [
-  //     { 'submitted': {'$exists': true } },
-  //     { 'submitted': {'$lt': moment().add(-10,'day').toDate() } },
-  //     { 'published': {'$exists': false } },
-  //   ]
-  //   return andQuery(query, andCondition)
-  // },
-
-  // inDraft(andCondition) {
-  //   return { $and:[
-  //     { _id },
-  //     { 'tags': {'$exists': true } },
-  //     { 'assetUrl': {'$exists': true } },
-  //     { 'by.userId': userId }
-  //   ]}
-  // },
-  // forker(userId) {
-  //   return {
-  //     forkers: {
-  //       $elemMatch: {
-  //         userId: userId
-  //       }
-  //     }
-  //   }
-  // },
-
-// }
 
 
 const Opts = {
@@ -119,13 +52,13 @@ const Opts = {
 }
 
 
-module.exports = { Views, Query, Opts,
+module.exports = { Views, Query, Opts, Util,
 
   Projections: ({select, inflate, md5, tmpl}, {chain, view}) => ({
 
     subscribedHash: d => {
       var hash = {}
-      for (var u of d.users)
+      for (var u of d.subscribed)
         hash[u._id] = _.omit(u, '_id')
 
       var p = d.post
@@ -150,18 +83,20 @@ module.exports = { Views, Query, Opts,
 
 
     words: d =>
-      assign(d, {stats:assign(d.stats||{},{words:lib.stat.wordcount(d)})}),
+      assign(d, {stats:assign(d.stats||{},{words:Util.wordcount(d)})}),
 
 
-    forker: f =>
-        assign(f,d.subHash[f.userId],{gh: f.gh || f.social.gh.username})
-        // {
-        // userId: f.userId,
-        // name: f.name,
-        // gh: f.gh || f.social.gh.username,
-        // avatar: f.avatar || md5(f.email||'team@airpair.com')
-    ,
-    // }),
+    // forker: f =>
+      // assign(f,d.subHash[f.userId],{gh: f.gh || f.social.gh.username}),
+
+
+    references: r =>
+      assign(r, Util.indexReferences(r.md)),
+
+
+    toc: r =>
+      assign(r, { toc: Util.toc(r.md) }),
+
 
     reviews: d => {
       d.reviews = (d.reviews||[]).map(rev => assign(rev, {
@@ -199,19 +134,21 @@ module.exports = { Views, Query, Opts,
       return d
     },
 
-    adTag: d => {
+    adTag: r => {
+      d = r.post
+
       if (!d.tags || d.tags.length == 0) {
         $log(`post ${d.title} [${d._id}] has no tags`.red)
-        return cb(null, d)
+        return cb(null, r)
       }
 
-      d.adtag = cache['tags'][d.tags[0]._id]
+      var adtag = cache['tags'][d.tags[0]._id]
 
-      // $log('adTag'.yellow, d.tags, d.adtag)
-      d.primarytag = d.adtag || _.find(d.tags, t => t.sort==0) || d.tags[0]
+      // $log('adTag'.yellow, d.tags, adtag)
+      var primarytag = adtag || _.find(d.tags, t => t.sort==0) || d.tags[0]
       // var topTagPage = _.find(topTapPages,(s) => d.primarytag.slug==s)
-      d.primarytag.postsUrl = // topTagPage ? `/${d.primarytag.slug}` :
-        `/posts/tag/${d.primarytag.slug}`
+      // primarytag.postsUrl = // topTagPage ? `/${d.primarytag.slug}` :
+        // `/posts/tag/${primarytag.slug}`
 
       var hasMatch = pattern => _.find(d.tags, t => pattern.test(t.slug))
       var override = d.adtag ? d.adtag.slug : false
@@ -221,7 +158,7 @@ module.exports = { Views, Query, Opts,
       var defaulttag = 'ruby'
 
       // Starts with the default catch all tag when we don't match any rules
-      var adtag = defaulttag
+      adtag = defaulttag
 
       // Override value can set ahead of time on a specific piece of content
       // * Allows full control when content matches multiple campaign tags
@@ -251,14 +188,15 @@ module.exports = { Views, Query, Opts,
       else if (hasMatch(/python|flask|django|google/i))
         adtag = 'python'
 
-      return assign(d, {adtag})
+      return assign(r, {adtag})
     },
 
 
     toHtml: d => {
-      var {md,references} = lib.indexReferences(d.md)
-      var html = {references}
-      html.toc = marked(lib.toc(d.md))
+      var {md,references,toc} = chain(d, 'references', 'toc')
+      var html = {}
+      html.references = marked(references)
+      html.toc = marked(toc)
       html.body = marked(md)
       return assign(d, {html})
       // if (isAnon) {
@@ -284,13 +222,14 @@ module.exports = { Views, Query, Opts,
       // d.html = marked(md)
     },
 
+
     tmpl: d => {
-      // $log('tmpl'.yellow)
       d.tmpl = !d.tmpl || d.tmpl == 'default' ? 'post_v1' : d.tmpl
       if (d.tmpl == 'post_v1')
         d.htmlHead.css = [] // ['/lib.css'] // grab archived css
       return d
     },
+
 
     otherByAuthor: d => {
       var other = []
@@ -304,32 +243,43 @@ module.exports = { Views, Query, Opts,
       return assign(d, other.length > 0 ? {other} : {})
     },
 
+
     displayPublished: d => {
       for (var sim of d.similar) sim.url = sim.htmlHead.canonical
       if (!d.similar || d.similar.length == 0) d.similar = false
-      // $log('d', d)
-      var d2 = chain(d, 'subscribedHash')
-      d2.post = chain(d.post, inflate.tags, 'toHtml', 'url', 'tmpl', 'adTag', 'reviews', 'other', view.display, 'otherByAuthor')
+      var d2 = chain(d, 'subscribedHash', 'adTag')
+      d2.post = chain(d.post, inflate.tags, 'toHtml', 'url', 'tmpl', 'reviews', 'other', view.display, 'otherByAuthor')
       for (var tag of d2.post.tags) tag.url = tag.slug == 'angularjs' ? '/angularjs/posts' : `/${tag.slug}`
       // $log('displayPublished'.magenta, d.reviews.length)
+      // $log('d2', d2.post.htmlHead)
+      // d2.htmlHead = d.post.htmlHead
       return d2
     },
 
+
     displayReview: d => {
-      // $log('displayReview'.yellow, d)
+      // console.log('displayReview', d.post.title)
       if (d.post.history.published)
         return select(chain(d.post, inflate.tags, 'url'), '_id url title history')
 
-      var post = chain(d, 'subscribedHash', inflate.tags, 'bodyHtml', 'url', 'tocHtml', 'tmpl', 'reviews', view.display)
-      var r = { tmpl: 'inreview', post }
+      var r = chain(d, 'subscribedHash')
+      r.post = chain(d.post, inflate.tags, 'toHtml', 'url', 'tmpl', 'reviews', view.display)
+      r.tmpl = 'inreview'
       // $log('displayReview'.yellow, r.post.title)
       return r
     },
+
 
     url: d => assign(d, { url :
       d.history.submitted && !d.history.published ? `/posts/review/${d._id}` :
       `${d.htmlHead ? d.htmlHead.canonical : '/posts/preview/'+d._id }`
     }),
+
+
+    slug: d => assign(d, { slug : d.slug || Util.defaultSlug }),
+
+
+    todo: d => assign(d, { todo: { next: Util.todo(d) } }),
 
 
     tileList: d =>
@@ -355,85 +305,6 @@ module.exports = { Views, Query, Opts,
   })
 
 }
-// .shareProjections('post', 'subscribedHash reviews url tocHtml bodyHtml displayReview')
-// .shareProjections('stat', 'words')
-
-
-// //-- Could make this generic, but we don't want to allow the cache to start
-// //-- accepting arbitary things
-// cache.pullRequests = function(repo, getterCB, cb)
-// {
-//   if (!cache['post_prs']) cache['post_prs'] = {}
-//   if (cache['post_prs'][repo])
-//     return cb(null, cache['post_prs'][repo])
-//   getterCB((e,r)=>{
-//     if (e) return cb(e)
-//     cache['post_prs'][repo] = r
-//     $log("set cache['post_prs']".trace, repo)
-//     cb(null,r)
-//   })
-// }
-
-// var userCommentByte = (byte) => {
-//   var avatar = byte.email ? md5.gravatarUrl(byte.email) :
-//     "/static/img/pages/posts/storm.png"
-//   return _.extend(_.pick(byte,'_id','name'), {avatar})
-// }
-
-  // tmpl: {
-  //   reviewNotify(post, review) {
-  //     var {_id,title} = post
-  //     var rating = _.find(review.questions,(q)=>q.key=='rating').answer
-  //     var comment = _.find(review.questions,(q)=>q.key=='feedback').answer
-  //     return { _id, title , comment, rating, reviewerFullName: review.by.name }
-  //   },
-  //   reviewReplyNotify(post, reply) {
-  //     var {_id,title} = post
-  //     var {comment,by} = reply
-  //     return { _id, title , comment, replierFullName: by.name }
-  //   },
-  // },
-  // cb: {
-    // editInfoView(cb) {
-    //   return (e,r) => {
-    //     if (e || !r) return cb(e,r)
-    //     cb(null, selectFromObj(r, select.editInfo))
-    //   }
-    // },
-    // editView(cb, overrideMD, owner) {
-    //   return (e,r) => {
-    //     if (e && !r) return cb(e,r)
-    //     else if (e) {
-    //       if (e.message.indexOf("Not Found") != -1)
-    //         return cb(Error(`Could not read ${r.slug} repo`))
-    //       return cb(e,r)
-    //     }
-    //     r = selectFromObject(r, select.edit)
-    //     r.repo = `${owner}/${r.slug}`
-    //     if (overrideMD) {
-    //       r.synced = r.md == overrideMD
-    //       r.md = overrideMD // hack for front-end editor to show latest edit
-    //     }
-    //     cb(null,r)
-    //   }
-    // },
-    // statsViewList(cb) {
-    //   return (e,posts) => {
-    //     var statsR = []
-    //     for (var p of posts) {
-    //       var url = select.url(p),
-    //         wordcount = PostsUtil.wordcount(p.md),
-    //         reviews = select.mapReviews(p.reviews),
-    //         forkers = select.mapForkers(p.forkers || [])
-    //       p.lastTouch = p.lastTouch || { utc: moment().add(-3,'months').toDate() }
-    //       statsR.push(_.extend(selectFromObject(p, select.stats),
-    //         { url, reviews, forkers, wordcount }))
-    //     }
-    //    cb(null,statsR)
-    //   }
-    // }
-  // }
-// }
 
 
 

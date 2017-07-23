@@ -25,7 +25,7 @@ IT 'Fails with invalid token', ->
 
 IT 'Returns "public_repo" and "user" for valid token', ->
   STUB.wrapper('GitPublisher').api('user.get').success('gh_user_scopes')
-  STORY.newUser 'tst1', { ghKey: 'author1' }, (key) ->
+  STORY.newAuthor 'tst1', { ghKey: 'author1' }, (key) ->
     user = FIXTURE.users[key]
     Wrappers.GitPublisher.getScopes user, (e,r,payload) ->
       expect(e, e).to.be.null
@@ -54,7 +54,7 @@ IT 'Executes all green step sequence', ->
   gpSTUB('orgs.addTeamMembership','1862308_airpairtest1')
   # @gpSTUB('repos.createFile','repos_createFile_1449060354_postMD')
 
-  STORY.newUser 'tst1', { ghKey: 'author1' }, (key) =>
+  STORY.newAuthor 'tst1', { ghKey: 'author1' }, (key) =>
     user = FIXTURE.users[key]
     repo = "steps-#{@testSeed}"
     postId = ObjectId()

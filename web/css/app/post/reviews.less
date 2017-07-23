@@ -1,0 +1,74 @@
+section.reviews {
+  width:101%;
+  padding:30px 0 0 0;
+  position:relative;
+  background:white;
+
+  form {
+    background-color:#151821;
+    color:white;
+    padding-top:15px;
+    text-align:left;
+    select { color:@orangedark }
+    textarea { min-height:100px;color:@orangedark }
+    h4 { font-size:24px }
+    .btn { width:100% }
+    .stars {
+      .control-label { font-size:22px;font-weight:normal; }
+    }
+    p.edit { display:none;font-size:18px;font-style:italic;margin-top:10px;margin-bottom:0 }
+    .saved {
+      p.edit { display:block }
+      .btn { display:none }
+    }
+  }
+  .noReviews {
+    border-top:solid 1px @bluelight;
+    margin-top:5px;padding-top:10px
+  }
+
+
+ul.reviews {
+    max-width:90%;
+    margin:-5px auto!important;
+    // .ulNoStyle;
+    background:none;
+    > li {
+      margin:10px 0px 10px 70px;
+      display:block;
+      border:solid 1px @graypale;
+      border-radius:16px;
+      position:relative;
+      padding:6px 5px 10px 10px;
+      text-align:left;
+      img.usr { margin-right:5px;position:absolute;left:-65px;top:4px;width:50px;height:50px }
+      .stars { position:absolute;right:8px;top:8px }
+      label { font-size:12px;color:@blue }
+      time { font-size:10px }
+      p { line-height:21px;margin-top:0px;color:@gray;font-size:15px }
+      header { border:none;margin-bottom:2px }
+      ul.replies {
+        margin-left:70px;padding-left:0;
+        li {
+          padding-top:2px;
+          display:block;
+          // border-top:solid 1px @palegray;
+          position:relative;padding:4px;img { top:6px } }
+      }
+      footer {
+        menu { padding-left:0;margin-top:0;
+          span {
+            font-family: 'Helvetica Neue', arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            line-height:13px;font-size:13px;
+            font-weight:500
+          }
+          a { color:rgba(0, 39, 59, 0.35); }
+          a:hover { color:@orangehighlight }
+        }
+        .bullet { font-weight:100; }
+        textarea { display:block;width:100% }
+      }
+    }
+  }
+}

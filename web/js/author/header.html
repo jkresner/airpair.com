@@ -3,12 +3,12 @@
   <li class="edge"></li>
   <li ng-class="stepCss('info', editing)">
     <label>Meta</label>
-    <a href="/post-info/{{id}}" target="_self">Info</a>
+    <a href="/author/post-info/{{id}}" target="_self">Info</a>
     <a class="locked" title="Save your changes">Info</a>
   </li>
   <li ng-class="stepCss('edit', new)">
     <label>Edit</label>
-    <a href="/editor/{{id}}">Edit</a>
+    <a href="/author/editor/{{id}}">Edit</a>
     <a class="locked" title="Edit post markdown">Edit</a>
     <a ng-if="!new && !post.submitted" class="del" ng-confirm-click="delete(id)" confirm='Delete post "{{title}}"?'>delete</a>
   </li>
@@ -18,18 +18,18 @@
   </li> -->
   <li ng-class="stepCss('collaborate', !submitted)">
     <label>Contribs</label>
-    <a href="/collaborate/{{id}}" target="_self">Contribs</a>
+    <a href="/author/collaborate/{{id}}" target="_self">Contribs</a>
     <a class="locked" title="Submit your post to unlock social features">Contribs</a>
   </li>
   <li ng-class="stepCss('submit', !submittable)">
     <label>Reviews</label>
-    <a href="/reviews/{{id}}" target="_self">Reviews</a>
+    <a href="/author/reviews/{{id}}" target="_self">Reviews</a>
     <!-- <a href="/submit/{{id}}" ng-if="submitted">Reviews</a> -->
     <a class="locked" title="Complete post requirement to unlock submit">Reviews</a>
   </li>
   <li class="edge" ng-class="stepCss('publish', !publishable)">
     <label>Publish</label>
-    <a href="/publish/{{id}}">Publish</a>
+    <a href="/author/publish/{{id}}">Publish</a>
     <a class="locked" title="Complete post requirement to unlock submit">Publish</a>
   </li>
 </ol>
@@ -42,7 +42,7 @@
   </li>
   <li ng-class="stepCss('edit')">
     <label>Edit</label>
-    <a href="/editor/{{id}}">Edit</a>
+    <a href="/author/editor/{{id}}">Edit</a>
   </li>
 </ol>
 
@@ -52,7 +52,3 @@
   <var ng-if="wordcount">{{ wordcount }} words</var></span>
 <cite>{{post.title||'New post'}}</cite>
 
-<div><style type="text/css">
-  body > footer { display:none }
-  body > header { display:none;background-color:white; }
-</style></div>

@@ -1,0 +1,17 @@
+{
+  "specs":                "data",
+  "colors": {
+    "seed":               "magenta",
+    "spec":               "white",
+    "error":              "red"
+  },
+  "mongo": {
+    "url":                "mongodb://localhost/airpair_dev",
+    "collections":        ["users","templates","posts","redirects"]
+  },
+  "paths": {
+    "fixtures":           "./201707/fixtures",
+    "specs":              "./201707/migrations"
+  }
+}
+

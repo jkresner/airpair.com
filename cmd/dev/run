@@ -1,10 +1,12 @@
 #!/bin/sh
 killall node
-cd cmd;
-if [ "$1" = "--dev" ]; then
-  build/dev;
+if [ "$1" = "" ]; then
+  ./cmd/build/dev;
 elif [ "$1" = "--dist" ]; then
-  build/dist;
+  ./cmd/build/dev;
+elif [ "$1" = "--dist" ]; then
+  ./cmd/build/dist;
 fi
-node ../../static/index.js &
+node ../static/index.js &
+cd cmd;
 gulp;

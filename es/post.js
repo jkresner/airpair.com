@@ -29,11 +29,25 @@ module.exports = {
 
 
   wordcount(post) {
-    var {md} = post
-    var s = md.replace(/(^\s*)|(\s*$)/gi,"");
-    s = s.replace(/[ ]{2,}/gi," ");
-    s = s.replace(/\n /,"\n");
-    return s.split(' ').length;
+    var md = post.md
+    var words = md.match(/\w+/g)
+    var count = words ? words.filter(word => word.length>1).length : 0
+    return count
+    // return mod ? count-(count%mod) : count
+
+    // var s = md.replace(/(^\s*)|(\s*$)/gi,"");
+    // s = s.replace(/[ ]{2,}/gi," ");
+    // s = s.replace(/\n /,"\n");
+    // return s.split(' ').length;
+  },
+
+
+  wordsTogoForReview(md) {
+    var wcount = this.wordcount({md:md})
+    if (wcount > 399) return 0
+    var remainder = wcount%50;
+    var countWithoutRemainder = wcount - remainder;
+    return 400 - countWithoutRemainder;
   },
 
 
@@ -79,8 +93,8 @@ module.exports = {
 
   //-- Takes <sup> tags and replaces content with
   //-- Numbers pointing to refence table
-  indexReferences(md) {
-    // $log('indexReferences'.yellow, md)
+  indexReferences(md, marked) {
+    var markup = marked || global.marked
     var refs = []
     var idx = 0
     var supTags = md.match(/<sup>([\s\S]*?)<\/sup>/g) || []
@@ -92,14 +106,13 @@ module.exports = {
       // allows to reuse previous references
       // e.g. <sup>1</sup> to point to first reference
       if (!reused)
-        refs.push(`${++idx}. <cite id="ref-${idx}">${marked(ref)}</cite>`.replace(/<\/?p>|\n/g,''))
+        refs.push(`${++idx}. <cite id="ref-${idx}">${markup(ref)}</cite>`.replace(/<\/?p>|\n/g,''))
 
       md = md.replace(sup, `<sup>[[${idx}](#ref-${reused?ref:idx})]</sup>`)
     })
 
     return { md, references: refs.join('\n') }
   },
-
 
   defaultSlug(post) {
     var slug = post.title
@@ -168,6 +181,7 @@ module.exports = {
 
 
   todo(post) {
+    console.log('fuck.todo', post)
     var stats = post.stats
     var words = stats ? stats.words : null
     if (!words || words < 400) return 'wordcount'
@@ -191,25 +205,26 @@ module.exports = {
   },
 
 
-  calcStats(post, wordcount) {
+  calcStats(post) {
     var PRs = false// PRs || []
     var feedback = post.reviews ? post.reviews.map(r => r.said) : []
     var stars = post.reviews ? post.reviews.map(r => r.val) : []
-
+    console.log('calcStats', this.wordcount)
     var stats = {
       reviews: stars.length,
       comments: feedback.length + _.flatten(_.pluck(post.reviews||[],'replies')||[]).length,
       forkers: (post.forkers||[]).length,
       // views: 0,            // figure it out later
       // shares: 0,           // figure it out later
-      words: wordcount(post.md)   //  words: utilFns.wordcount(post.md)
+    //   rating: (stars.length > 0) ? totalStars / stars.length : null,
+      words: this.wordcount(post)   //  words: utilFns.wordcount(post.md)
     }
 
     var sum = 0
     for (var i = 0, ii = stars.length; i < ii; ++i)
       sum += stars[i]
 
-    if (sum > 0) stats.rating = sum/stars.length
+    if (sum > 0) stats.rating = parseInt((sum/stars.length)*100)/100
 
     return !PRs ? stats : _.extend(stats, {
       openPRs:     _.where(PRs, pr => pr.state=='open').length,  // not really correct at all grrr
@@ -224,18 +239,6 @@ module.exports = {
     //   totalStars = totalStars + s
     //   return s
     // })
-
-    // return {
-    //   rating: (stars.length > 0) ? totalStars / stars.length : null,
-    //   reviews: reviews.length,
-    //   comments: reviews.length + _.flatten(_.pluck(reviews,'replies')||[]).length,
-    //   forkers: (post.forkers||[]).length,
-    //   openPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='open').length,  // not really correct at all grrr
-    //   closedPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='closed').length,  // not really correct at all grrr
-    //   acceptedPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='closed').length,  // not really correct at all grrr
-    //   shares: 0,            // figure it out later
-    //   words: utilFns.wordcount(post.md)
-    // }
   },
 
 
@@ -273,51 +276,6 @@ module.exports = {
   //   return /^[a-z0-9]+([a-z0-9\-\.]+)*$/.test(slug)
   // },
 
-  wordcount(md) {
-    var s = md.replace(/(^\s*)|(\s*$)/gi,"");
-    s = s.replace(/[ ]{2,}/gi," ");
-    s = s.replace(/\n /,"\n");
-    return s.split(' ').length;
-  },
-
-  wordsTogoForReview(wordcount) {
-    var remainder = wordcount%50;
-    var countWithoutRemainder = wordcount - remainder;
-    return 400 - countWithoutRemainder;
-  },
-
-  extractSupReferences(markdown) {
-    var references = null
-    var supTags = markdown.match(/<sup>(.*?)<\/sup>/g)
-
-    if (!supTags) return {markdown,references}
-
-    var count = 0
-    var references = {}
-
-    var md = markdown
-    supTags.forEach((sup) => {
-      var ref = sup.replace(/<\/?sup>/g,'')
-      var reused = references[parseInt(ref)]
-
-      // allows to reuse previous references
-      if (!reused) {
-        references[++count] = ref
-        markdown = markdown.replace(sup,
-          `<sup>[<a href="#r${count}">${count}</a>]</sup>`)
-      } else {
-        markdown = markdown.replace(sup,
-          `<sup>[<a href="#r${count}">${ref}</a>]</sup>`)
-      }
-    })
-
-    return { markdown, references }
-  },
-
-  markupReferences(references, marked) {
-    return _.map(_.keys(references), (idx) =>
-      `<cite id="r${idx}">${idx}. ${marked(references[idx])}</cite>`.replace(/<\/?p>/g,''))
-  },
 
   // getPreview(md, cb) {
   //   var preview = utilFns.extractSupReferences(md)
@@ -331,67 +289,6 @@ module.exports = {
   //   })
   // },
 
-  // calcStats(post, wordcount) {
-  //   var PRs = false// PRs || []
-  //   var feedback = post.reviews ? post.reviews.map(r => r.said) : []
-  //     forkers: (post.forkers||[]).length,
-  //     // views: 0,            // figure it out later
-  //     // shares: 0,           // figure it out later
-  //     words: wordcount(post.md)   //  words: utilFns.wordcount(post.md)
-  //   }
-  //   return !PRs ? stats : _.extend(stats, {
-  //     openPRs:     _.where(PRs, pr => pr.state=='open').length,  // not really correct at all grrr
-  //     closedPRs:   _.where(PRs, pr => pr.state=='closed').length,  // not really correct at all grrr
-  //     acceptedPRs: _.where(PRs, pr => pr.state=='closed').length,  // not really correct at all grrr
-  //   })
-
-
-  calcStats(post) {
-    var PRs = false
-    // var PRs = post.PRs || []
-    var feedback = post.reviews ? post.reviews.map(r => r.said) : []
-    var stars = post.reviews ? post.reviews.map(r => r.val) : []
-
-    var stats = {
-      reviews: stars.length,
-      comments: feedback.length + _.flatten(_.pluck(post.reviews||[],'replies')||[]).length,
-      forkers: (post.forkers||[]).length,
-      // views: 0,            // figure it out later
-      // shares: 0,           // figure it out later
-      words: utilFns.wordcount(post.md)
-    }
-
-    var sum = 0
-    for (var i = 0, ii = stars.length; i < ii; ++i)
-      sum += stars[i]
-
-    if (sum > 0) stats.rating = parseInt((sum/stars.length)*100)/100
-
-    return !PRs ? stats : _.extend(stats, {
-      openPRs:     _.where(PRs, pr => pr.state=='open').length,  // not really correct at all grrr
-      closedPRs:   _.where(PRs, pr => pr.state=='closed').length,  // not really correct at all grrr
-      acceptedPRs: _.where(PRs, pr => pr.state=='closed').length,  // not really correct at all grrr
-    })
-    // var totalStars = 0
-    // var reviews = post.reviews || []
-    // var stars = _.map(reviews, (r) => {
-    //   var s = parseInt(_.find(r.questions,(q)=>q.key=='rating').answer)
-    //   totalStars = totalStars + s
-    //   return s
-    // })
-
-    // return {
-    //   rating: (stars.length > 0) ? totalStars / stars.length : null,
-    //   reviews: reviews.length,
-    //   comments: reviews.length + _.flatten(_.pluck(reviews,'replies')||[]).length,
-    //   forkers: (post.forkers||[]).length,
-    //   openPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='open').length,  // not really correct at all grrr
-    //   closedPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='closed').length,  // not really correct at all grrr
-    //   acceptedPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='closed').length,  // not really correct at all grrr
-    //   shares: 0,            // figure it out later
-    //   words: utilFns.wordcount(post.md)
-    // }
-  },
 
 
   // extendWithReviewsSummary(post) {

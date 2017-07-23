@@ -1,10 +1,8 @@
 {{> siteNav }}
 
+<section id="posts">
+  <h1>Fresh posts ready for feedback</h1>
 
-<section id="allposts">
-
-  <h1 class="underline">Fresh posts ready for feedback</h1>
-
-  {{#each r.posts}}{{> postListItem this}}{{/each}}
+{{#each r.posts}}  {{> postTile this }}{{/each}}
 
 </section>

@@ -86,17 +86,17 @@ global.ANONSESSION = (opts, cb) ->
 #   LOGIN profile, {retainSession:true}, cb
 
 
-# global.HTML = ({test}, match, opts) =>
-#   status = (opts||{}).status || 200
-#   nomatch = (opts||{}).no || []
-#   PAGE test.title, { contentType: /html/, status }, (html) =>
-#     expect(html).match(pattern) for pattern in match
-#     expect(html).not.match(pattern) for pattern in nomatch
-#     if test.parent.title.match(/noindex/i)
-#       expect(html).to.have.string('<meta name="robots" content="noindex, follow">')
-#     else if test.parent.title.match(/index/i)
-#       expect(html).to.have.string('<meta name="robots" content="index, follow">')
-#     DONE()
+global.HTML = ({test}, match, opts) =>
+  status = (opts||{}).status || 200
+  nomatch = (opts||{}).no || []
+  PAGE test.title, { contentType: /html/, status }, (html) =>
+    expect(html).inc(pattern) for pattern in match
+    expect(html).not.match(pattern) for pattern in nomatch
+    if test.parent.title.match(/noindex/i)
+      expect(html).to.have.string('<meta name="robots" content="noindex, follow">')
+    else if test.parent.title.match(/index/i)
+      expect(html).to.have.string('<meta name="robots" content="index, follow">')
+    DONE()
 
 
 global.IMG = ({test}, opts) =>
@@ -146,4 +146,3 @@ STUB.allGitPublisherAPIcalls = () ->
   _API('orgs.createTeam').success('gh_orgs_createTeam_1449067207')
   _API('user.editOrganizationMembership').success('gh_user_editOrganizationMembership_JustASimpleTestOrg')
   _API('orgs.addTeamMembership').success('gh_orgs_addTeamMembership_1862308_airpairtest1')
-

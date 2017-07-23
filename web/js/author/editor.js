@@ -9,7 +9,7 @@ module.exports = function($scope, $routeParams, $timeout, $window, API, PAGE, UT
 
   var setScope = function(resp) {
     var r = resp.post
-
+    // console.log('setScope', resp.todo)
     MAIN.toggleLoading(false)
     if (r.published && !r.submitted)
       window.location = `/submit/${_id}`
@@ -48,6 +48,7 @@ module.exports = function($scope, $routeParams, $timeout, $window, API, PAGE, UT
         }
       }
     }
+
 
     if (r.repo && r.repo.fork) {
       //-- This isn't right, we need to check merged PRs properly
@@ -104,13 +105,13 @@ module.exports = function($scope, $routeParams, $timeout, $window, API, PAGE, UT
     }
     refreshStatusBar()
 
-    var preview = UTIL.post.extractReferences($scope.data.md)
+    var preview = UTIL.post.indexReferences($scope.data.md, UTIL.post.marked)
     preview.title = $scope.post.title
     preview.tags = $scope.post.tags
     preview.assetUrl = $scope.post.assetUrl
     preview.body = UTIL.post.marked($scope.data.md)
     if (preview.references)
-      preview.markedUpReferences = UTIL.post.markupReferences(preview.references, UTIL.post.marked)
+      preview.markedUpReferences = UTIL.post.marked(preview.references)
     $scope.preview = preview
     // if ($scope.saved && $scope.preview.body) return
   }

@@ -9,18 +9,18 @@
   <div class="main-wrap">
     <div notifications></div>
     <main ng-view>
-      <div id="serverTemplate">{{{body}}}</div>
+      <div id="srv">{{{body}}}</div>
     </main>
   </div>
 
-  <script type="text/javascript" src="{{js.index}}"></script>
+  {{> siteFooter }}
+
+  <script type="text/javascript" src="{{js.app}}"></script>
   <script type="text/javascript">
 
-  function bindTracking() {
-    ga('send', 'pageview')
-  }
+  function trackpageview() { ga('send', 'pageview') }
 
-  window.viewData = {
+  window.pageData = {
     session: {{{ JSONSESSION session }}}, {{#if r.htmlHead }}
     canonical: '{{{ r.htmlHead.canonical }}}', {{/if}}{{#if r.tag}}
     tag: {{{ JSON r.tag }}}, {{/if}}{{#if r.htmlHead.ogTypePost }}
@@ -29,7 +29,7 @@
 
   </script>
 
+  {{> ga }}
 
-  {{> initPage }}
 </body>
 </html>

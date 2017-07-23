@@ -9,3 +9,6 @@
     <li class="ct"><a href="{{contact}}" target="_blank" rel="nofollow">Contact</a></li>{{/if}}
   </ul>{{/with}}
 </footer>
+
+<ins errors-header>{{#if warnings}}{{#each warnings}}<div class="danger"><p><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> &nbsp;{{this}}</p></div>{{/each}}{{/if}}
+  </ins>

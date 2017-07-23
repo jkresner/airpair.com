@@ -1,7 +1,7 @@
 """
   1) Update local mongo copy
   2) Set the checkKey in the /specs/merge file to look up the users to merge
-  coffee --nodejs "--harmony_destructuring" cmd/tools/merger/run.coffee
+  coffee --nodejs cmd/tools/merger/run.coffee
 """
 
 colors                       = require('colors')

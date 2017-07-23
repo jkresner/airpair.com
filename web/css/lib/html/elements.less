@@ -1,0 +1,55 @@
+a {                          text-decoration:none;
+                             cursor:pointer;
+                             color:@orange;
+  &:hover {                  color:@gray;
+                             text-decoration:none; }
+  &.del {                    color:@del          } }
+
+
+p {                          font-size:16px;
+                             padding:5px 0 8px 0; }
+
+
+ul {                         margin:0;
+                             padding:0;
+  li {                       display:inline-block;
+                             list-style:none    } }
+
+
+time {                       font-size:10px;
+                             color:@graymedium   }
+
+ins {                        text-decoration:none;
+                             font-style:normal;  }
+
+
+
+// --- Prism customization
+pre {
+  code {
+    font-size:12px;
+    overflow:visible!important;
+  }
+  overflow:auto!important;
+  border:none;padding:6px!important;max-width:640px;
+  max-height:360px;
+}
+pre + footer {
+  text-align:right;border-top:solid 1px @bluelight;
+  margin:0px 0 30px 0;padding-top:3px;max-width:640px;
+}
+
+pre.line-numbers {
+  code {
+    padding-left:30px;
+  }
+  // .line-numbers .line-numbers-rows { width:1.9em;left:0 }
+  // .line-numbers-rows > span:before { padding-right:0.6em }
+  .line-numbers-rows {
+    width:1.9em;left:0;
+    > span:before { padding-right:0.6em }
+  }
+}
+// ---End Prism customization
+
+

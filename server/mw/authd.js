@@ -79,41 +79,44 @@ module.exports = (app, mw, {forbid}) => {
     cache('banPOST', mwBan('banPOST'))
   mw.
     cache('banGET', mwBan('banGET'))
-  mw.
-    cache('throttle', function(req, res, next) {       // ? enhance forbid to give other responses like 500
-      var {ip,user} = req
-      var key = moment().format('DDHHmm')
-      var throttle = 0
-      cache['iplog'][key] = cache['iplog'][key] || []
-      cache['iplog'][key].push(ip)
-      for (var hit of cache['iplog'][key]) if (hit == ip) throttle++
 
-      if (throttle < forbid.throttle.limit)
-        return next()
+  if (forbid.throttle)
+    mw.
+      cache('throttle', function(req, res, next) {       // ? enhance forbid to give other responses like 500
+        var {ip,user} = req
+        var key = moment().format('DDHHmm')
+        var throttle = 0
+        cache['iplog'][key] = cache['iplog'][key] || []
+        cache['iplog'][key].push(ip)
+        for (var hit of cache['iplog'][key]) if (hit == ip) throttle++
 
-      // $log('throttle.user'.red, user, ip, throttle, throttle % forbid.throttle.limit)
-      res.send(cache.abuse.increment(500, req))
+        if (throttle < forbid.throttle.limit)
+          return next()
 
-      $logMW(req, 'throttle')
-      var data = { mw:'apcom_throttle', name:'throttle', rule:`${key}[${ip}] > throttle.limit`, hits:cache['iplog'][key], headers: req.headers }
+        // $log('throttle.user'.red, user, ip, throttle, throttle % forbid.throttle.limit)
+        res.send(cache.abuse.increment(500, req))
 
-      if (throttle == 25)
-        flareBan(req, data)
-      else if ((throttle % forbid.throttle.limit) == 0)
-        global.analytics.issue(req.ctx, 'scrape', 'security_high', data)
-    })
+        $logMW(req, 'throttle')
+        var data = { mw:'apcom_throttle', name:'throttle', rule:`${key}[${ip}] > throttle.limit`, hits:cache['iplog'][key], headers: req.headers }
 
-  mw.
-    cache('abuser', function(req, res, next) {
-      var under = (cache.abuse[req.ctx.ip]||[]).length < forbid.abuse.limit
-      var ok = cache['abuse'].ban.indexOf(req.ctx.ip) == -1
-      // $log('check abuse'.yellow, `[${req.ctx.ip}]`, (cache.abuse[req.ctx.ip]||[]).length, cache['abuse'].ban.indexOf(req.ctx.ip))
-      if (under && ok)
-        return next()
-      // $log('check abuse'.yellow, `[${req.ctx.ip}]`, 'over'.red)
-      res.send(cache.abuse.increment(500, req))
-      $logMW(req, ok ? 'abuser' : 'banned')
-    })
+        if (throttle == 25)
+          flareBan(req, data)
+        else if ((throttle % forbid.throttle.limit) == 0)
+          global.analytics.issue(req.ctx, 'scrape', 'security_high', data)
+      })
+
+  if (forbid.abuse)
+    mw.
+      cache('abuser', function(req, res, next) {
+        var under = (cache.abuse[req.ctx.ip]||[]).length < forbid.abuse.limit
+        var ok = cache['abuse'].ban.indexOf(req.ctx.ip) == -1
+        // $log('check abuse'.yellow, `[${req.ctx.ip}]`, (cache.abuse[req.ctx.ip]||[]).length, cache['abuse'].ban.indexOf(req.ctx.ip))
+        if (under && ok)
+          return next()
+        // $log('check abuse'.yellow, `[${req.ctx.ip}]`, 'over'.red)
+        res.send(cache.abuse.increment(500, req))
+        $logMW(req, ok ? 'abuser' : 'banned')
+      })
 
 
   mw.

@@ -1,6 +1,4 @@
-var POST = require("../../es/post")
-
-module.exports = (DAL, Data) => assign(POST, {
+module.exports = (DAL, Data) => assign(require("../../es/post"), {
 
 
   getHeadMD(user, post, cb) {

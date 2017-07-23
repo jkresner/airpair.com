@@ -19,7 +19,7 @@ module.exports = (DAL, {Query, Opts, Project}, DRY) => ({
           tagged[_id] = tagged[_id] ? tagged[_id]+1 : 1
       }
 
-      r = { stats: { posts: { published: posts.length, by, tagged } } }
+      r = { stats: { posts: { published: posts.length, by, tagged, tags: Object.keys(tagged).length } } }
       r.post = posts.map(p => ({ id: p.slug,
         url: p.htmlHead.canonical.replace(/^(https|http)/,'')
                                   .replace('://www.airpair.com','')

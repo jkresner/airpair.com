@@ -1,39 +1,41 @@
-module.exports = function($scope, $routeParams, $location, API, PAGE, StaticData) {
+module.exports = function($scope, $routeParams, $location, API, PAGE) {
 
-  var id = $routeParams.id
+  var _id = $routeParams.id
 
-  if (id) {
-    $scope.preview = {id}
+  if (_id) {
+    $scope.data = {_id}
 
-    API(`/author/info/${id}`, r => PAGE.main($scope).setData({
-      _id: r._id,
-     by:    r.by,
-     tags:  r.tags,
-     title: r.title,
-     type:  r.type || 'comparison',
-     assetUrl: r.assetUrl || '',
-     imgur: r.imgur,
+    API(`/author/info/${_id}`, r => PAGE.main($scope).setData({
+      _id:      r._id,
+      by:       r.by,
+      tags:     r.tags,
+      title:    r.title,
+      type:     r.type || 'comparison',
+      assetUrl: r.assetUrl || '',
+      imgur:    r.imgur
     }, data => {
-      console.log('um.cb.setPreview', data)
+      $scope.data = data
       $scope.preview = data
+      // console.log('um.cb.setPreview', $scope.preview)
     }))
 
-    $scope.$watch('data.assetUrl', v => {
-      $scope.preview.assetUrl = v
-      $scope.preview.assetPlaceholder = v == ''
+    $scope.$watch('preview.assetUrl', v => {
+      if (!$scope.preview) return
+      if (v == '' || !v)
+        $scope.preview.assetPlaceholder = true
+      else
+        $scope.preview.assetUrl = v
     })
     $scope.exampleImage = v => {
-      $scope.data.imgur = 'XImqjO7'
-      $scope.data.assetUrl = 'https://imgur.com/XImqjO7.png'
-      // $scope.data.thumbUrl = 'https://imgur.com/XImqjO7m.png'
+      $scope.preview.imgur = 'XImqjO7'
+      $scope.preview.assetUrl = 'https://imgur.com/XImqjO7.png'
+      $scope.preview.assetPlaceholder = false
     }
   }
-  else {
+  else
     PAGE.main($scope,{loading:false})
         .setData({ title: '', tags: [], type: 'tutorial', imgur: '' })
         .toggleLoading(false)
-  }
-
 
 
   $scope.lightup = function(elem) {
@@ -46,14 +48,14 @@ module.exports = function($scope, $routeParams, $location, API, PAGE, StaticData
   }
 
 
-  $scope.save = data => API(`/author${id?'/info/'+id:'/post'}`, data,
+  $scope.save = data => API(`/author${_id?'/info/'+_id:'/post'}`, data,
     r => {
-      window.location = `/editor/${r._id}`
-      console.log('success', `/editor/${r._id}`)
+      window.location = `/author/editor/${r._id}`
+      // console.log('success', `/editor/${r._id}`)
     })
 
-  $scope.savable = ({tags,assetUrl,title}) =>
-    title != '' && (id ? (tags.length > 0 && assetUrl!='') : true)
+  $scope.savable = d =>
+    d.title != '' && (d._id ? ((d.tags||[]).length > 0 && d.assetUrl!='') : true)
 
 }
 

@@ -1,5 +1,10 @@
 module.exports = (app, mw) => {
 
+  app
+    .get('/login', mw.$.inflateLanding('login'), mw.$.pageLanding)
+
+  app
+    .get('/typo', mw.res.page('typography',{layout:'landing'}))
 
   // app.routers['auth'].get('/god/:login', (req, res, next) => {
   //   if (!/dev/.test(config.env) && !/^155.143.23/.test(req.ctx.ip))
@@ -15,7 +20,6 @@ module.exports = (app, mw) => {
       // })
   //   })
   // })
-
 
 }
 

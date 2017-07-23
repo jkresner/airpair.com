@@ -178,7 +178,7 @@ updating = ->
           expect(p1._id).to.exist
           expect(p1.title).to.equal(title)
           expect(p1.tags.length).to.equal(0)
-          EXPECT.equalIds(p1.by._id, FIXTURE.users.jkg._id)
+          expect(p1.by).eqId(sJk)
           p1.type = 'docs'
           p1.tags = tags
           p1.assetUrl = 'https://imgur.com/as1121sd.png'

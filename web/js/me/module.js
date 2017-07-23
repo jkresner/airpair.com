@@ -5,12 +5,11 @@ angular.module("AirPair.Author.Me", [])
 
   var list = { template: require('./home.html'), controller: 'me:home' }
   $routeProvider
-    .when('/', list)
-    .when('/home', list)
-    .when('/forks', { template: require('./forks.html'), controller: 'me:forks' })
-    .when('/drafts', { template: require('./drafts.html'), controller: 'me:drafts' })
-    .when('/published', { template: require('./published.html'), controller: 'me:published' })
-    .when('/profile', { template: require('./profile.html'), controller: 'me:profile' })
+    .when('/author', list)
+    .when('/author/forks', { template: require('./forks.html'), controller: 'me:forks' })
+    .when('/author/drafts', { template: require('./drafts.html'), controller: 'me:drafts' })
+    .when('/author/published', { template: require('./published.html'), controller: 'me:published' })
+    .when('/author/profile', { template: require('./profile.html'), controller: 'me:profile' })
 })
 
 

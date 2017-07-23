@@ -1,0 +1,60 @@
+._stars {
+  margin:5px 0;
+  padding:0;
+  -webkit-padding-start:0px;
+  background:none;
+  vertical-align:top;
+  display:block;
+  // unicode-bidi: bidi-override; direction:rtl;
+  li {                       .awesome;
+                             list-style:none;
+                             padding:0;
+                             margin:0 0px;
+                             display:inline-block;
+                             overflow:hidden;
+    // -webkit-padding-start:0px;
+    &:before {
+      content:"\f005";
+      color:@yellowhighlight;
+      text-shadow: 0px 1px 1px @yellowdark, 1px 2px 1px @yellow;
+      // content:"\f006";
+      // color:#777;
+      margin:0 }
+  }
+}
+
+ul.stars {                   ._stars;
+                             font-size:34px;
+                             line-height:36px;
+                             height:36px;
+  > li {                     width:36px;height:36px;
+    &:before {               width:36px;padding-right:4px; }
+    &.half {                 width:18px;
+      &:before {             width:18px } } } }
+
+.stars-xl {
+  ul.stars {                 font-size:46px;
+                             line-height:48px;
+                             height:48px;
+    > li {                   width:48px;height:48px;
+      &:before {             width:48px; }
+      &.half {               width:24px;
+        &:before {           width:24px } } } } }
+
+.stars-sm {
+  ul.stars {                 font-size:22px;
+                             line-height:24px;
+                             height:24px;
+    > li {                   width:24px;height:24px;
+      &:before {             width:24px; }
+      &.half {               width:12px;
+        &:before {           width:12px } } } } }
+
+.stars-tiny {
+  ul.stars {                 font-size:14px;
+                             line-height:16px;
+                             height:16px;
+    li {                     width:16px;height:16px;
+      &:before {             width:16px; }
+      &.half {               width:8px;
+        &:before {           width:8px } } } } }

@@ -1,0 +1,21 @@
+{{#if authenticated}}
+<header>
+  <div>
+    <a href="/" tile="author.airpair - Social blogging for software developers" target="_self"></a>
+    <ul>
+    <li class="wr min320 lg"><a href="/drafts" target="_self">Drafts</a></li>
+    <li class="wr min320 lg"><a href="/published" target="_self">Published</a></li>
+    <li class="fr min640"><a href="/forks" target="_self">Forks</a></li>
+    <li class="usr min640"><a href="/profile" target="_self"><img src="{{session.avatar}}&s=20" /></a></li>
+    <li class="nw min320 lg">
+      <a href="/new" target="_self" class="min640"><div>New</div></a>
+    </li>
+    {{!-- <li class="ov quiet min640"><a href="/100k-writing-competition" target="_self">Comp</a></li> --}}
+{{else}}
+
+{{!-- <li class="ov min640"><a href="/about" target="_self">Overview</a></li>
+      <li class="lg"><a href="/" target="_self">Login</a></li>--}}
+{{/if}}
+    </ul>
+  </div>
+</header>

@@ -1,0 +1,43 @@
+{{#with r.post}}
+<article id="post" class="{{tmpl}}" no-compile>
+  <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
+  {{#if html.toc }}
+  <h4 class="table-of-contents">Table of contents</h4>{{{ html.toc }}}
+  {{/if}}
+  <div>{{{ html.body }}}</div>
+  <header>
+    {{!-- <time>Published</time> --}}
+    {{!-- <ul history></ul> --}}
+    <p class="feature"><img src="{{ assetUrl }}" /></p>
+  </header>
+  <footer>
+    {{> post_tagged this }}
+    {{> post_author by }}{{#if references}}
+    <section id="references">
+      <h4>References</h4>{{#each references}}
+      <cite>{{{this}}}</cite>{{/each}}
+    </section>{{/if}}
+  </footer>
+</article>
+<header>
+  <nav>
+    {{!-- {{> summary }} --}}
+    {{!-- {{> issues }} --}}
+    {{!-- {{> contributors | PRs }} --}}
+    <button class="btn btn-inverse"><i class="mega-octicon octicon-repo-forked"></i> fork</button>
+    {{!-- {{> fork }} --}}
+    {{!-- {{> activity }} --}}
+    {{!-- {{> share }} --}}
+  </nav>
+</header>{{/with}}
+<footer>{{#if r.reviews }}
+  <section id="reviews"></section>{{/if}}{{#if ads }}
+  {{> ads }}{{/if}}
+  {{!--
+  {{> share }}
+  {{> review to customize | build rep }}
+  {{> contribute }}
+  {{> tiles suggestions.similar }}
+  {{> tiles suggestions.author }}
+  {{> tiles suggestions.latest }} --}}
+</footer>

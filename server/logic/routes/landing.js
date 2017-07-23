@@ -10,9 +10,19 @@ module.exports = (DAL, Data, DRY) => ({
         key: 'home',
         url: '/',
         htmlHead: {
-          title: "airpair | Coding help, Software consultants & Programming resources",
-          description: ""
+          title: "airpair | Software jobs && programming resources",
+          description: "Software consultants for hire"
         },
+      },
+      login: {
+        _id: Id("5706abc347ba64cb164bec08"),
+        url: '/login',
+        key: 'login',
+        htmlHead: {
+          title: "airpair | Software programming jobs and articles",
+          description: "Login to airpair.com"
+        },
+        noindex: true
       },
       comp2015: {
         _id: Id('54c937cc85e52c93f2c72bf4'),

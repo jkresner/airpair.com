@@ -3,13 +3,13 @@ angular.module("AirPair.Author", []).config($routeProvider => {
   var route = (ctrl, template) => ({ controller: `author:${ctrl}`, template })
 
   $routeProvider
-    .when('/new', route('info', require('./info.html')))
-    .when('/post-info/:id', route('info', require('./info.html')))
-    .when('/editor/:id', route('editor', require('./editor.html')))
-    .when('/submit/:id', route('submit', require('./submit.html')))
-    .when('/collaborate/:id', route('collaborate', require('./collaborate.html')))
-    .when('/publish/:id', route('publish', require('./publish.html')))
-    .when('/fork/:id', { template: require('./fork.html'), controller: 'author:fork' })
+    .when('/author/new', route('info', require('./info.html')))
+    .when('/author/post-info/:id', route('info', require('./info.html')))
+    .when('/author/editor/:id', route('editor', require('./editor.html')))
+    .when('/author/submit/:id', route('submit', require('./submit.html')))
+    .when('/author/collaborate/:id', route('collaborate', require('./collaborate.html')))
+    .when('/author/publish/:id', route('publish', require('./publish.html')))
+    .when('/author/fork/:id', { template: require('./fork.html'), controller: 'author:fork' })
 })
 
 
@@ -33,7 +33,7 @@ angular.module("AirPair.Author", []).config($routeProvider => {
         $scope.status = UTIL.post.status(post)
         $scope.tile = post.title
         $scope.submitted = (post.history||{}).submitted
-        $scope.author = UTIL.role.author(session, post)
+        $scope.author = UTIL.post.role.author(session, post)
         // console.log('editHeader.post', $scope.wordcount, post.stats)
 
         if ($scope.author) {
@@ -62,7 +62,9 @@ angular.module("AirPair.Author", []).config($routeProvider => {
   controller($scope) {
     $scope._id = $scope.post._id
     if ($scope.md) {
-      $scope.$watch('md', md => $scope.wordstogo = 400 - UTIL.str.wordcount(md,50))
+      $scope.$watch('md', md =>
+        $scope.wordstogo = UTIL.post.wordsTogoForReview(md)
+      )
       $scope.$watch('todo', todo => $scope.next = todo.next)
     }
   }
@@ -76,13 +78,17 @@ angular.module("AirPair.Author", []).config($routeProvider => {
 }))
 
 
+.directive('preview', (WINDOW, PAGE, UTIL) => ({
+  template: require('./preview.html'),
+  controller($rootScope, $scope) { }
+}))
+
 
 .directive('previewMenu', (WINDOW, PAGE, UTIL) => ({
   template: require('./previewMenu.html'),
   controller($rootScope, $scope, $timeout) {
     // console.log('previewMenu', $scope)
     $rootScope.$watch('ui.page.preview', state => {
-      console.log('previewupdate.d', state)
       if (state) {
         $scope.toggle = state.toggle
         $scope.preview = state

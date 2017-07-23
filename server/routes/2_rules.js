@@ -1,5 +1,8 @@
-module.exports = function(app, mw, {rules}) {
-  if (!rules) return;
+module.exports = function(app, mw, {rules,canonical}) {
+
+  if (!rules || !canonical) return;
+
+  honey.projector['routes'].Project.tagged(cache.canonical)
 
   app.get('/posts/thumb/:id', mw.$.badBot, (req,res,next) => {
     var post = cache.posts[req.params.id]
@@ -29,10 +32,8 @@ module.exports = function(app, mw, {rules}) {
   var rewrites   = cached['rewrite'].map(r => [new RegExp(r.url,'i'),r.to])
 
   var redir = (to, status) => {
-    LOG('cfg.route', `${status}                >`, to.green)
     return (req, res, next) => {
       if (req.url.match('^/v1/api/')) return next()
-      $log('redir', to, status, agg['301'][to])
       res.redirect( status, req.url.replace(req.url.split('?')[0], to) )
     }
   }
@@ -55,10 +56,10 @@ module.exports = function(app, mw, {rules}) {
     .get(pattern, write({pattern,sub}))
 
   for (var to in agg['301']) router
-    .get(agg['301'][to], redir(to, 301))
+    .get(agg['301'][to], redir(to, 301)) + LOG('cfg.route', `    301     `, `> ${to}`.green)
 
   for (var to in agg['302']) router
-    .get(agg['302'][to], redir(to, 302))
+    .get(agg['302'][to], redir(to, 302)) + LOG('cfg.route', `    302     `, `> ${to}`.green)
 
   if (agg['501'].length > 0) LOG('cfg.route', `501   >>>\t\t       [${agg['501'].length}]`) + router
     .get(agg['501'], (req, res) => res.send(cache.abuse.increment(501, req)))

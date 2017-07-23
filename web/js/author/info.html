@@ -1,6 +1,6 @@
 <section id="info" class="edit" ng-if="!ui.main.loading">
 
-  <figure class="authoring" ng-if="!preview">
+  <figure class="authoring" ng-if="!data">
     <h1><em>"author mode"</em> is easy</h1>
 
     <ul class="infoblock">
@@ -27,25 +27,24 @@
 
 
   <figure class="authoring" ng-if="preview">
-  <section  class="preview s400">
-    <div id="post" class="" preview></div>
-    <header>Preview <b>header</b> <!-- | <a href="">footer</a> --> (Mobile Landscape 400px)</header>
-  </section>
+    <section  class="preview s400">
+      <div id="post" class="" preview></div>
+      <header>Preview <b>header</b> <!-- | <a href="">footer</a> --> (Mobile Landscape 400px)</header>
+    </section>
   </figure>
 
-<section class="form">
+<section class="form" ng-if="preview">
 
   <form>
     <legend>Post info</legend>
 
-
-    <div ng-if="data._id">
+    <div ng-if="preview">
 
       <div class="form-group">
 
         <div class="form-group" style="position:inherit">
           <label>Tags <span class="info">up to 3</span></label>
-          <div input-tags data="data.tags"></div>
+          <div input-tags data="preview.tags"></div>
         </div>
 
         <label>Feature img
@@ -55,7 +54,7 @@
 
         <div class="input-group">
           <div class="input-group-addon">https://imgur.com/</div>
-          <input type="text" class="form-control" ng-model="data.imgur" placeholder="imgur id">
+          <input type="text" class="form-control" ng-model="preview.imgur" placeholder="imgur id">
         </div>
 
 <!--         <input ng-model="data.assetUrl" type="text" class="form-control"
@@ -68,11 +67,11 @@
 
     <div class="form-group title-group">
       <label ng-if="data._id">Title of your post</label>
-      <input ng-model="data.title" type="text" class="form-control" placeholder="Type a title for your post <h1>" ng-focus="clearDefaultTitle()" />
+      <input ng-model="preview.title" type="text" class="form-control" placeholder="Type a title for your post <h1>" ng-focus="clearDefaultTitle()" />
     </div>
 
     <div class="form-group title-group">
-      <label ng-if="data.type">Format</label>
+      <label ng-if="preview.type">Format</label>
       <select ng-model="data.type" class="form-control input-lg">
         <option value="comparison">Framework Comparison</option>
         <option value="dive">Deep Dive</option>
@@ -90,8 +89,8 @@
     <div class="form-actions">
 
       <!-- fuck angular v1 sometimes seriously -->
-      <button ng-if="!savable(data)" class="btn" disabled>Save</button>
-      <button ng-if="savable(data)" class="btn" ng-click="save(data)">Save</button>
+      <button ng-if="!savable(preview)" class="btn" disabled>Save</button>
+      <button ng-if="savable(preview)" class="btn" ng-click="save(preview)">Save</button>
       <p ng-if="!data._id">(you can change this info later)</p>
 
     </div>
@@ -112,7 +111,7 @@
     </p>
 
 
-    <p ng-if="!post.assetUrl">
+    <p ng-if="!data.assetUrl">
       The <b>Feature img</b> is used for your post's
       "thumbnail view" around airpair.com and also when
       shared on social media.

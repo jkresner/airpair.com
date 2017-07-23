@@ -13,7 +13,7 @@ module.exports = {
   },
 
   previewFooter() {
-    return `<footer><ul><li class="cp">&copy; 2016 airpair</li></ul></footer>`
+    return `<footer><ul><li class="cp">&copy; 2017 AirPair inc.</li></ul></footer>`
   }
 
 }

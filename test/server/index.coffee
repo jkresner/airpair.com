@@ -3,7 +3,8 @@ test = auth: { login: { fnName: 'loginCust', url: '/auth/test/login' } }
   # login:                     { fnName: 'loginAuthor', url: '/auth/test/login' }
 
 OPTS =
-  setup:           done: -> require('./helpers')
+  setup:
+    done: -> require('./helpers')
   login:
     clearSessions: false
     test:          test.auth.login
@@ -16,8 +17,6 @@ OPTS =
 
 
 SCREAM(OPTS).run (done) ->
-  # {post_readme} = FIXTURE.templates
-  # DB.ensureDocs 'Template', [post_readme], ->
 
   Honey       = require('honeycombjs')
   appRoot     = __dirname.replace('test', '')

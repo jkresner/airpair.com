@@ -20,9 +20,9 @@ angular.module("AirPair.Directives.Layout", [])
     $element.addClass('loader', true)
     // $element.toggleClass('loading', $scope.show)
 
-    console.log('loader.prewatch', $scope.show)
+    // console.log('loader.prewatch', $scope.show)
     $scope.$watch('show', show =>  {
-      console.log('loader.show.watch', show, $scope.show)
+      // console.log('loader.show.watch', show, $scope.show)
       $element.toggleClass('loading', $scope.show)
     })
 

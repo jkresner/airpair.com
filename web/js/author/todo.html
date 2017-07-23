@@ -1,6 +1,6 @@
 <span ng-if="next">
   <p ng-if="next == 'tag' || next == 'asset'">
-    Revisit <a ng-href="/post-info/{{_id}}" target="_self">Info</a> to add a <code>feature img</code> and
+    Revisit <a ng-href="/author/post-info/{{_id}}" target="_self">Info</a> to add a <code>feature img</code> and
     <code>tag technologies</code> that are important to
     your post
   </p>
@@ -10,7 +10,7 @@
     <span class="locked">Submit</span> (about <b>{{wordstogo}}</b> to go)
   </p>
   <p ng-if="next == 'submit'">Post looks ready to
-    <a ng-href="/submit/{{_id}}" target="_self">Submit</a> for community reviews!
+    <a ng-href="/author/submit/{{_id}}" target="_self">Submit</a> for community reviews!
   </p>
 
   <!-- {{next}} -->

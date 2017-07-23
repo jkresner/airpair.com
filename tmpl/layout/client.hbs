@@ -3,28 +3,37 @@
 <head>
   {{> htmlHead }}
 </head>
-<body>
+<body class="{{css.view}}">
+
+{{#if omitSiteNav }}
+{{else}}
   {{> siteNav }}
+{{/if}}
 
   <div class="main-wrap">
+    <div ng-if="ui" loader show="ui.main.loading"></div>
     <div notifications></div>
     <main ng-view>{{{body}}}</main>
   </div>
 
   {{> siteFooter }}
 
-  <script type="text/javascript" src="{{@js.index}}"></script>
+  <script type="text/javascript" src="{{@static.js.app}}"></script>
   <script type="text/javascript">
 
-    window.viewData = { session: {{{ JSON session }}} };
+    window.pageData = { session: {{{ JSON session }}} };
+
+    function trackpageview() {
+      var url = window.location.href.replace(window.location.origin,'')
+      var session  = window.pageData.session
+      var name = session.authenticated === false ? 'anon' : session.name
+      //-- todo setup and add event on each route
+      // ga('send', 'event', 'view', 'route', session.id, url, name)
+    }
 
   </script>
-  
-  {{> initPage }}
+
+  {{> ga }}
 
 </body>
 </html>
-
-
-
-

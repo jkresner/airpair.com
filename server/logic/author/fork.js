@@ -1,7 +1,7 @@
-module.exports = ({Post}, Data, {getAndUpdateStats}) => ({
+module.exports = ({Post}, Data, DRY) => ({
 
 
-  validate(user, original){
+  validate(user, original) {
     if (_.idsEqual(user._id, original.by._id))
       return `Cannot fork your own post`
 
@@ -19,7 +19,7 @@ module.exports = ({Post}, Data, {getAndUpdateStats}) => ({
     var {user} = this
     var meta = Shared.touchMeta(original.meta, 'fork', user)
 
-    Wrappers.GitPublisher.addContributor(this.user, null, original.slug, (e, fork) => {
+    Wrappers.GitPublisher.addContributor(user, null, original.slug, (e, fork) => {
       if (e) return cb(e)
 
       var { name, email, auth } = user
@@ -31,7 +31,7 @@ module.exports = ({Post}, Data, {getAndUpdateStats}) => ({
       else
         assign(existing, forkerInfo)
 
-      var stats = getAndUpdateStats(assign(original,{forkers}))
+      var stats = DRY.getAndUpdateStats(assign(original,{forkers}))
       Post.updateSet(original._id, {meta,stats,forkers}, cb)
     })
   },
@@ -41,20 +41,3 @@ module.exports = ({Post}, Data, {getAndUpdateStats}) => ({
 
 
 })
-
-
-
-
-  // addForker(post, cb) {
-    // cb(V2DeprecatedError('Posts.addForker'))
-    // github2.addContributor(this.user, org, post.slug, (e, fork) => {
-    //   if (e) return cb(e)
-    //   var { name, email, social } = this.user
-    //   post.forkers = post.forkers || []
-    //   var existing = _.find(post.forkers, (f) => _.idsEqual(f.userId,this.user._id))
-    //   if (!existing)
-    //     post.forkers.push({ userId: this.user._id, name, email, social })
-    //   post.stats = PostsUtil.calcStats(post)
-    //   svc.update(post._id, post, select.cb.statsView(cb))
-    // })
-  // }
