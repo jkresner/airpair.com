@@ -60,7 +60,7 @@ DESCRIBE "GOOD bots (search)", ->
 
   IT '[200] on good urls for bad bots', ->
     PAGE '/', RES(200,GOODBot), (resp2) ->
-      expect(resp2).inc "<title>airpair | Coding help, Software consultants & Programming resources"
+      expect(resp2).inc "<title>airpair | Software jobs"
       DONE()
 
 

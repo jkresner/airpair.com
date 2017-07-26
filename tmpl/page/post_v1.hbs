@@ -1,8 +1,6 @@
-{{#if ads }}{{#with ads.top}}{{>banner}}{{/with}}{{/if}}
+{{#with r.post}}
 
 <article class="blogpost">
-
-{{#with r}}
 
   <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
 
@@ -22,7 +20,7 @@
   <div class="railMarker"></div>
 
   <h4 id="table-of-contents">Table of Contents</h4>
-  {{{toc}}}
+  {{{html.toc}}}
 
   <figure class="author">
     <img alt="{{by.name}}" src="{{by.avatar}}?s=100">
@@ -38,11 +36,11 @@
   </figure>
 
   {{#if assetUrl }}
-  <p class="asset">{{ v1postAssetUrlToMedia assetUrl }}</p>
+    <p class="asset"><img src="{{ assetUrl }}" /></p>
   {{/if}}
   <hr />
 
-  <post no-compile>{{{ html }}}</post>
+  <post>{{{ html.body }}}</post>
 
   {{#if published }}
   <div class="share">
@@ -53,33 +51,12 @@
   </div>
   {{/if}}
 
-{{/with}}
-
   <div class="rail1CTA">
-    {{#if r.github }}
-    {{#if r.stars }}
+    {{#if github }}
+    {{#if stars }}
       <post-rail-stars></post-rail-stars>
     {{/if}}
     {{/if}}
-
-{{#if r.published }}
-
-  {{#if authenticated }}
-{{!--     <h6>Need 1 on 1 expert help?</h6>
-
-    <div class="gethelp">
-    </div>
- --}}
-  {{else}}
-
-    {{#with ads.side}}{{>banner}}{{/with}}
-
-  {{/if}}
-
-{{/if}}
-
-
-{{#with r}}
 
     {{!-- <h6>Help make this post better!</h6>
     <div class="fork">
@@ -93,16 +70,19 @@
   {{#if references}}
   <div id="references" no-compile>
     <h4>References</h4>
-    <ul class="references">
+    {{{ html.reference }}}
+    {{!-- <ul class="references">
       {{#each references}}<li>{{{this}}}</li>{{/each}}
-    </ul>
+    </ul> --}}
   </div>
   {{/if}}
 
 </article>
 
-{{#if submitted }}
-  <div id="reviews" post-reviews reviews='{{ JSON reviews }}' byid="{{by._id}}"></div>
+{{/with}}
+
+{{#if r.submitted }}
+  <div id="reviews" post-reviews reviews='{{ JSON r.post.reviews }}' byid="{{r.post.by._id}}"></div>
 {{/if}}
 {{!--
 
@@ -110,17 +90,12 @@
 <div id="disqus_thread"></div>
 {{/if}} --}}
 
-{{/with}}
-
-
-{{#if ads }}{{#with ads.bottom}}{{>banner}}{{/with}}{{/if}}
-
 
 {{#with r}}
 
 <footer class="postfooter {{#if showDisqus }}afterdisqus{{/if}}">
   <h5>Tagged under</h5>
-  <ul class="posttags">{{#each tags}}<li><a href="{{ url }}" target="_self" title="{{name}} tutorials & {{short}} guides">{{ slug }}</a></li>{{/each}}</ul>
+  <ul class="tags">{{#each post.tags}}<li><a href="{{ url }}" target="_self" title="{{name}} tutorials & {{short}} guides">{{ slug }}</a></li>{{/each}}</ul>
 
   {{#if published }}
   <div class="share-horizontal">
@@ -140,86 +115,13 @@
 {{#if published }}{{#if similar }}
 <div id="posts">
   <section id="allposts" class="similar">
-
     <h3 class="underline">Similar posts <a href="/software-experts" class="btn btn-sm btn-inverse" target="_self">All posts</a></h3>
-    <div class="similar nostars">{{#each similar}}
-
-{{!-- in use [2015.12.06] --}}
-<article class="posttile" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
-  <a href="{{ htmlHead.canonical }}" title="{{ title }}" target="_self" rel="bookmark">
-    <header class="entry-header">
-      <img class="entry-header-image" itemprop="image" src="{{ htmlHead.ogImage }}" align="left" />
-      <div class="glass"></div>
-      <p>
-        <span class="entry-categories">{{#each tags}}<em>{{ slug }}</em>{{/each}}</span>
-        {{ htmlHead.description }}
-      </p>
-    </header>
-
-    <div class="entry-content" itemprop="text">
-      {{#if stats.reviews}}
-      <h6><b>{{stats.reviews}}</b> x</h6>
-      <div class="stars" stars val="{{stats.rating}}"></div>
-      {{else}}
-      <div class="stars"></div>
-      {{/if}}
-      <h2 class="entry-title" itemprop="headline">{{ title }}</h2>
-
-      <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
-        <span class="entry-author-name" itemprop="name">{{ by.name }}</span>
-      </span>
-
-    </div>
-  </a>
-  <footer class="entry-footer">
-    <img class="entry-author-img" itemprop="image" ng-src="{{ by.avatar }}?s=50" />
-  </footer>
-</article>
-
-    {{/each}}
-    </div>
+    <div class="similar ">{{#each similar}}{{>postTile this}}{{/each}}</div>
   </section>
   {{#if other }}
   <section id="allposts" class="byauthor">
-
     <h3 class="underline">Other posts {{by.name}}</h3>
-    <div class="similar nostars">{{#each other}}
-
-{{!-- in use [2015.12.06] --}}
-<article class="posttile" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
-  <a href="{{ url }}" title="{{ title }}" target="_self" rel="bookmark">
-    <header class="entry-header">
-      <img class="entry-header-image" itemprop="image" src="{{ ogImg }}" align="left" />
-      <div class="glass"></div>
-      {{!-- <p>
-        <span class="entry-categories">{{#each tags}}<em>{{ slug }}</em>{{/each}}</span>
-        {{!-- {{ htmlHead.description }} --}}
-       </p>--}}
-    </header>
-
-    <div class="entry-content" itemprop="text">
-      {{!-- {{#if stats.reviews}}
-      <h6><b>{{stats.reviews}}</b> x</h6>
-      <div class="stars" stars val="{{stats.rating}}"></div>
-      {{else}} --}}
-      <h6></h6>
-      <div class="stars"></div>
-      {{!-- {{/if}} --}}
-      <h2 class="entry-title" itemprop="headline">{{ title }}</h2>
-
-      <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
-        <span class="entry-author-name" itemprop="name">{{ by.name }}</span>
-      </span>
-
-    </div>
-  </a>
-  <footer class="entry-footer">
-    <img class="entry-author-img" itemprop="image" ng-src="{{ by.avatar }}?s=50" />
-  </footer>
-</article>
-
-    {{/each}}
-    </div>
+    <div class="similar">{{#each other}}{{>postTile this}}{{/each}}</div>
   </section>
   {{/if}}
 

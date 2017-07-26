@@ -224,20 +224,21 @@ module.exports = { Views, Query, Opts, Util,
 
 
     tmpl: d => {
-      d.tmpl = !d.tmpl || d.tmpl == 'default' ? 'post_v1' : d.tmpl
-      if (d.tmpl == 'post_v1')
+      d.tmpl = !d.tmpl || d.tmpl == 'default' ? 'v1' : d.tmpl
+      if (d.tmpl == 'v1')
         d.htmlHead.css = [] // ['/lib.css'] // grab archived css
       return d
     },
 
 
     otherByAuthor: d => {
+      var {by} = d.post
       var other = []
       for (var id in cache['posts']) {
-        if (!_.idsEqual(d._id, id)) {
+        if (!_.idsEqual(d.post._id, id)) {
           var p = cache['posts'][id]
-          if (_.idsEqual(d.by._id, p.by))
-            other.push({_id:id,by:d.by,url:p.url,ogImg:p.ogImg,title:p.title})
+          if (_.idsEqual(by._id, p.by))
+            other.push({_id:id,by,url:p.url,htmlHead:{ogImage:p.ogImg},title:p.title})
         }
       }
       return assign(d, other.length > 0 ? {other} : {})
@@ -245,13 +246,16 @@ module.exports = { Views, Query, Opts, Util,
 
 
     displayPublished: d => {
+      // $log('d', d.other)
       for (var sim of d.similar) sim.url = sim.htmlHead.canonical
       if (!d.similar || d.similar.length == 0) d.similar = false
-      var d2 = chain(d, 'subscribedHash', 'adTag')
-      d2.post = chain(d.post, inflate.tags, 'toHtml', 'url', 'tmpl', 'reviews', 'other', view.display, 'otherByAuthor')
+      var d2 = chain(d, 'subscribedHash', 'adTag', 'otherByAuthor')
+      d2.post = chain(d.post, inflate.tags, 'toHtml', 'url', 'tmpl', 'reviews', 'other', view.display)
       for (var tag of d2.post.tags) tag.url = tag.slug == 'angularjs' ? '/angularjs/posts' : `/${tag.slug}`
       // $log('displayPublished'.magenta, d.reviews.length)
-      // $log('d2', d2.post.htmlHead)
+      d2.published = d2.post.history.published
+      d2.submitted = d2.post.history.submitted
+      // $log('d2', d2.post.reviews)
       // d2.htmlHead = d.post.htmlHead
       return d2
     },

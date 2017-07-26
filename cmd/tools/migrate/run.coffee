@@ -1,4 +1,4 @@
-# coffee cmd/tools/migrate/run.coffee -c migrate
+# coffee cmd/tools/migrate/run.coffee -c local
 
 colors                       = require('colors')
 global.$log                  = console.log

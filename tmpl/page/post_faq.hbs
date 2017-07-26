@@ -1,12 +1,12 @@
-{{#with r}}
+{{#with r.post}}
 
 <article class="blogpost faq">
 
   <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
 
-  <post no-compile>{{{ html }}}</post>
+  <post no-compile>{{{ html.body }}}</post>
 
-  {{#if references}}
+  {{!-- {{#if references}}
   <div id="references" no-compile>
     <hr />
     <h5>Definitions</h5>
@@ -14,7 +14,7 @@
       {{#each references}}<li>{{{this}}}</li>{{/each}}
     </ul>
   </div>
-  {{/if}}
+  {{/if}} --}}
 
 </article>
 

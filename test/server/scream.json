@@ -8,7 +8,7 @@
   },
   "http": {
     "api": {
-      "baseUrl":             "/v1/api"
+      "baseUrl":             "/api"
     }
   },
   "mongo": {

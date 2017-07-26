@@ -11,7 +11,10 @@ module.exports = function(app, mw, {canonical}) {
     .useEnd([mw.$.pagePost({})])
 
     .post(posturls, mw.$.banPOST)
-    .get(posturls, mw.$.logic('posts.getPostPublished',{params:['url']}), mw.$.inflateAds, mw.$.trackPost)
+    .get(posturls,
+      mw.$.logic('posts.getPostPublished',{params:['url']}),
+      // mw.$.inflateAds,
+      mw.$.trackPost)
 
     .get('/posts/review/:post',
        mw.$.noBot,

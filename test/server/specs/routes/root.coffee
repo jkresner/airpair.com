@@ -1,17 +1,21 @@
 thumbUrl = "/posts/thumb/#{FIXTURE.posts.higherOrder._id}"
 
-describe " HUMANS".spec, ->
+## scream using default UA = 'Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0'
+describe " HUMAN".spec, ->
 
   IT '/post/thumb/:id', -> PAGE thumbUrl, {status:301,contentType:/text/}, (txt) -> DONE()
-  IT '/favicon.ico', -> IMG @
-  IT '/ad/heroku/900x90.q2-1.node.js.png', -> IMG @
-  IT '/visit/heroku-160411-ruby', ->
-    PAGE @test.title, {status:302,contentType:/text/}, (txt) ->
-      expect(txt).to.inc "Found. Redirecting to https://signup.heroku.com/ruby"
-      DONE()
 
+  IT '/favicon.ico', -> IMG @
+
+  # IT '/ad/heroku/900x90.q2-1.node.js.png', -> IMG @
+  # IT '/visit/heroku-160411-ruby', ->
+  #   PAGE @test.title, {status:302,contentType:/text/}, (txt) ->
+  #     expect(txt).to.inc "Found. Redirecting to https://signup.heroku.com/ruby"
+  #     DONE()
+
+  # Obfuscate sitemap from people, i.e. only search engines can read it
   IT 'sitemap.xml', ->
-    optsExpect = contentType: /text/, status:200
+    optsExpect = contentType: /text/, status: 200
     PAGE '/index_sitemap.xml', optsExpect, (r1) ->
       expect(r1).to.equal('')
       PAGE '/image_sitemap.xml', optsExpect, (r2) ->
@@ -20,13 +24,16 @@ describe " HUMANS".spec, ->
           expect(r3).to.equal('')
           DONE()
 
+
   IT '/humans.txt', -> PAGE '/humans.txt', { contentType: /text/ }, (txt) ->
     expect(txt).to.inc("Chef:Jonathon Kresner")
     DONE()
 
+
   IT '/robots.txt', -> PAGE '/robots.txt', { contentType: /text/ }, (txt) ->
     expect(txt).to.inc(['User-agent: *','Disallow: /airconf'])
     DONE()
+
 
   IT '/rss', ->
     PAGE '/rss', { contentType: /rss/, status: 200 }, (xml) ->
@@ -37,9 +44,11 @@ describe " HUMANS".spec, ->
         expect(xml2).to.inc ['<rss xmlns:dc="http','Elevate your functional programming skills by learning ES6 higher-order functions for Arrays']
         DONE()
 
+
   IT '/hangout/index.html', ->
     PAGE @test.title, { status: 404 }, (html) ->
       expect(html).inc('<body>')
+      expect(html).inc('Error')
       PAGE '/hangout/hangoutApp.xml', { status: 500 }, (text) ->
         expect(text).to.equal('')
         DONE()
@@ -47,14 +56,13 @@ describe " HUMANS".spec, ->
 
 describe " SEARCH".spec, ->
 
-  beforeEach -> @optsExpect = ua: FIXTURE.http.UA.search.Google
+  beforeEach ->
+    @optsExpect = ua: FIXTURE.http.UA.search.Google
 
   IT '/post/thumb/:id', -> PAGE thumbUrl, assign({status:301},@optsExpect), (txt) -> DONE()
-  # IT '/img/software/android.png', -> IMG @, assign({status:200,contentType:/image/},@optsExpect)
-  IT '/ad/heroku/900x90.q2-1.node.js.png', -> IMG @, assign({status:200,contentType:/text/},@optsExpect), (txt) ->
-    expect(text).to.equal('')
-    DONE()
-  IT '/visit/heroku-160411-ruby', -> PAGE @test.title, assign({status:200,contentType:/text/},@optsExpect), (txt) -> DONE()
+
+  IT '/img/software/android.png', ->
+    PAGE @test.title, assign({status:301,contentType:/text/},@optsExpect), (txt) -> DONE()
 
   IT 'sitemap.xml', ->
     optsExpect = contentType: /xml/, status:200, ua: FIXTURE.http.UA.search.Google
@@ -71,7 +79,6 @@ describe " SEARCH".spec, ->
           DONE()
 
   IT '/robots.txt', ->
-    optsExpect =
     PAGE '/robots.txt', assign({contentType: /text/, status:200 }, @optsExpect), (txt) ->
       expect(txt).to.inc(['Sitemap: https://www.airpair.com/index_sitemap.xml',
                           'User-agent: *'
@@ -94,10 +101,14 @@ describe " BANNED".spec, ->
 
 
   IT '/post/thumb/:id', -> PAGE thumbUrl, @optsExpect, (txt) -> DONE()
-  # IT '/img/software/android.png', -> IMG @, @optsExpect
-  # IT '/ads/heroku/900x90.q2-1.node.js.png', -> IMG @, @optsExpect
-  # IT '/ad/heroku/900x90.q2-1.node.js.png', -> IMG @, @optsExpect
-  IT '/visit/heroku-160411-ruby', -> PAGE @test.title, @optsExpect, (txt) -> DONE()
+
+  IT '/img/software/android.png', -> PAGE @test.title, assign({},@optsExpect,{status:301}), (txt) -> DONE()
+
+  IT '/ads/heroku/900x90.q2-1.node.js.png', -> BAN @
+
+  IT '/ad/heroku/900x90.q2-1.node.js.png', -> BAN @
+
+  IT '/visit/heroku-160411-ruby', -> BAN @
 
   IT 'sitemap.xml', ->
     PAGE '/index_sitemap.xml', @optsExpect, (r1) =>

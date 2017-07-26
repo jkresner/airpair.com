@@ -37,19 +37,19 @@ gone = ->
 bait = ->
 
   before (done) ->
-    @optsExpect = {status:418,contentType:/text/}
+    @optsExpect = {status:418,contentType:/text/,ua:FIXTURE.http.UA.lib.jsoup}
     DB.removeDocs 'session', {}, ->
       done()
 
-  # afterEach (done) ->
-  #   DB.docsByQuery 'session', {}, (ss) ->
-  #     expect(ss.length).to.equal(0)
-  #     done()
+  afterEach (done) ->
+    DB.docsByQuery 'session', {}, (ss) ->
+      expect(ss.length).to.equal(0)
+      done()
 
 
-  SKIP 'BAIT URLS', ->
-    # PAGE '/jobs/05-14/airpair-evangasdfasdft', {status:404}, (txt6) =>
-      # DONE()
+  IT.skip 'BAIT URLS', ->
+    PAGE '/jobs/05-14/airpair-evangasdfasdft', {status:404}, (txt) =>
+      DONE()
 
 
   IT 'Asset URLS', ->
@@ -98,7 +98,7 @@ ban = ->
     STUB.wrapper('Cloudflare').api('get').success('cloudflare_block_ip_ok')
 
 
-  SKIP "GoooleWebsnippet https://developers.google.com/+/web/snippet/)", ->
+  it "GoooleWebsnippet https://developers.google.com/+/web/snippet/"
 
 
   IT '+7 requests in 1 min', ->
@@ -110,8 +110,8 @@ ban = ->
             PAGE '/', optsOK, (html5) =>
               PAGE '/', optsOK, (html6) =>
                 PAGE '/', optsOK, (html7) =>
-                  # PAGE '/', optsBan, (txt8) =>
-                  DONE()
+                  PAGE '/', optsBan, (txt8) =>
+                   DONE()
 
   IT 'INSTANT http.POST BAN', ->
     SUBMIT '/', {}, optsBan, (txt1) =>

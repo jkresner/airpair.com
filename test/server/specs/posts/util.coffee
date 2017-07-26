@@ -2,7 +2,7 @@ UTIL = require("../../../../es/post")
 
 
 IT "TOC from h2 + h3", ->
-  toc1 = UTIL.toc(FIXTURE.markdown.toc1)
+  toc1 = UTIL.toc(FIXTURE.posts.toc1)
   items = toc1.split('\n')
   expect(items.length).to.equal(7)
   expect(items[0]).to.equal("- [Welcome to toc1 h2](#welcome-to-toc1-h2)")
@@ -16,7 +16,7 @@ IT "TOC from h2 + h3", ->
 
 
 IT "Index sup references", ->
-  {md,references} = UTIL.indexReferences(FIXTURE.markdown.toc1)
+  {md,references} = UTIL.indexReferences(FIXTURE.posts.toc1)
   items = references.split('\n')
   expect(items.length).to.equal(3)
   expect(items[0]).to.equal('1. <cite id="ref-1"><a href="http://www.nodejs.org/">nodejs.org</a></cite>')

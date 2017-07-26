@@ -65,17 +65,17 @@ IT 'Published post', -> perm_to [
 ]
 
 
-
-SKIP '/posts/edit/54afe4c7a9dc630b00b8685d', ->
- # perm_to [
-  # ['/posts/edit/54afe4c7a9dc630b00b8685d
-  # ['/posts/contributors/55e3705b0fa2cd11000e0cc5, 'stay on airpair.com?'
-  # ['/posts/preview/5514559c5955b711004d652e', 'https://author.airpair.com/?submitted=55386de99778e11100f6d9e0']
-  # ['/posts/me?submitted=55386de99778e11100f6d9e0', 'https://author.airpair.com/?submitted=55386de99778e11100f6d9e0']
-# ]
+IT '/posts/edit/54afe4c7a9dc630b00b8685d', ->
+ perm_to [
+  ['/posts/edit/54afe4c7a9dc630b00b8685d', '/author/editor/54afe4c7a9dc630b00b8685d']
+  ['/posts/fork/54afe4c7a9dc630b00b8685d', '/author/fork/54afe4c7a9dc630b00b8685d']
+]
 
 SKIP '/posts/contributors/55e3705b0fa2cd11000e0cc5', -> # perm_to [
+  # ['/posts/contributors/55e3705b0fa2cd11000e0cc5, 'stay on airpair.com?'
 
-SKIP '/postspreview/5514559c5955b711004d652e', ->
+SKIP '/posts/preview/5514559c5955b711004d652e', ->
+  # ['/posts/preview/5514559c5955b711004d652e', 'https://author.airpair.com/?submitted=55386de99778e11100f6d9e0']
 
 SKIP '/posts/me?submitted=55386de99778e11100f6d9e0', ->
+  # ['/posts/me?submitted=55386de99778e11100f6d9e0', 'https://author.airpair.com/?submitted=55386de99778e11100f6d9e0']

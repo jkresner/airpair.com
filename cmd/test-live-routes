@@ -1,0 +1,14 @@
+# cmd/test-live-routes candidate.14.mongolayer.com:10507 PWD
+#!/bin/sh
+APCOM='app33053049'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+CMD="${CYAN}CMD/test-routes: ${NC}";
+printf "${CMD}Dump ${APCOM}.redirects\n"
+mongodump -h $1 -d ${APCOM} -u heroku -p $2 -o ~/ap_mongo -c redirects
+mv ~/ap_mongo/${APCOM}/redirects.bson test/data/bson/redirects.bson
+printf "${CMD}Dump ${APCOM}.posts\n"
+mongodump -h $1 -d ${APCOM} -u heroku -p $2 -o ~/ap_mongo -c posts
+mv ~/ap_mongo/airpair_test/posts.bson test/data/bson/posts.bson
+printf "${CMD}cmd/test -s -o routes\n"
+cmd/test -s -o routes

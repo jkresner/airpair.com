@@ -1,2 +1,2 @@
 #!/bin/sh
-coffee --nodejs "--harmony_destructuring" cmd/tools/merger/run.coffee -c local.json -s merge
+coffee cmd/tools/merger/run.coffee -c local.json -s merge

@@ -1,4 +1,4 @@
-{{#with r}}
+{{#with r.post}}
 
 <article class="blogpost">
 
@@ -32,7 +32,7 @@
     <hr />
   </figure>
 
-  <p class="asset">{{ v1postAssetUrlToMedia assetUrl }}</p>
+  <p class="asset"><img src="{{ assetUrl }}" /></p>
   <hr />
 
   <post no-compile>{{{ html }}}</post>

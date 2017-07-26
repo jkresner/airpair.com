@@ -50,6 +50,12 @@ module.exports = {
     return 400 - countWithoutRemainder;
   },
 
+  // wordsTogoForReview(wordcount) {
+  //   var remainder = wordcount%50;
+  //   var countWithoutRemainder = wordcount - remainder;
+  //   return 400 - countWithoutRemainder;
+  // },
+
 
   toc(md) {
     var inCodeBlock = false, headers = [], toc = []
@@ -60,13 +66,13 @@ module.exports = {
         inCodeBlock = !inCodeBlock;
 
       if (!inCodeBlock) {
-        // Find headers of the form    ### h2 [###]'
-        var match = /^(\#{2,3} )[ ]*(.+)\r?$/.exec(line)
+                    // god dammit support ###no space
+        var match = /^(\#{2,3})[^\#\r](.+)\r?$/.exec(line)
         if (match)
           headers.push({
             line: idx,
-            rank: match[1].length - 1,
-            name: match[2].replace(/[ #]+$/, '') // Turn into '## xxx' if was '## xxx ##'
+            rank: line.indexOf("###") == 0 ? 3 : 2,
+            name: line.replace(/\#/g, '').trim() // Turn into '## xxx' if was '## xxx ##'
           })
 
         // Find headers of the form    h2
@@ -125,6 +131,7 @@ module.exports = {
     return (slug.length > 40 ? slug.substring(0,40) : slug)
                .replace(/-$/,'')
   },
+
 
 
   validSlug(slug) {
@@ -270,13 +277,6 @@ module.exports = {
   },
 
 
-
-
-  // validSlug(slug) {
-  //   return /^[a-z0-9]+([a-z0-9\-\.]+)*$/.test(slug)
-  // },
-
-
   // getPreview(md, cb) {
   //   var preview = utilFns.extractSupReferences(md)
   //   preview.wordcount = utilFns.wordcount(md)
@@ -289,33 +289,11 @@ module.exports = {
   //   })
   // },
 
-
-
   // extendWithReviewsSummary(post) {
   //   post.stars = { total: 0 }
   //   post.reviews.forEach(r => post.stars.total += parseInt(r.val))
   //   post.stars.avg = post.stars.total/post.reviews.length
   //   return post
   // },
-
-
-  // wordsTogoForReview(wordcount) {
-  //   var remainder = wordcount%50;
-  //   var countWithoutRemainder = wordcount - remainder;
-  //   return 400 - countWithoutRemainder;
-  // },
-
-
-    // var totalStars = 0
-    // var reviews = post.reviews || []
-    // return {
-    //
-    //   forkers: (post.forkers||[]).length,
-    //   openPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='open').length,  // not really correct at all grrr
-    //   closedPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='closed').length,  // not really correct at all grrr
-    //   acceptedPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='closed').length,  // not really correct at all grrr
-    //   shares: 0,            // figure it out later
-    //   words: utilFns.wordcount(post.md)
-    // }
 
 }

@@ -8,13 +8,13 @@ module.exports = (app, mw) =>
 
   ({tmpl,css}) => function(req,res,next) {
     req.locals.css = css || { body: 'blogpost' }
-    let name = `post_${tmpl||req.locals.r.tmpl||'v2'}`
+
+    var {post,subscribed,similar,adTag} = req.locals.r
+    let name = `post_${tmpl||req.locals.r.tmpl||post.tmpl||'v1'}`
 
     // $log('pagePost:req.locals'.yellow, req.locals)
 
-    var {post,subscribed,similar,adTag} = req.locals.r
-
-    // $log('pagePost:req.r'.yellow, tmpl, post.tmpl)  //req.r)
+    // $log('pagePost:req.r'.yellow, tmpl, post.tmpl, name, post.tmpl, post.title)  //req.r)
     if (tmpl == 'faq' || post.tmpl == 'faq') {
       req.locals.noindex = true
       req.locals.css.body = 'blogpost faq'

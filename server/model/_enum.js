@@ -14,11 +14,6 @@ module.exports = {
     ]
   },
 
-  EXPERT: {
-    DEAL_TYPE: ['airpair', 'offline', 'code-review', 'article', 'workshop'],
-    DEAL_TARGET_TYPE: ['all','user','company','newsletter','past-customers','code']
-  },
-
   POST: {
     TEMPLATE: ['post','blank','landing','faq'],
     COMP: ['2015_q1','2018_q1'],
@@ -38,7 +33,7 @@ module.exports = {
   },
 
   USER: {
-    SCOPES: ['admin','spinner','pipeliner','post:editor','post:moderator','expert:trusted','expert:approved'],
+    SCOPES: ['post:editor','post:moderator'],
   }
 
 }

@@ -1,6 +1,5 @@
-module.exports = (app, mw, cfg) => {
-
-  if (!cfg.author) return
+module.exports = (app, mw, {author}) => {
+  if (!author) return
 
   var router = honey.Router('author',{type:'html',mount:'/author'})
     .use(mw.$.livereload)
@@ -10,21 +9,27 @@ module.exports = (app, mw, cfg) => {
 
     .get([   // '/library',
              '/',
-  //            '/forks',
-  //            '/drafts',
-  //            '/published',
-  //            '/profile',
+             '/forks',
+             '/drafts',
+             '/published',
+             '/profile'        ], mw.$.pageClient)
   //             //
+
+    .get([
              '/new',
              '/post-info/*',
+             '/editor/*',
              '/submit/*',
   //            '/promote/*',
   //            '/reviews/*',
   //            '/collaborate/*',
-  //            '/publish/*',
+             // '/publish/*',
   //            //
              // '/fork/*'
-        ], mw.$.pageAuthor('angular1'))
+        ]
+        , (req,res,next) => next(null, req.locals.omitSiteNav = true)
+        , mw.$.pageClient)
+
 
     // .get('/edit/:id', mw.$.logic('me.getForks'),
     //   function(req, res, next) {
@@ -38,6 +43,5 @@ module.exports = (app, mw, cfg) => {
         , mw.$.pagePost({tmpl:'editor',css:'edit preview'})
       )
 
-  // app.get('/about', function(req, res, next) { ... }, mw.$.postPage)
 
 }

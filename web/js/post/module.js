@@ -1,20 +1,7 @@
-// angular.module("APPosts", ['Providers'])
+angular.module("AirPair.Post", [])
 
 
-// .directive('postReviews', () => {
-//   return {
-//     template: require('./reviews.html'),
-//     scope: { reviews: '=reviews' },
-//     controller($scope, $rootScope, $element, $attrs) {
-//       $scope.session = $rootScope.session
-//       if ($scope.$parent.post && $scope.$parent.post.by)
-//         $scope.post = $scope.$parent.post
-//       else
-//         $scope.post = _.extend($rootScope.post, {
-//           reviews:$scope.reviews,by:{userId:$attrs.byid} })
-//     }
-//   }
-// })
+
 
 // .directive('postRailStars', () => {
 //   return {
@@ -93,20 +80,6 @@
 //     }
 //   }
 // })
-
-// .directive('stars', function() {
-
-//   return {
-//     template: require('./stars.html'),
-//     scope: { stars: '=val' },
-//     controller($scope, $element) {
-
-//     }
-//   }
-
-// })
-
-
 
 
 // .controller('posts:activity', ($scope, $routeParams, API, PAGE) => {

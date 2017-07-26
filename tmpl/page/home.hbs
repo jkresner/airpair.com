@@ -1,18 +1,18 @@
 <main id="home">
 
-{{!--   <section class="overview">
+  <section class="overview">
     <div>
       <h1>The world's best software experts and opportunities</h1>
-      <p>Top companies <em>find and hire software developers</em> for full-time, contract and micro-consulting jobs using airpair.
+{{!--       <p>Top companies <em>find and hire software developers</em> for full-time, contract and micro-consulting jobs using airpair.</p> --}}
     </div>
 
-    <div class="login">
+    {{!-- <div class="login">
       <a href="/auth/github/callback" target="_self" class="btn btn-icon-wmark btn-solo">Login</a>
-    </div>
-  </section> --}}
+    </div> --}}
+  </section>
 
   <section id="tags">
-    <h2>Find software talent by technology</h2>
+    <h2><a href="/learn-code" target="_self">Find software talent by technology</a></h2>
     <a href="/node.js"><img src="{{static.host}}/img/software/node.js.icon.png"/></a>
     <a href="/posts/tag/angularjs"><img src="{{static.host}}/img/software/angularjs.icon.png"/></a>
     <a href="/python"><img src="{{static.host}}/img/software/python.icon.png"/></a>
@@ -28,173 +28,11 @@
   </section>
 
   <section id="trending">
-    <h2>Trending software experts</h2>
-
+    <h2><a href="/software-experts" target="_self">Browse top software developers</a></h2>
     <div>
-    <article class="posttile orange" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
-      <a href="https://www.airpair.com/reactjs/posts/reactjs-a-guide-for-rails-developers" title="React.js - A guide for Rails developers" target="_self" rel="bookmark">
-        <header class="entry-header">
-          <img class="entry-header-image" itemprop="image" src="https://i.imgur.com/UUHYW6o.png" align="left">
-          <div class="glass"></div>
-          <p>
-            <span class="entry-categories">
-              <em>reactjs</em>
-              <em>ruby-on-rails</em>
-            </span>
-            Integrate React.js with Ruby on Rails to build web apps
-          </p>
-        </header>
-
-        <div class="entry-content" itemprop="text">
-          <ul class="stars"><li></li><li></li><li></li><li></li><li></li></ul>
-          <h2 class="entry-title" itemprop="headline">React.js - A guide for Rails developers</h2>
-
-          <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
-            <span class="entry-author-name" itemprop="name">Fernando Villalobos</span>
-            <span class="entry-publisher" itemprop="publisher">airpair.com</span>
-          </span>
-
-        </div>
-      </a>
-      <footer class="entry-footer">
-        <img class="entry-author-img" itemprop="image" src="https://0.gravatar.com/avatar/f3d872377f757084e22ab15b7955a73d?s=50">
-      </footer>
-    </article>
-
-    <article class="posttile green" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
-      <a href="http://www.airpair.com/js/javascript-framework-comparison" title="AngularJS vs. Backbone.js vs. Ember.js" target="_self" rel="bookmark">
-        <header class="entry-header">
-          <img class="entry-header-image" itemprop="image" src="https://airpair-blog.s3.amazonaws.com/wp-content/uploads/2014/08/urishaked-jscompare-2.png" align="left">
-          <div class="glass"></div>
-          <p>
-            <span class="entry-categories">
-              <em>javascript</em>
-              <em>angularjs</em>
-              <em>backbone.js</em>
-              <em>ember.js</em>
-            </span>
-            Angular, Backbone and Ember all have the concept of views, events, data models and routing. We will compare their differences and outline ideal use cases.
-          </p>
-        </header>
-
-        <div class="entry-content" itemprop="text">
-          <ul class="stars"><li></li><li></li><li></li><li></li><li></li></ul>
-          <h2 class="entry-title" itemprop="headline">AngularJS vs. Backbone.js vs. Ember.js</h2>
-
-          <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
-            <span class="entry-author-name" itemprop="name">Uri Shaked</span>
-            <span class="entry-publisher" itemprop="publisher">medium.com</span>
-          </span>
-
-        </div>
-      </a>
-      <footer class="entry-footer">
-        <img class="entry-author-img" itemprop="image" src="https://0.gravatar.com/avatar/fbf41c66afb1e3807b7b330c2d8fcc28?s=50">
-      </footer>
-
-    </article>
-    <article class="posttile yellow" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
-      <a href="https://www.airpair.com/javascript/posts/the-mind-boggling-universe-of-javascript-modules" title="The mind-boggling universe of JavaScript Module strategies" target="_self" rel="bookmark">
-        <header class="entry-header">
-          <img class="entry-header-image" itemprop="image" src="https://openmerchantaccount.com/img/lego-adjusted.jpg" align="left">
-          <div class="glass"></div>
-          <p>
-            <span class="entry-categories">
-              <em>javascript</em>
-              <em>module</em>
-              <em>npm</em>
-              <em>requirejs</em>
-              <em>node.js</em>
-            </span>
-            This article exposes the foundations of different JavaScript Module strategies such as ad hoc, CommonJS, AMD and ES6 modules, and how to get started with ES6 modules right now.
-          </p>
-        </header>
-
-        <div class="entry-content" itemprop="text">
-          <ul class="stars"><li></li><li></li><li></li><li></li><li class="half ng-scope"></li></ul>
-          <h2 class="entry-title" itemprop="headline">The mind-boggling universe of JavaScript Module strategies</h2>
-
-          <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
-            <span class="entry-author-name" itemprop="name">Tiago Romero Garcia</span>
-            <span class="entry-publisher" itemprop="publisher">medium.com</span>
-          </span>
-
-        </div>
-      </a>
-      <footer class="entry-footer">
-        <img class="entry-author-img" itemprop="image" src="https://0.gravatar.com/avatar/5cac784a074b86d771fe768274f6860c?s=50">
-      </footer>
-
-    </article>
-    <article class="posttile black" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
-      <a href="https://www.airpair.com/ionic-framework/posts/ionic-firebase-camera-app" title="Upload Camera Images To Firebase Using Ionic Framework" target="_self" rel="bookmark">
-        <header class="entry-header">
-          <img class="entry-header-image" itemprop="image" src="https://img.youtube.com/vi/uvPlTzZxFcI/hqdefault.jpg" align="left">
-          <div class="glass"></div>
-          <p>
-            <span class="entry-categories">
-              <em>ionic</em>
-              <em>firebase</em>
-              <em>angularjs</em>
-              <em>cordova</em>
-              <em>android</em>
-              <em>ios</em>
-            </span>
-            Learn how to use the native device camera in your Ionic Framework Android and iOS mobile application to take pictures and synchronize them with Firebase.
-
-            View images that were uploaded to Firebase in a sleek grid format comparable to Imgur or Facebook.  All images uploaded to Firebase are stored in base 64 format.
-          </p>
-        </header>
-
-        <div class="entry-content" itemprop="text">
-          <ul class="stars"><li></li><li></li><li></li><li></li><li></li></ul>
-          <h2 class="entry-title" itemprop="headline">Upload Camera Images To Firebase Using Ionic Framework</h2>
-
-          <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
-            <span class="entry-author-name" itemprop="name">Nic Raboy</span>
-            <span class="entry-publisher" itemprop="publisher">medium.com</span>
-          </span>
-        </div>
-      </a>
-      <footer class="entry-footer">
-        <img class="entry-author-img" itemprop="image" src="https://0.gravatar.com/avatar/7d55990e9cc9544ca2f435aa3a690490?s=50">
-      </footer>
-
-    </article>
-
-
-    <article class="posttile gray" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
-      <a href="https://www.airpair.com/node.js/posts/getting-started-with-docker-for-the-nodejs-dev" title="Getting Started with Docker for the Node.js Developer" target="_self" rel="bookmark">
-        <header class="entry-header">
-          <img class="entry-header-image" itemprop="image" src="https://d262ilb51hltx0.cloudfront.net/max/1600/1*_MtS4HqN2srTcrSyet61DQ.jpeg" align="left">
-          <div class="glass"></div>
-          <p>
-            <span class="entry-categories">
-              <em>node.js</em>
-              <em>docker</em>
-              <em>javascript</em>
-            </span>
-            This is a tutorial on how to get started with Docker. It covers installation, Dockerfiles, downloading images, running a container, and finally creating and running a node app.
-          </p>
-        </header>
-
-        <div class="entry-content" itemprop="text">
-          <ul class="stars"><li></li><li></li><li></li><li></li></ul>
-          <h2 class="entry-title" itemprop="headline">Getting Started with Docker for the Node.js Developer</h2>
-
-          <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
-            <span class="entry-author-name" itemprop="name">Heitor Tashiro Sergent</span>
-            <span class="entry-publisher" itemprop="publisher">medium.com</span>
-          </span>
-
-        </div>
-      </a>
-      <footer class="entry-footer">
-        <img class="entry-author-img" itemprop="image" src="https://0.gravatar.com/avatar/10eef81625284e8299967a73960e860b?s=50">
-      </footer>
-
-    </article>
-
+{{#each r.popular}}
+      {{> postTile this}}
+{{/each}}
     </div>
     </section>
 

@@ -1,4 +1,4 @@
 #!/bin/sh
 # Usage:
 #   /cmd/tools/merger/emails-check <comma-separated-emails>
-coffee --nodejs "--harmony_destructuring" cmd/tools/merger/run.coffee -c local.json -s checkemails -e $1 $2 $3
+coffee cmd/tools/merger/run.coffee -c local.json -s checkemails -e $1 $2 $3

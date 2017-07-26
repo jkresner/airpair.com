@@ -3,7 +3,7 @@ CREATOR = (key, login, done) -> (user) ->
     if (e) then $log("DB.insert.user[#{user.key}]", e)
     # $log('CREATOR'.yellow, key, e, r)
     if login
-      LOGIN key, (session) ->
+      LOGIN key, { retainSession:false }, (session) ->
         # $log("LOGIN[#{key}________]".yellow, r._id, user.auth.gh.id)
         # $log("LOGIN[#{key}]".yellow, session._id)
         done session, key

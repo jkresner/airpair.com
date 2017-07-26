@@ -1,6 +1,58 @@
 angular.module("AirPair.Directives.Post", [])
 
 
+.directive('postReviews', () => {
+  return {
+    template: require('./reviews.html'),
+    scope: { reviews: '=reviews' },
+    controller($scope, $rootScope, $element, $attrs) {
+      $scope.session = $rootScope.session
+      if ($scope.$parent.post && $scope.$parent.post.by)
+        $scope.post = $scope.$parent.post
+      else
+        $scope.post = _.extend($rootScope.post, {
+          reviews:$scope.reviews,by:{userId:$attrs.byid} })
+    }
+  }
+})
+
+// .directive('postReviews', () => ({
+
+//   template: require('./reviews.html'),
+//   scope: { post: '=post' },
+//   controller($scope, $rootScope, $attrs) {
+//     $scope.session = $rootScope.session
+//     // console.log('postReviews', $scope)
+//     $scope.reviews = $scope.post.reviews
+//     // $scope.by = {userId:$attrs.byid}
+//   }
+
+// }))
+
+.directive('postReview', function() {
+  return {
+    template: require('./review.html'),
+    scope: { postId: '=postId', r: '=review' },
+    controller($rootScope, $scope, API) {
+      var {session} = $rootScope
+      var {postId} = $scope
+      // $scope.canVote = ({byId,votes}) =>
+        // byId != session._id && _.find(votes, v => v.by._id==session._id) == null
+
+      // $scope.upVote = (_id) => {}
+        // DataService.posts.reviewUpvote({postId,_id}, $scope.setScope)
+
+      // $scope.reply = (_id, comment) => {}
+        // DataService.posts.reviewReply({postId,_id,comment}, $scope.setScope)
+
+      // $scope.toggleReply = x => $scope.replyOpen = !$scope.replyOpen
+
+      // $scope.deleteReview = (_id) =>
+        // DataService.posts.reviewDelete({postId,_id}, $scope.setScope)
+    }
+  }
+})
+
 // .factory('answerSerializer', () => ({
 //   answersJSON(form) {
 //     var idx = -1
@@ -113,42 +165,7 @@ angular.module("AirPair.Directives.Post", [])
 
 
 
-.directive('postReviews', () => ({
 
-  template: require('./reviews.html'),
-  scope: { post: '=post' },
-  controller($scope, $rootScope, $attrs) {
-    $scope.session = $rootScope.session
-    // console.log('postReviews', $scope)
-    $scope.reviews = $scope.post.reviews
-    // $scope.by = {userId:$attrs.byid}
-  }
-
-}))
-
-.directive('postReview', function() {
-  return {
-    template: require('./review.html'),
-    scope: { postId: '=postId', r: '=review' },
-    controller($rootScope, $scope, API) {
-      var {session} = $rootScope
-      var {postId} = $scope
-      // $scope.canVote = ({byId,votes}) =>
-        // byId != session._id && _.find(votes, v => v.by._id==session._id) == null
-
-      // $scope.upVote = (_id) => {}
-        // DataService.posts.reviewUpvote({postId,_id}, $scope.setScope)
-
-      // $scope.reply = (_id, comment) => {}
-        // DataService.posts.reviewReply({postId,_id,comment}, $scope.setScope)
-
-      // $scope.toggleReply = x => $scope.replyOpen = !$scope.replyOpen
-
-      // $scope.deleteReview = (_id) =>
-        // DataService.posts.reviewDelete({postId,_id}, $scope.setScope)
-    }
-  }
-})
 
 // .directive('postComments', function(PostsUtil) {
 //   return {
@@ -172,16 +189,4 @@ angular.module("AirPair.Directives.Post", [])
 //     }
 //   }
 // })
-
-
-.directive('postTile', () => ({
-
-  template: require('./tile.html'),
-  link(scope, element, attrs) {
-    if (attrs.post)
-      scope.post = scope.$eval(attrs.post)
-  },
-  controller($scope) { }
-
-}))
 

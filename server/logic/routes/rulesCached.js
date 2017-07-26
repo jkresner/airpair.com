@@ -65,8 +65,9 @@ var concatExperimental = all =>
     { type:'rewrite', url: '%22$', to: '' },
     { type:'rewrite', url: '&quot;$', to: '' },
     { type:'rewrite', url: '\\.\\.\\.', to: '' },
-    { type:'rewrite', url: '^/posts/((edit|fork))', to: 'https://author.airpair.com/edit' },
-    { type:'rewrite', url: '^/posts/contributors', to: 'https://author.airpair.com/activity' },
+    { type:'rewrite', url: '^/posts/edit', to: '/author/editor' },
+    { type:'rewrite', url: '^/posts/fork', to: '/author/fork' },
+    // { type:'rewrite', url: '^/posts/contributors', to: 'https://author.airpair.com/activity' },
     { type:'rewrite', url: '/sqlserver$', to: '/sql-server' },
     { type:'rewrite', url: '/posts/tag/angularjs', to: '/angularjs/posts' },
     { type:'rewrite', url: '/posts/tag/node', to: '/node.js' },
@@ -75,6 +76,7 @@ var concatExperimental = all =>
     { type:'rewrite', url: '^((/i.stack.)|(/i.)|(/))imgur.com/*', to: 'https://i.imgur.com/' },
     { type:'rewrite', url: '/images/icons/', to: 'https://static.airpair.com/img/icons/' },
     { type:'rewrite', url: '/static/img/icons/', to: 'https://static.airpair.com/img/icons/' },
+    { type:'rewrite', url: '/img/software/',  to: 'https://static.airpair.com/img/software/' },
     ],
 
    [
@@ -100,6 +102,7 @@ var concatExperimental = all =>
     { type:'301', url: '/c%20%20/posts/preparing-for-cpp-interview', to: '/c++/posts/preparing-for-cpp-interview' },
     { type:'301', url: '^/f$', to: '/f#' },
     { type:'301', url: '/airconf',  to: '/workshops' },
+    { type:'301', url: '/workshops',  to: '/software-experts' },
     { type:'301', url: '^/airconf-promo/*', to: '/software-experts'},
     { type:'301', url: '^/airconf2014/keynote*', to: '/software-experts'},
     { type:'301', url: '/railsconf2014', to: '/ruby-on-rails' },
@@ -207,7 +210,7 @@ var concatExperimental = all =>
     { type:'301', url: '/.net-4.0',  to: '/.net' },
     { type:'301', url: '/microsoft.net',  to: '/.net' },
     { type:'301', url: '/socket((io)|(.io))',  to: '/node.js' },
-    { type:'301', url: '/((amazon-r)|(r))edshift',  to: '/aws' },
+    { type:'301', url: '/((amazon-r)|(r))edshift',  to: '/aws' }
    ],
 
    [
@@ -246,8 +249,9 @@ var concatExperimental = all =>
 
   [
     '*900x90.1.lob.png*',
-    '^/900x90.q2-1.*',
-    '^/220x250.q2-1.*',
+    '*/900x90.q2-1.*',
+    '*/220x250.q2-1.*',
+    '^/visit/heroku-16*',
     '/misc/((ajax)|(drupal)|(tableheader)).js',
     '/media/((com_finder)|(editors)|(jui))/*',
     '/admin',
@@ -321,7 +325,7 @@ module.exports = (DAL, Data, Shared, Lib) => ({
 
   exec(cb) {
     var r = { ban: [] }
-    for (var type of honey.model.Enum.REDIRECT.TYPE) 
+    for (var type of honey.model.Enum.REDIRECT.TYPE)
       r[type] = []
 
     var cfg = _.get(config,'routes.rules')

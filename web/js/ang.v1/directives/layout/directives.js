@@ -1,5 +1,17 @@
 angular.module("AirPair.Directives.Layout", [])
 
+.directive('noCompile', function() {
+
+  return {
+
+    terminal: true,
+
+    controller : function() {
+      // console.log('noCompile')
+    }
+  };
+
+})
 
 .directive('errorsHeader', () => ({
 

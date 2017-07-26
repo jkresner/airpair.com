@@ -1,9 +1,10 @@
-
-
 main#home {
 
+  background:url('@{static}/img/author/logo-96.png') top center no-repeat;
+  background-size:auto 180px;
+
   section.overview {         color:@gray;
-                             padding:40px 0 50px 0;
+                             padding:40px 0 40px 0;
                              margin-bottom:0;
                              background-color:white;
                              opacity:0.97;
@@ -43,7 +44,7 @@ main#home {
 
   section#tags {             text-align:center;
     > h2 {                   padding:15px 0 0 0;font-size:1.3em }
-    a {                      height:140px;
+    > a {                      height:140px;
                              line-height:130px;
                              border-radius:10px;
                              display:inline-block;
@@ -61,7 +62,8 @@ main#home {
 
 
   section#trending {        text-align:center;
+                            padding-bottom:30px;
+                            ._linear_red_bottom;
     > h2 {                  padding:30px 0 10px 0;font-size:1.3em }
-    ._linear_gray_bottom;
   }
 }

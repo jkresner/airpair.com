@@ -14,25 +14,10 @@ module.exports = (app, mw, {forbid}) => {
   //   next()
   // })
 
+  var $logMW = (req, mwName) => $log(honey.log.mw(req, mwName))
+
+
   var whitelist = new RegExp(`^${forbid.ban.whitelist}`)
-
-  var logFilter = /Pingdom|Sogou|CloudFlare-Always/
-
-  var short = { GET:'GET'.dim, PUT:'PUT'.dim, DELETE:'DEL'.dim, POST:'POS'.dim }
-  global.$logMW = (req, mwName) => {
-    if (logFilter.test(req.ctx.ua)) return
-    var {ctx,originalUrl} = req
-
-    var mth = `${short[req.method] || req.method.toUpperCase()}`
-    var ref = ctx.ref ? ` <<< ${ctx.ref.dim}` : ''
-
-    var sId = (!ctx.sId || ctx.sId == 'unset' ? '_          _' : ctx.sId).substr(0,12)
-    var ip = ctx.ip + '                '.substr(0, 16-ctx.ip.length)
-    var UD = `[${mwName}] ${ctx.ud.magenta}` + '                            '.substr(0,18-(mwName+ctx.ud).length)
-    var u = ((ctx.user||{}).name||'')
-
-    console.log(`${sId} ${ip} ${UD}`.dim.cyan+`${mth.cyan} ${originalUrl.magenta}${ref} ${u.white} `+`${ctx.ua||'ua:null'}`.gray)
-  }
 
   cache['iplog'] = {}
   cache['abuse'] = { ban: [] }
@@ -47,7 +32,7 @@ module.exports = (app, mw, {forbid}) => {
 
     req.res.status(status)
     if (status != 500)
-      $logMW(req, 'abuse')
+      console.log(honey.log.mw(req, 'abuse'))
       // console.log(`[${status}${action.u}${ref?` << ${ref}`.dim:''}]abuse`.cyan, `\t${ip}[${cache.abuse[ip].length}/${forbid.abuse.limit}]`.white, (ua||'').gray)
     return status == 418 ? 'Relax. Close your eyes.' : ''
   }
@@ -96,7 +81,7 @@ module.exports = (app, mw, {forbid}) => {
         // $log('throttle.user'.red, user, ip, throttle, throttle % forbid.throttle.limit)
         res.send(cache.abuse.increment(500, req))
 
-        $logMW(req, 'throttle')
+        $logMW(req, `throttle ${forbid.throttle.limit}th`)
         var data = { mw:'apcom_throttle', name:'throttle', rule:`${key}[${ip}] > throttle.limit`, hits:cache['iplog'][key], headers: req.headers }
 
         if (throttle == 25)
@@ -126,17 +111,8 @@ module.exports = (app, mw, {forbid}) => {
     ))
 
 
-  mw.
-    cache('badBot', mw.req.noCrawl({ group: 'ban|lib',
+  return mw.req.noCrawl({ group: 'ban|lib',
       content:'',
-      onDisallow: req => $logMW(req, 'bot(ban|lib)') }
-    ))
+      onDisallow: req => $logMW(req, 'bot(ban|lib)') })
 
-
-  return mw.res.forbid('anon', function({ctx,user}) {
-      if (user) return
-      return 'anon'
-    }, {
-      redirect: ({session}) => `/login${(session||{}).returnTo ? `?returnTo=${session.returnTo}` : ''}`
-    })
 }

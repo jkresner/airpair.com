@@ -1,4 +1,3 @@
-{{!-- in use [2015.12.06] --}}
 <article class="posttile" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
   <a href="{{ url }}" title="{{ title }}" target="_self" rel="bookmark">
     <header class="entry-header">
@@ -15,9 +14,7 @@
     </header>
 
     <div class="entry-content" itemprop="text">
-{{#if stats.reviews}}
-      <h6><b>{{stats.reviews}}</b> x</h6>
-{{/if}}
+      <h6>{{#if stats.reviews}}<b>{{stats.reviews}}</b> x{{/if}}</h6>
       {{post_stars stats.rating}}
       <h2 class="entry-title" itemprop="headline">{{ title }}</h2>
 
@@ -31,4 +28,4 @@
   <footer class="entry-footer">
     <img class="entry-author-img" itemprop="image" src="{{ by.avatar }}?s=50" />
   </footer>
-</article>
+</article>{{!-- in use [2015.12.06] --}}

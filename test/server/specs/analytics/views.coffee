@@ -52,7 +52,7 @@ IT 'Track authed post view', ->
       _.delay(viewCheck, 250)
 
 
-IT 'Track anonymous ad (click) view', ->
+IT.skip 'Track anonymous ad (click) view', ->
   # spy = STUB.spy(analytics, 'view')
   ANONSESSION (s) ->
     sId = s.sessionID

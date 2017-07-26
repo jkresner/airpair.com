@@ -66,7 +66,7 @@ deleting = ->
         expect(p0._id).to.exist
         DB.docById 'Post', p0._id, (p0DB) ->
           expect(p0DB).to.exist
-          LOGIN 'tiag', (stiag) ->
+          LOGIN 'tiag', { retainSession:false }, (stiag) ->
             expect(s._id.toString()).not.equal(stiag._id.toString())
             DELETE "/author/post/#{p0._id}", (resp) ->
               DB.docById 'Post', p0._id, (pDB) ->

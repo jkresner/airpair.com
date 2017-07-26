@@ -266,6 +266,9 @@ angular.module("AirPair.Directives.Input", ['angularLoad', 'ui.bootstrap'])
 
   template: require('./stars.html'),
   scope: { stars: '=val' },
+  controller($scope, $element) {
+
+  }
 
 }))
 

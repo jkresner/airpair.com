@@ -2,6 +2,7 @@
   "about":                     "package.json:name,version,author,bugs,repository",
   "auth": {
     "appKey":                  "apcom",
+    "loginUrl":                "/login",
     "oauth": {
       "github": {
         "short":               "gh",
@@ -144,12 +145,13 @@
   },
   "model": {
     "cache": {
-      "require":               "tags:tags,templates:templates,rules:routes,ads:ads",
+      "require":               "tags:tags,templates:templates,rules:routes",
       "inflate":               { "tags": "name slug short desc url posts" }
     }
   },
   "routes": {
     "ads": {
+      "on":                    false,
       "campaigns":             "7013A000000mKoyQAE:heroku:2016-q3-heroku",
       "dir":                   "web/static/ads"
     },
@@ -189,17 +191,12 @@
     },
     "ses":                     { "accessKeyId": "--", "secretAccessKey": "--" },
     "smtp":                    { "service": "--", "auth": { "user": "--", "pass": "--" } },
-    "stripe": {
-      "publishedKey":          "pk_test_aj305u5jk2uN1hrDQWdH0eyl",
-      "secretKey":             "sk_test_8WOe71OlRWPyB3rDRcnthSCc"
-    },
     "timezone":                { "google": { "apiKey": "AIzaSyANXimipzhyZ-Mp2_RrzjKKp4nXq5VpMGk" } },
     "twitter": {
       "access_token":          "test",
       "access_token_secret":   "test",
       "consumer_key":          "test",
       "consumer_secret":       "test"
-    },
-    "youtube":                 { "refreshTokens": "airpairtest34@gmail.com:1/ButgPHQTginqD-zDnOHHhxiVRSlGDw5iGY9pPIrOsrQ" }
+    }
   }
 }

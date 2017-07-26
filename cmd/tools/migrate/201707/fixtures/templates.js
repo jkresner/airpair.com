@@ -11,7 +11,7 @@ module.exports = {
       "ogUrl": "https://www.airpair.com{{url}}",
       "ogTitle": "{{name}} Programming Guides and Tutorials from Top {{short}} Developers and expert consultants",
       "title": "{{name}} Programming Guides and Tutorials from Top {{short}} Developers and expert consultants",
-      "canonical": "https://static.airpair.com/img/software/{{slug}}.png"
+      "canonical": "https://www.airpair.com{{url}}"
     }
   },
 

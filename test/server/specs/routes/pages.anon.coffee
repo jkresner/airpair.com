@@ -1,20 +1,20 @@
 html =
-  login: /<li class="lg"><a href="\/login" target="_self" rel="nofollow"><b>Login<\/b><\/a><\/li>/
+  login: / / # /<li class="lg"><a href="\/login" target="_self" rel="nofollow"><b>Login<\/b><\/a><\/li>/
   faq: /class="blogpost faq">/
   landing: /<body class="landing">/
   post: /<article class="blogpost">/
   postinreview: /Community Review/
 js =
-  index: /javascript" src="https:\/\/static\.airpair\.com\/js\/index/
+  index: /javascript" src="https:\/\/static\.airpair\.com\/js\/app/
 
 
 describe ' NOINDEX'.subspec, ->
 
-  IT '/tos', -> HTML @, [/<h1 class="entry-title" itemprop="headline">AirPair Terms of Service/,html.faq,html.login]
+  IT.skip '/tos', -> HTML @, [/<h1 class="entry-title" itemprop="headline">AirPair Terms of Service/,html.faq,html.login]
   IT '/privacy', -> HTML @, [/<h1 class="entry-title" itemprop="headline">AirPair Privacy Policy/,html.faq]
   IT '/refund-policy', -> HTML @, [/<h1 class="entry-title" itemprop="headline">Refund Policy/,html.faq]
-  IT '/login', -> HTML @, [js.index]
-  IT '/hangout/index.html', -> HTML @, [/<img src="https:\/\/static.airpair.com\/img\/brand\/logo.png" \/>/], no: [js.index]
+  IT.skip '/login', -> HTML @, [js.index]
+  IT.skip '/hangout/index.html', -> HTML @, [/<img src="https:\/\/static.airpair.com\/img\/brand\/logo.png" \/>/], no: [js.index]
 
   IT '/posts/review/551174c103d42a11002da48b', -> HTML @, [html.postinreview,
     /<h1 class="entry-title" itemprop="headline">Moving Images on Open Stack<\/h1>/
@@ -22,7 +22,7 @@ describe ' NOINDEX'.subspec, ->
 
 describe ' INDEX'.subspec, ->
 
-  IT '/', -> HTML @, [/<title>airpair | Coding help/,html.login], no: [js.index,html.faq]
+  IT.skip '/', -> HTML @, [/<title>airpair | Coding help/,html.login], no: [js.index,html.faq]
   IT '/ionic', -> HTML @, [/<title>Ionic Programming Guides and Tutorials from Top ionic Developers/,html.landing], no: [js.index,html.faq]
   IT '/angularjs', -> HTML @, [/<title>AngularJS Tutorial: a comprehensive 10,000 word guide/,/rel="canonical" href="http:\/\/www.airpair.com\/angularjs"/,html.post,html.login]
   IT '/javascript', -> HTML @, [/<title>JavaScript Programming Guides and Tutorials from Top JS Developers/,/rel="canonical" href="https:\/\/www.airpair.com\/javascript"/,html.landing]
@@ -65,7 +65,7 @@ describe ' INDEX'.subspec, ->
     /meta property="og:url" content="https:\/\/www.airpair.com\/angularjs\/posts\/transclusion-template-scope-in-angular-directives"/,
     /link rel="canonical" href="https:\/\/www.airpair.com\/angularjs\/posts\/transclusion-template-scope-in-angular-directives"/,
     /<li><a href="#brief-intro-to-transclusion">Brief intro to transclusion/,
-    /<ul class="posttags"><li><a href="\/angularjs\/posts" target="_self" title="AngularJS tutorials & Angular guides">angularjs<\/a><\/li><\/ul>/]
+    /<ul class="tags"><li><a href="\/angularjs\/posts" target="_self" title="AngularJS tutorials & Angular guides">angularjs<\/a><\/li><\/ul>/]
 
   IT '/android', ->
     HTML @, [/<title>Android Programming Guides/, html.landing], no: [js.index]
@@ -75,12 +75,6 @@ describe ' INDEX'.subspec, ->
 
   IT '/android?utm_source=newsletter-airpair&utm_medium=email&utm_term=android-code-review&utm_content=google-apps-deployment&utm_campaign=news-14', ->
     HTML @, [/<title>Android Programming Guides/, html.landing], no: [js.index]
-
-  IT '/workshops', -> HTML @, [
-    /<title>Software Workshops, Webinars & Screencasts/,
-    /rel="canonical" href="https:\/\/www.airpair.com\/workshops"/,
-    html.landing]
-
 
   # IT 'index meta /hire-developers through airpair (partial)', ->
 

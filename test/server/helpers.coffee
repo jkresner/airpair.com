@@ -104,6 +104,14 @@ global.IMG = ({test}, opts) =>
   PAGE test.title, { contentType: /image/, status }, (image) =>
     DONE()
 
+
+global.BAN = ({test,optsExpect}, opts) =>
+  status = (opts||{}).status || 500
+  ua = optsExpect.ua
+  PAGE test.title, {contentType: /text/, status, ua}, (txt) =>
+    DONE()
+
+
 # global.REDIRECT = ({test}, to, opts) =>
 #   status = (opts||{}).status || 301
 #   PAGE test.title, { contentType: /text/, status }, (txt) =>

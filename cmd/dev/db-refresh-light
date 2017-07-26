@@ -1,5 +1,0 @@
-#!/bin/sh
-mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo -c users
-mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo -c experts
-mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo -c requests
-mongorestore --drop --db airpair_dev ~/ap_mongo/$2

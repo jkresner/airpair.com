@@ -62,7 +62,6 @@ cd ../../;
 # # rm -rf web/js/.lib/;printf "${CYAN}CMD/setup: unlink${NC} web/js/.lib\n"
 # # rm -rf web/css/.lib/;printf "${CYAN}CMD/setup: unlink${NC} web/css/.lib\n"
 
-
 # STATIC_CSS='../../../../../static/src/css'
 # LESS='web/css/app/posts';mkdir -p "${LESS}";cd "${LESS}";for l in $(find . -type l); do unlink $l;done;printf "${CYAN}CMD/setup: link  ${NC} /${LESS}/*.less\n"
 # for f in $(ls -d ../../../../../static/src/css/posts/*.less); do ln -nsf $f;done;cd ../../../../;printf "${CYAN}CMD/setup: linked${NC} ${STATIC_CSS}/posts\n";
@@ -75,7 +74,3 @@ cd ../../;
 # mkdir -p web/css/.lib/pages;
 # cd web/css/dist;
 # for l in $(find . -type l); do unlink $l;done;
-# ln -nsf ../../../../static/src/css/pages/err.less;
-# printf "${CMD}source sym-linked error.less${NC} /css/dist\n"
-# ln -nsf ../../../../../static/host/public/ico/author/favicon.ico;
-# printf "${CMD}Symlink favicon.ico ${NC}\n"
