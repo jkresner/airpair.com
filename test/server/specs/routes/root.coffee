@@ -31,7 +31,7 @@ describe " HUMAN".spec, ->
 
 
   IT '/robots.txt', -> PAGE '/robots.txt', { contentType: /text/ }, (txt) ->
-    expect(txt).to.inc(['User-agent: *','Disallow: /airconf'])
+    expect(txt).to.inc(['User-agent: *','Disallow: /admin'])
     DONE()
 
 

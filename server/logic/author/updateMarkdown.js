@@ -1,4 +1,4 @@
-module.exports = ({Post}, Data, {role,getSetPostStats}) => ({
+module.exports = ({Post}, Data, {logAct,role,getSetPostStats}) => ({
 
 
   validate(user, original, update) {
@@ -22,17 +22,17 @@ module.exports = ({Post}, Data, {role,getSetPostStats}) => ({
 
 
   exec(original, update, cb) {
-    var {commitMessage} = update
-    var {_id,meta} = original
-    var {user} = this
-    var repo = null
+    let {commitMessage} = update
+    let {_id} = original
+    let {user} = this
+    let repo = null
 
-    var done = (e, post) => e ? cb(e) : cb(null, {post,repo,headMD:update.md})
+    let done = (e, post) => e ? cb(e) : cb(null, {post,repo,headMD:update.md})
 
     if (!original.history.submitted) {
-      var stats = assign(original.stats||{}, getSetPostStats(update))
-      meta = honey.logic.DRY.touchMeta(meta, 'editDraft', user)
-      return Post.updateSet(_id, {md:update.md,meta,stats}, done)
+      let stats = assign(original.stats||{}, getSetPostStats(update))
+      let log = logAct(original, 'editDraft', user)
+      return Post.updateSet(_id, {md:update.md,log,stats}, done)
     }
 
     var isAuthor = role.author(user, original)
@@ -52,13 +52,13 @@ module.exports = ({Post}, Data, {role,getSetPostStats}) => ({
           ups.md = update.md
           ups.stats = assign(original.stats, getSetStats(update))
           // ups.publishedCommit = result.commit
-          ups.meta = touchMeta(meta, 'edit:inReview', user)
+          ups.log = logAct(original, 'edit:inReview', user)
         } else
-          ups.meta = touchMeta(meta, 'edit:HEAD', user)
+          ups.log = logAct(original, 'edit:HEAD', user)
 
       }
       else
-        ups.meta = touchMeta(meta, 'edit:fork', user)
+        ups.log = logAct(original, 'edit:fork', user)
 
       Post.updateSet(_id, ups, done)
     })

@@ -74,8 +74,8 @@ DESCRIBE "Session + analytics not persist", ->
     mirrorBot = unauthenticated:true, ua: UA.Yandex.mirrorDector
     fakeBot = unauthenticated:true, ua: UA.Yandex.fake
 
-    # PAGE '/100k-writing-competition', Opts({status:200}, indexBot), (resp) ->
-      # expect(resp).inc "100k Writing Competition"
+    PAGE '/100k-writing-competition', Opts({status:200}, indexBot), (resp) ->
+      expect(resp).inc "100k Writing Competition"
 
     PAGE '/100k-writing-competition', RES(404, fakeBot), (resp) ->
       DONE()

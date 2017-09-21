@@ -45,24 +45,19 @@ h2 underline should pickup
     "_id" : ObjectId("55c02b22d131551100f1f0da"),
     "title" : "Mastering ES6 higher-order functions for Arrays",
     "md" : "Higher-order functions are beautifully concise yet expressive when dealing with data. Elevate your functional programming skills by learning ES6 higher-order functions for Arrays!",
-    "meta": {
-      "lastTouch" : {
+    "log": {
+      "last" : {
         "by" : { "name" : "Tiago Romero Garcia", "_id" : ObjectId("538bae591c67d1a4859d3381") },
         "utc" : ISODate("2015-09-15T18:39:06.633Z"),
         "action" : "publish"
       },
-      actvitiy: [
+      history: [
         {
-            "touch" : {
-                "action" : "publish",
-                "utc" : ISODate("2015-09-15T18:39:06.632Z"),
-                "by" : {
-                    "_id" : ObjectId("538bae591c67d1a4859d3381"),
-                    "name" : "Tiago Romero Garcia"
-                }
-            },
-            "commit" : "60f98aa4989c23b4fe06f9d711e77d16ca2f296b",
-            "_id" : ObjectId("55f865ca272fbe11004303d7")
+          "action" : "publish",
+          "utc" : ISODate("2015-09-15T18:39:06.632Z"),
+          "by" : { "_id" : ObjectId("538bae591c67d1a4859d3381"), "name" : "Tiago Romero Garcia" },
+          "commit" : "60f98aa4989c23b4fe06f9d711e77d16ca2f296b",
+          "_id" : ObjectId("55f865ca272fbe11004303d7")
         }
       ]
     },
@@ -172,8 +167,8 @@ h2 underline should pickup
     "_id" : ObjectId("550106c2f1377c0c0051cbef"),
     "title" : "Scalable Architecture DR CoN: Docker, Registrator, Consul, Consul Template and Nginx",
     "md" : "No real MD",
-    "meta" : {
-      "lastTouch" : {
+    "log" : {
+      "last" : {
         "by" : {
             "name" : "Jonathon Kresner",
             "_id" : "5175efbfa3802cc4d5a5e6ed"
@@ -181,54 +176,28 @@ h2 underline should pickup
         "utc" : "2015-03-16T22:23:33.578Z",
         "action" : "publish"
       },
-      actvitiy: [
+      history: [
         {
-            "touch" : {
-                "action" : "publish",
-                "utc" : "2015-03-16T21:39:54.136Z",
-                "by" : {
-                    "_id" : ObjectId("5501064cb2620c0c009bae70"),
-                    "name" : "Graham Jenson"
-                }
-            },
-            "commit" : "Not yet propagated",
-            "_id" : ObjectId("55074daa3c09dd0c009b581f")
+          "action" : "publish",
+          "utc" : "2015-03-16T21:39:54.136Z",
+          "by" : { "_id" : ObjectId("5501064cb2620c0c009bae70"), "name" : "Graham Jenson" },
+          "commit" : "Not yet propagated",
+          "_id" : ObjectId("55074daa3c09dd0c009b581f")
         },
         {
-            "touch" : {
-                "action" : "publish",
-                "utc" : "2015-03-16T21:48:35.616Z",
-                "by" : {
-                    "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
-                    "name" : "Jonathon Kresner"
-                }
-            },
-            "commit" : "4321756fa5c0cfeeaab27b73273a577a609913fe",
-            "_id" : ObjectId("55074fb38dac8f0c00294a3c")
+          "action" : "publish",
+          "utc" : "2015-03-16T21:48:35.616Z",
+          "by" : { "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"), "name" : "Jonathon Kresner" },
+          "commit" : "4321756fa5c0cfeeaab27b73273a577a609913fe",
+          "_id" : ObjectId("55074fb38dac8f0c00294a3c")
         }
       ]
     },
     "tags" : [
-        {
-            "slug" : "python",
-            "name" : "python",
-            "_id" : ObjectId("514825fa2a26ea020000002d")
-        },
-        {
-            "_id" : ObjectId("5249f4d266a6f999a465f897"),
-            "name" : "docker",
-            "slug" : "docker"
-        },
-        {
-            "_id" : ObjectId("5153f494d96db10200000011"),
-            "name" : "NGINX",
-            "slug" : "nginx"
-        },
-        {
-            "_id" : ObjectId("5358c8081c67d1a4859d2f18"),
-            "name" : "devops",
-            "slug" : "devops"
-        }
+      { "_id" : ObjectId("514825fa2a26ea020000002d"), "slug" : "python", "name" : "python" },
+      { "_id" : ObjectId("5249f4d266a6f999a465f897"), "name" : "docker", "slug" : "docker" },
+      { "_id" : ObjectId("5153f494d96db10200000011"), "name" : "NGINX", "slug" : "nginx" },
+      { "_id" : ObjectId("5358c8081c67d1a4859d2f18"), "name" : "devops", "slug" : "devops" }
     ],
     subscribed: [
       { "userId" : ObjectId("54de72d1bb6e680a0011c65c"), "_id" : ObjectId("5501c781f1377c0c0051eae1") },
@@ -468,8 +437,8 @@ h2 underline should pickup
             "commit" : "a11885585642c95f9e60b39cbe0101ac9248b5ba"
         }
     },
-    "meta" : {
-        "lastTouch" : {
+    "log" : {
+        "last" : {
             "by" : {
                 "name" : "Jonathon Kresner",
                 "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed")
@@ -477,7 +446,7 @@ h2 underline should pickup
             "utc" : ISODate("2015-03-27T21:15:47.069Z"),
             "action" : "propagateMDfromGithub"
         },
-        "activity" : [
+        "history" : [
             {
                 "action" : "createByAuthor",
                 "utc" : ISODate("2015-02-13T04:58:40.754Z"),
@@ -528,15 +497,15 @@ h2 underline should pickup
         "description" : "AirPair Privacy Policy"
     },
     "history" : {
-        "created" : ISODate("2015-02-13T04:56:56.073Z"),
-        "updated" : ISODate("2015-03-30T21:13:03.677Z"),
-        "submitted" : ISODate("2015-02-13T04:58:27.967Z"),
-        "published" : ISODate("2015-02-13T06:02:25.001Z"),
-        "live" : {
-            "published" : ISODate("2015-03-30T21:13:03.677Z"),
-            "by" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
-            "commit" : "31f5599535e43dbb2651e96e85af7238cf7f20d0"
-        }
+      "created" : ISODate("2015-02-13T04:56:56.073Z"),
+      "updated" : ISODate("2015-03-30T21:13:03.677Z"),
+      "submitted" : ISODate("2015-02-13T04:58:27.967Z"),
+      "published" : ISODate("2015-02-13T06:02:25.001Z"),
+      "live" : {
+          "published" : ISODate("2015-03-30T21:13:03.677Z"),
+          "by" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+          "commit" : "31f5599535e43dbb2651e96e85af7238cf7f20d0"
+      }
     }
   },
 
@@ -580,7 +549,8 @@ h2 underline should pickup
         "by" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
         "commit" : "613d60ea55325d483117011996534e9db0647ed2"
       }
-    }
+    },
+    log: { last: {}, history: [] }
   },
 
   angg: {
@@ -629,7 +599,8 @@ h2 underline should pickup
         "published" : ISODate("2014-10-03T02:21:49.051Z"),
         "by" : ObjectId("5175efbfa3802cc4d5a5e6ed")
       }
-    }
+    },
+    log: { last: {}, history: [] }
   },
 
   exps_deep: {
@@ -947,8 +918,8 @@ h2 underline should pickup
             "commit" : "8503d290c7b4ed5e780f04f2b703eef43554b6d1"
         }
     },
-    "meta" : {
-        "lastTouch" : {
+    "log" : {
+        "last" : {
             "action" : "propagateMDfromGithub",
             "utc" : ISODate("2015-08-13T22:59:42.039Z"),
             "by" : {
@@ -956,7 +927,7 @@ h2 underline should pickup
                 "name" : "Jonathon Kresner"
             }
         },
-        "activity" : [
+        "history" : [
             {
                 "_id" : ObjectId("54e7ce27fd5a340c005de39e"),
                 "utc" : ISODate("2015-02-21T00:15:35.231Z"),
@@ -1164,14 +1135,14 @@ h2 underline should pickup
       "updated" : ISODate("2016-02-04T14:41:21.000Z"),
       "created" : ISODate("2016-02-04T14:41:21.852Z"),
     },
-    "meta" : {
-      "activity" : [
+    "log" : {
+      "history" : [
         { _id: ObjectId("56b363115b56140b7e46129a"),
           "action" : "create", by: { "name" : "Jonathon Kresner", _id: ObjectId("549342348f8c80299bcc56c2") } },
         { _id: ObjectId("56b3631b5b56140b7e46129d"),
           "action" : "editDraft", by: { "name" : "Jonathon Kresner", _id: ObjectId("549342348f8c80299bcc56c2") } }
       ],
-      "lastTouch" : {
+      "last" : {
         by: { "name" : "Jonathon Kresner", _id: ObjectId("549342348f8c80299bcc56c2") },
         _id: ObjectId("56b3631b5b56140b7e46129d"),
         "action" : "editDraft"
@@ -1202,8 +1173,8 @@ h2 underline should pickup
     },
     "forkers" : [],
     "reviews" : [],
-    "meta" : {
-        "lastTouch" : {
+    "log" : {
+        "last" : {
             "by" : {
                 "name" : "Bernard Ojengwa",
                 "_id" : ObjectId("546479888f8c80299bcc5016")
@@ -1212,7 +1183,7 @@ h2 underline should pickup
             "_id" : ObjectId("56cef2e0fb20411200c23232"),
             "action" : "submit"
         },
-        "activity" : [
+        "history" : [
             {
                 "action" : "create",
                 "_id" : ObjectId("56ceeb50fb20411200c2322a"),

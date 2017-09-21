@@ -13,7 +13,7 @@ module.exports = ({Post}, Data, DRY) => ({
     o.history = { created: new Date() }
     o.by = Data.Project.by(this.user)
     o.md = "new"
-    o.meta = DRY.touchMeta(null, 'create', this.user)
+    o.log = DRY.logAct(null, 'create', this.user)
 
     Post.create(o, cb)
   },

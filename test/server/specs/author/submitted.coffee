@@ -28,7 +28,7 @@ deleting = ->
   IT "Success as editor", ->
     opts = { author: 'gnic', data: {title: "okDelete #{@testSeed}"}, submit: new Date }
     STORY.newPost 'pubedArchitec', opts, (p0, session) ->
-      LOGIN 'tiag', (s2) ->
+      LOGIN 'tiag', {session:null}, (s2) ->
         DELETE "/author/post/#{p0._id}", (ok) ->
           DB.docById 'Post', p0._id, (pDB) ->
             expect(pDB).to.be.null

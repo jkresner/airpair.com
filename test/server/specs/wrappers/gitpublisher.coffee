@@ -14,9 +14,6 @@ IT 'Fails without token', ->
 IT 'Fails with invalid token', ->
   STUB.wrapper('GitPublisher').api('user.get').err('gh_user_bad_creds')
   tst5 = FIXTURE.clone('users.tst5')
-  tokens = {}
-  tokens[config.auth.appKey] = { token: 'asdfasdfasdfasdf' }
-  tst5.auth.gh.tokens = tokens
   Wrappers.GitPublisher.getScopes tst5, (e,r) ->
     expect(r).to.be.undefined
     expect(e.message).to.inc ["GitHub token auth failed"]
@@ -25,7 +22,7 @@ IT 'Fails with invalid token', ->
 
 IT 'Returns "public_repo" and "user" for valid token', ->
   STUB.wrapper('GitPublisher').api('user.get').success('gh_user_scopes')
-  STORY.newAuthor 'tst1', { ghKey: 'author1' }, (key) ->
+  key = STORY.newAuthor 'tst1', { ghKey: 'author1' }, (s) ->
     user = FIXTURE.users[key]
     Wrappers.GitPublisher.getScopes user, (e,r,payload) ->
       expect(e, e).to.be.null
@@ -35,7 +32,7 @@ IT 'Returns "public_repo" and "user" for valid token', ->
       DONE()
 
 
-IT 'Executes as as admin', ->
+IT 'Executes as admin', ->
   gpSTUB('repos.get','47264557')
   repo = 'steps-1449064887'
   Wrappers.GitPublisher.getRepo 'admin', org, repo, (e,r,payload) ->
@@ -54,7 +51,7 @@ IT 'Executes all green step sequence', ->
   gpSTUB('orgs.addTeamMembership','1862308_airpairtest1')
   # @gpSTUB('repos.createFile','repos_createFile_1449060354_postMD')
 
-  STORY.newAuthor 'tst1', { ghKey: 'author1' }, (key) =>
+  key = STORY.newAuthor 'admb', { ghKey: 'author1', login:true }, (s) =>
     user = FIXTURE.users[key]
     repo = "steps-#{@testSeed}"
     postId = ObjectId()

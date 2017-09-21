@@ -1,12 +1,12 @@
-module.exports = ({ Id, Enum, Touch, Reftag, Note, Htmlhead, Meta },
+module.exports = ({ Id, Enum, Reftag, Reply, Vote, Htmlhead, Log },
   { asSchema, required, trim, lowercase, index, unique, sparse }) => {
 
 
 var userId     = { type: Id, ref: 'User', required, index }
 var forkers    = [asSchema({userId})]
 var subscribed = [asSchema({userId, mail: { type: String, required }})]
-var replies    = [asSchema(require('./cell/reply')({Id},{required,index,sparse}))]
-var votes      = [asSchema(require('./cell/vote')({Id},{required,index,sparse}))]
+var replies    = [asSchema(Reply)]
+var votes      = [asSchema(Vote)]
 
 
 var reviews    = [asSchema({
@@ -91,7 +91,7 @@ return asSchema({
     stats:            [] //Object?
   },
 
-  meta:             Meta,
+  log:             Log,
   history: {
     created:        { type: Date, required, 'default': Date },
     submitted:      { type: Date },

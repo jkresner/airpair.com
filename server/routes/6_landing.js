@@ -4,6 +4,7 @@ module.exports = function(app, mw, {landing,canonical}) {
 
   var rr = honey.Router('landing',{type:'html'})
     .use(mw.$.livereload)
+    .use(mw.$.abuser)
     .use(mw.$.badBot)
     .use(mw.$.throttle)
     .use([mw.$.session, mw.$.reqFirst])
@@ -14,6 +15,10 @@ module.exports = function(app, mw, {landing,canonical}) {
       mw.$.cachedPublished,
       (req, res, next) => next(null, assign(req.locals.r, cache.published))
     )
+
+    .get('/login', mw.$.inflateLanding('login'))
+
+    // .get('/typo', mw.res.page('typography',{layout:'landing'}))
 
     .get('/100k-writing-competition', mw.$.inflateLanding('comp2015'))
 
@@ -30,11 +35,11 @@ module.exports = function(app, mw, {landing,canonical}) {
     .get('/posts/in-community-review',
       mw.$.noBot,
       mw.$.inflateLanding('inreview'),
-      mw.$.logic('posts.getPostsSubmitted',{assign:'posts'}))
+      mw.$.pd('posts.getPostsSubmitted',{assign:'posts'}))
 
     .get(cache.canonical.tag.map(t => t.url),
       mw.$.inflateLanding('tag'),
-      mw.$.logic('posts.getPostsByTag',{params:['url']}))
+      mw.$.pd('posts.getPostsByTag',{params:['url']}))
 
 
 }

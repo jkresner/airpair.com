@@ -15,24 +15,24 @@ module.exports = ({Post}, Data, DRY) => ({
 
 
   exec(original, cb) {
-    var forkers = original.forkers || []
-    var {user} = this
-    var meta = Shared.touchMeta(original.meta, 'fork', user)
+    let forkers = original.forkers || []
+    let {user} = this
+    let log = DRY.logAct(original, 'fork', user)
 
     Wrappers.GitPublisher.addContributor(user, null, original.slug, (e, fork) => {
       if (e) return cb(e)
 
-      var { name, email, auth } = user
-      var forkerInfo = { userId: user._id, name, email, gh: auth.gh.login, avatar: auth.gh.avatar_url }
-      var existing = _.find(forkers, f => _.idsEqual(f.userId, user._id))
+      let { name, email, auth } = user
+      let forkerInfo = { userId: user._id, name, email, gh: auth.gh.login, avatar: auth.gh.avatar_url }
+      let existing = _.find(forkers, f => _.idsEqual(f.userId, user._id))
 
       if (!existing)
         forkers.push(forkerInfo)
       else
         assign(existing, forkerInfo)
 
-      var stats = DRY.getAndUpdateStats(assign(original,{forkers}))
-      Post.updateSet(original._id, {meta,stats,forkers}, cb)
+      let stats = DRY.getAndUpdateStats(assign(original,{forkers}))
+      Post.updateSet(original._id, {log,stats,forkers}, cb)
     })
   },
 

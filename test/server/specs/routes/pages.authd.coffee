@@ -33,9 +33,8 @@ DESCRIBE 'NOINDEX', ->
   IT '/tos', -> HTML @, [/<h1 class="entry-title" itemprop="headline">AirPair Terms of Service/,html.faq], no: [html.login]
   IT '/privacy', -> HTML @, [/<h1 class="entry-title" itemprop="headline">AirPair Privacy Policy/,html.faq], no: [html.login]
   IT '/refund-policy', -> HTML @, [/<h1 class="entry-title" itemprop="headline">Refund Policy/,html.faq], no: [html.login]
-  IT.skip '/login', -> HTML @, [js.index]
 
-  IT.skip '/posts/review/551174c103d42a11002da48b', -> HTML @, [html.postinreview,
+  IT '/posts/review/551174c103d42a11002da48b', -> HTML @, [html.postinreview,
     /<h1 class="entry-title" itemprop="headline">Moving Images on Open Stack<\/h1>/
   ]
 
@@ -83,8 +82,7 @@ DESCRIBE 'CLIENT (authed APP)', ->
     DONE()
 
   IT '/home OK', ->
-    LOGIN 'tst1', (session) =>
-      PAGE '/home', {}, (html) =>
-        expect(html).to.inc ['ng-view',
-                'window.pageData = { session: {"_id":"5649cf5beb1811be02f0ec39","name":"Air PairOne"']
-        DONE()
+    PAGE '/home', {}, (html) =>
+      expect(html).to.inc ['ng-view',
+              'window.pageData = { session: {"_id":"51ba69f466a6f999a465f3b5","name":"gregorynicholas"']
+      DONE()

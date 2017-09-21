@@ -68,11 +68,9 @@ module.exports = (DAL, Data) => assign(require("../../es/post"), {
 
 
   updateReviews(post, reviews, action, user, notifications, cb) {
-
-    var stats = assign(post.stats, stat.comments({reviews}), stat.ratingBasic({reviews}))
-    var meta = honey.logic.DRY.touchMeta(post.meta, action, user)
-
-    var ups = {reviews,stats,meta}
+    let stats = assign(post.stats, stat.comments({reviews}), stat.ratingBasic({reviews}))
+    let log = honey.logic.DRY.logAct(post, action, user)
+    let ups = {reviews,stats,log}
 
     if (!_.find(post.subscribed, s => _.idsEqual(user._id, s.userId))) {
       ups.subscribed = user.subscribed || []

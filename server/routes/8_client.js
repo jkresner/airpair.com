@@ -1,18 +1,14 @@
 module.exports = (app, mw) => {
 
-  // honey.Router('app',{type:'html'})
-
-
-  app.get([
+  honey.Router('app',{type:'html'})
+    .use(mw.$.abuser)
+    .get([
            '/home',
            '/account',
            '/billing*',
            '/help*',
-          ],
-           mw.$.noBot, mw.$.session, mw.$.authd, mw.$.inflateMe, mw.$.pageClient)
-
-
-  app.get([
+          ], mw.$.noBot, mw.$.session, mw.$.authd, mw.$.inflateMe, mw.$.pageClient)
+    .get([
            '/find-an-expert',
            '/hire-software-developers',
            '*pair-programming*',

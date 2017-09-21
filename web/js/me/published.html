@@ -55,9 +55,9 @@
         </nav>
         <div>
           <time>
-            <small ng-if="p.meta">
-            {{p.meta.lastTouch.action}}ed
-            {{p.meta.lastTouch.utc | timeAgo | replace : 'month' : 'mth'  }}</small>
+            <small ng-if="p.log">
+            {{p.log.last.action}}ed
+            {{p.log.last.utc | timeAgo | replace : 'month' : 'mth'  }}</small>
             <b>Published</b> <i>first</i> {{p.history.published | dateFormat }} |
             <i><a ng-href="{{p.url}}" target="_blank">current</a></i> {{p.history.live.published | dateFormat }} |
             <small ng-if="p.stats.words > 1"> {{p.stats.words}} words</small>
@@ -89,9 +89,9 @@
         </nav>
         <div>
           <time>
-            <small ng-if="p.meta">
-            {{p.meta.lastTouch.action}}ed
-            {{p.meta.lastTouch.utc | timeAgo | replace : 'month' : 'mth'  }}</small>
+            <small ng-if="p.log">
+            {{p.log.last.action}}ed
+            {{p.log.last.utc | timeAgo | replace : 'month' : 'mth'  }}</small>
             <b>First publish</b> {{p.history.published | dateFormat }} |
             <small ng-if="p.stats.words > 1"> {{p.stats.words}} words</small>
           </time>

@@ -1,5 +1,5 @@
-module.exports = ({ Id, Enum, Touch, Reftag, Note, Meta },
-  { asSchema, required, trim, lowercase, unique, sparse }) => 
+module.exports = ({ Id, Enum, Reftag, Log, Act },
+  { asSchema, required, trim, lowercase, unique, sparse }) =>
 
 
 asSchema({
@@ -7,10 +7,11 @@ asSchema({
   userId:         { type: Id, ref: 'User', unique, required },
 
   //-- legacy
-  lastTouch:      Touch,
-  activity:       [Touch],
+  // lastTouch:      Touch,
+  // activity:       [Touch],
+  // notes:          { type: [Note] },
   //-- new
-  meta:           Meta,
+  log:            Log,
 
   rate:           { type: Number },
   brief:          { type: String },
@@ -20,7 +21,7 @@ asSchema({
   deals:            { required: false, type: {}},
 
   availability: {
-    updated:        { type: Touch },
+    updated:        { type: Act },
     status:         { type: String },
     busyUntil:      { type: Date },
     times:          { type: String },
@@ -50,7 +51,5 @@ asSchema({
       weight:     Number, // allow staff to boost experts
       incident:   [{requestId:Id,comment:String,severity:Number}]
     }
-  },
-
-  notes:          { type: [Note] },
+  }
 })

@@ -188,7 +188,6 @@ module.exports = {
 
 
   todo(post) {
-    console.log('fuck.todo', post)
     var stats = post.stats
     var words = stats ? stats.words : null
     if (!words || words < 400) return 'wordcount'

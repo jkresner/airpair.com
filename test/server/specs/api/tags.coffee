@@ -11,7 +11,7 @@ IT '"mon"', ->
     expect(s[2].so).to.be.undefined
     expect(s[2].gh).to.be.undefined
     expect(s[2].ghId).to.be.undefined
-    expect(s[2].meta).to.be.undefined
+    expect(s[2].log).to.be.undefined
     expect(s[0].name).to.match(/mongoengine|mongoid/)
     expect(s[1].name).to.match(/mongoengine|mongoid/)
     DONE()

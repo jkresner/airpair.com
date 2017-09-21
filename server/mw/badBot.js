@@ -1,3 +1,40 @@
+/**                                                                  noCrawl(
+* Similar to res.empty but instead of waiting for a url to not match any
+* routes, gate a known route or router. Requires session.ua to execute
+* earlier in the middleware chain to know if the userAgent is a bot.
+*
+*  Object    @opts[optional]
+*   String    .content to 200 respond to all requests by bots
+*   String    .group
+*   String    .redirectUrl to http 301 respond (ignored if .content set)
+*   Function  .onDisallow custom hook to log bot activity                    */
+function noCrawl(opts={}) {
+  let redirectUrl = opts.redirectUrl || false
+  let content = opts.hasOwnProperty('content') ? opts.content : false
+  let onDisallow = opts.onDisallow || null
+  let disallow = opts.group ? `${opts.group}|null` : 'null'
+  let check = new RegExp(disallow)
+  this.mwName = `nobot:${disallow}`
+
+  return function(req, res, done) {
+    // if (req.ctx.ud) return done()
+    let groups = (req.ctx.ud||'null').split('|')
+    let deny = false
+    for (let group of groups) if (check.test(group)) deny = true
+    // console.log('noCrawl'.yellow, 'disallow'.magenta, disallow)
+    if (!deny) return done()
+
+    if (onDisallow) onDisallow(req)
+    if (content!==false) res.send(content)
+    else if (redirectUrl) res.redirect(301, redirectUrl)
+
+    let {ip,ua,ref} = req.ctx
+    done(null, `${ip} ${req.ctx.ud} ${deny?deny:''} ${ua?ua:'noUA'}${ref?' <<< '+ref:''}`, true)
+  }
+}
+
+
+
 module.exports = (app, mw, {forbid}) => {
 
   // CF-Connecting-IP === X-Forwarded-For (if no spoofing)
@@ -14,7 +51,7 @@ module.exports = (app, mw, {forbid}) => {
   //   next()
   // })
 
-  var $logMW = (req, mwName) => $log(honey.log.mw(req, mwName))
+  var $logMW = (req, mwName) => honey.log.mw.data(req, mwName)
 
 
   var whitelist = new RegExp(`^${forbid.ban.whitelist}`)
@@ -29,10 +66,9 @@ module.exports = (app, mw, {forbid}) => {
     if (!cache.abuse[ip]) cache.abuse[ip] = []
     if (status != 501)
       cache.abuse[ip].push(action)
-
     req.res.status(status)
     if (status != 500)
-      console.log(honey.log.mw(req, 'abuse'))
+      honey.log.mw.data(req, 'abuse')
       // console.log(`[${status}${action.u}${ref?` << ${ref}`.dim:''}]abuse`.cyan, `\t${ip}[${cache.abuse[ip].length}/${forbid.abuse.limit}]`.white, (ua||'').gray)
     return status == 418 ? 'Relax. Close your eyes.' : ''
   }
@@ -51,13 +87,15 @@ module.exports = (app, mw, {forbid}) => {
       )
   }
 
-  var mwBan = name => function(req, res, next) {
-    var data = { mw:'ban', headers: req.headers, name, url: req.originalUrl, user: req.ctx.user||'anon' }
-    if (req.body) data.body = req.body
-
-    res.send(cache.abuse.increment(500, req))
-    $logMW(req, name)
-    flareBan(req, data)
+  var mwBan = function(name) {
+    this.mwName = name
+    return function(req, res, next) {
+      var data = { mw:'ban', headers: req.headers, name, url: req.originalUrl, user: req.ctx.user||'anon' }
+      if (req.body) data.body = req.body
+      res.send(cache.abuse.increment(500, req))
+      $logMW(req, name)
+      flareBan(req, data)
+    }
   }
 
   mw.
@@ -90,19 +128,8 @@ module.exports = (app, mw, {forbid}) => {
           global.analytics.issue(req.ctx, 'scrape', 'security_high', data)
       })
 
-  if (forbid.abuse)
-    mw.
-      cache('abuser', function(req, res, next) {
-        var under = (cache.abuse[req.ctx.ip]||[]).length < forbid.abuse.limit
-        var ok = cache['abuse'].ban.indexOf(req.ctx.ip) == -1
-        // $log('check abuse'.yellow, `[${req.ctx.ip}]`, (cache.abuse[req.ctx.ip]||[]).length, cache['abuse'].ban.indexOf(req.ctx.ip))
-        if (under && ok)
-          return next()
-        // $log('check abuse'.yellow, `[${req.ctx.ip}]`, 'over'.red)
-        res.send(cache.abuse.increment(500, req))
-        $logMW(req, ok ? 'abuser' : 'banned')
-      })
 
+  mw.req.extend('noCrawl', noCrawl)
 
   mw.
     cache('noBot', mw.req.noCrawl({ group: 'search|ban|lib|proxy|reader',

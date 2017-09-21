@@ -1,8 +1,8 @@
 const Views = {
   // activity:          '_id title meta.lastTouch history by.name by.avatar url tags htmlHead slug stats reviews', // pullRequests reviews forkers
-  forks:             '_id title meta.lastTouch history by url tags htmlHead.canonical slug stats',
-  home:              '_id title meta.lastTouch history by url stats forkers reviews htmlHead.canonical',
-  tile:              '_id title meta.lastTouch history by.name by.avatar htmlHead tags stats',
+  forks:             '_id title log.last history by url tags htmlHead.canonical slug stats',
+  home:              '_id title log.last history by url stats forkers reviews htmlHead.canonical',
+  tile:              '_id title log.last history by.name by.avatar htmlHead tags stats',
   // pr:                ' url html_url id number state title user.login user.avatar_url created_at updated_at closed_at n merged_at n merge_commit_sha statuses_url'.replace(/ /g,' pullRequests.').replace(/$ /,''),
   profile:           '_id name username photos emails initials bio ' +
                      'auth.gh.login auth.so.link auth.bb.username auth.in.id auth.tw.screen_name auth.al.angellist_url auth.gp.id auth.gp.link auth.gp.url auth.gp.email auth.sl.username'
@@ -60,20 +60,20 @@ const Query =  {
 }
 
 const Opts = {
-  forks: { select: Views.forks, sort: { 'meta.lastTouch._id': -1 } },
+  forks: { select: Views.forks, sort: { 'log.last._id': -1 } },
     // 'updated': 1
 
   drafts: {
-    sort: { 'meta.lastTouch._id': -1 },
+    sort: { 'log.last._id': -1 },
   },
 
   published: {
-    sort: { 'meta.lastTouch._id': -1 },
+    sort: { 'log.last._id': -1 },
   },
 
   home: {
     select: Views.home,
-    sort: { 'meta.lastTouch._id': -1 },
+    sort: { 'log.last._id': -1 },
   },
 
   suggests: {
@@ -118,11 +118,10 @@ module.exports = { Views, Query, Opts,
       for (var p of posts) {
         p.history.submitted ? r.inreview.push(p) : r.rough.push(p)
         r.stats.words += p.stats.words
-        p.lastTouched = { action: `${p.meta.lastTouch.action}ed` }
+        p.last = { action: `${p.log.last.action}ed` }
         // console.log('p.stats'.yellow, p.title, p.stats, util)
-        p.lastTouched.utc = p.meta.lastTouch.utc || util.BsonId.toDate(p.meta.lastTouch._id)
-        delete p.meta
-        // console.log('p.meta'.yellow, p.meta.lastTouch)
+        p.last.utc = p.log.last.utc || util.BsonId.toDate(p.log.last._id)
+        delete p.log
       }
       return r
     },
@@ -172,7 +171,7 @@ module.exports = { Views, Query, Opts,
         if (_.find(p.reviews, r => _.idsEqual(user._id, r.by))) ++reviewed
       }
 
-      mine = _.sortBy(mine, p => p.meta ? p.meta.lastTouch._id : 1)
+      mine = _.sortBy(mine, p => p.log ? p.log.last._id : 1)
       mine.forEach(p => {
         // if (!history.updated) p.history.updated = p.history.created
         // feedback = feedback.concat(chain(p, 'feedback').reviews||[])

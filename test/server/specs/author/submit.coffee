@@ -4,7 +4,7 @@ beforeEach ->
 IT "Simple post and valid gh.token", ->
   STORY.newPost 'higherOrder', { author: 'tmot', data: {title:"Higher #{@testSeed}"} }, (p0, session) ->
     GET "/author/submitting/#{p0._id}", (pSubmission) ->
-      EXPECT.equalIdAttrs(pSubmission, p0)
+      expect(pSubmission).eqId(p0._id)
       expect(pSubmission.slug).to.exist
       expect(pSubmission.submission.valid).to.be.true
       PUT "/author/submit/#{p0._id}", pSubmission, (p1) ->

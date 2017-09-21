@@ -28,28 +28,28 @@ IT 'Track anonymous post view', ->
 
 
 IT 'Track authed post view', ->
-  DB.removeDocs 'User', { 'auth.gh.id': 215283 }, ->
+  {ahoo} = FIXTURE.users
+  DB.removeDocs 'User', { 'auth.gh.id': ahoo.auth.gh.id }, ->
   # $log('global.analytics'.yellow, global.analytics.view)
   # spy = STUB.spy(global.analytics,'view')
-  # $log('global.analytics'.yellow, global.analytics.view)
-  LOGIN 'admb', (s) ->
-    uId = ObjectId(s._id)
-    viewCheck = => DB.docsByQuery 'View', {uId}, (r) ->
-      # $log('spy.callCount', spy.callCount)
-      # $log('spy.called', spy.called)
-      # expect(spy.callCount).to.equal(1)
-      expect(r.length).to.equal(1)
-      expect(r[0].uId).eqId(uId)
-      expect(r[0].sId).to.exist
-      {utm} = r[0]
-      expect(utm.source).to.be.undefined
-      expect(utm.content).to.be.undefined
-      expect(utm.medium).to.be.undefined
-      expect(utm.term).to.be.undefined
-      expect(utm.campaign).to.equal('test2nm')
-      DONE()
-    PAGE "#{postUrl}?utm_campaign=test2nm", {}, ->
-      _.delay(viewCheck, 250)
+    LOGIN 'ahoo', (s) ->
+      uId = ObjectId(s._id)
+      viewCheck = => DB.docsByQuery 'View', {uId}, (r) ->
+        # $log('spy.callCount', spy.callCount)
+        # $log('spy.called', spy.called)
+        # expect(spy.callCount).to.equal(1)
+        expect(r.length).to.equal(1)
+        expect(r[0].uId).eqId(uId)
+        expect(r[0].sId).to.exist
+        {utm} = r[0]
+        expect(utm.source).to.be.undefined
+        expect(utm.content).to.be.undefined
+        expect(utm.medium).to.be.undefined
+        expect(utm.term).to.be.undefined
+        expect(utm.campaign).to.equal('test2nm')
+        DONE()
+      PAGE "#{postUrl}?utm_campaign=test2nm", {}, ->
+        _.delay(viewCheck, 200)
 
 
 IT.skip 'Track anonymous ad (click) view', ->

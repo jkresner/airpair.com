@@ -47,11 +47,6 @@ bait = ->
       done()
 
 
-  IT.skip 'BAIT URLS', ->
-    PAGE '/jobs/05-14/airpair-evangasdfasdft', {status:404}, (txt) =>
-      DONE()
-
-
   IT 'Asset URLS', ->
     PAGE '/fckeditor//editor/filemanager/browser/default/connectors/asp/connector.asp?Command=GetFolders&Type=File&CurrentFolder=%2F/', @optsExpect, (txt1) =>
       expect(txt1).to.equal('Relax. Close your eyes.')
@@ -77,9 +72,10 @@ bait = ->
 
 
   IT 'Bad guesses', ->
-    PAGE '/search', @optsExpect, (txt1) =>
-      PAGE '/search?site=&ie=UTF-8&q=Yuri+Kochiyama&oi=ddle&ct=yuri-kochiyamas-95th-birthday-5723472594468864-hp&hl=en&sa=X&ved=0ahUKEwil6qbk4ebMAhUBVj4KHX2qCVIQPQgD', @optsExpect, (txt2) =>
-          DONE()
+    PAGE '/readme.txt', @optsExpect, (txt0) =>
+      PAGE '/search', @optsExpect, (txt1) =>
+        PAGE '/search?site=&ie=UTF-8&q=Yuri+Kochiyama&oi=ddle&ct=yuri-kochiyamas-95th-birthday-5723472594468864-hp&hl=en&sa=X&ved=0ahUKEwil6qbk4ebMAhUBVj4KHX2qCVIQPQgD', @optsExpect, (txt2) =>
+            DONE()
 
   SKIP 'Clashing with static dirs', ->
     # PAGE '/static/frontend/Magento/luma/en_US/Magento_Customer/css/source/_module.less', @optsExpect, (txt3) =>
@@ -139,8 +135,6 @@ ban = ->
   IT '//admin/Cms_Wysiwyg/directive/index', -> testBan @
   IT '/bitrix/admin', -> testBan @
   IT '/administrator', -> testBan @
-
-  SKIP '/readme.txt', -> testBan @
 
 
 DESCRIBE("501", notImp)

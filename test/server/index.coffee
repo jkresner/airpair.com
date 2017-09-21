@@ -1,32 +1,26 @@
 SCREAM                       = require('screamjs')
-test = auth: { login: { fnName: 'loginCust', url: '/auth/test/login' } }
-  # login:                     { fnName: 'loginAuthor', url: '/auth/test/login' }
 
-OPTS =
+
+opts =
   setup:
-    done: -> require('./helpers')
+    done:          require('./helpers')
   login:
-    clearSessions: false
-    test:          test.auth.login
-    fn: (key, cb) ->
-      profile = FIXTURE.users[key.key||key].auth.gh
-      # $log('LOGIN.key', key, profile)
+    accept:        'application/json'
+    logic:         'oauth'
+    url:           '/auth/test/login'
+    handler: (data, cb) ->
+      user = FIXTURE.users[data.key]
+      profile = user.auth.gh
+      existing = if user._id? then user else null
       token = _.get(profile,"tokens.apcom.token") || "test"
-      config.test.auth.login.fn.call @, 'github', profile, {token}, cb
+      # $log('LOGIN.key', data.key, profile)
+      opts.login.fn.call @, existing, 'github', profile, {token}, cb
 
 
 
-SCREAM(OPTS).run (done) ->
-
-  Honey       = require('honeycombjs')
-  appRoot     = __dirname.replace('test', '')
-  config      = Honey.Configure(appRoot, 'test', true)
-  config.test = test
-
-  if !process.env.LOG_APP_VERBOSE
-    delete config.log.it.mw.forbid
-
-  # for b in ['css/libs.css', 'css/index.css', 'css/adm.css', 'js/index.js', 'css/v1libs.css']
-    # config.http.static.bundles[b] = "https://static.airpair.com#{config.http.static.bundles[b]}"
-
-  require('../../server/app').run { config, Honey }, done
+SCREAM(opts).run (done) ->
+  Honey                      = require('honeycombjs')
+  appRoot                    = __dirname.replace('test', '')
+  config                     = Honey.Configure(appRoot, 'test', true)
+  config.routes.auth.test    = { on:true, login: opts.login }
+  app                        = require(join(appRoot,'app.js')).run({config,Honey},done)

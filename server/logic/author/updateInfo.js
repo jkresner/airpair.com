@@ -42,11 +42,10 @@ module.exports = (DAL, Data, DRY) => ({
       tag.sort = tagSort++
     }
 
-    var meta = DRY.touchMeta(original.meta, 'updateInfo', this.user)
+    let log = DRY.logAct(original, 'updateInfo', this.user)
 
     // if (original.assetUrl != ups.assetUrl && (original.submitted || original.published))
-    //   ups.meta = _.extend(original.meta, _.extend(ups.meta||{},{ogImage:ups.assetUrl}))
-    DAL.Post.updateSet(original._id, {tags,type,title,assetUrl,meta}, cb)
+    DAL.Post.updateSet(original._id, {tags,type,title,assetUrl,log}, cb)
   },
 
 

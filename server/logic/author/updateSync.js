@@ -1,4 +1,4 @@
-module.exports = ({Post}, Data, {touchMeta,role}) => ({
+module.exports = ({Post}, Data, {logAct,role}) => ({
 
 
   validate(user, original) {
@@ -11,8 +11,8 @@ module.exports = ({Post}, Data, {touchMeta,role}) => ({
 
 
   exec(original, cb) {
-    var {org} = config.wrappers.gitPublisher
-    var meta = touchMeta(original.meta, 'syncHEAD', this.user)
+    let {org} = config.wrappers.gitPublisher
+    let log = logAct(original, 'syncHEAD', this.user)
     Wrappers.GitPublisher.getFile(this.user, org, original.slug, "/post.md", 'edit', (e, head) => {
       if (e) return cb(e)
       var commit = head.sha
@@ -25,7 +25,7 @@ module.exports = ({Post}, Data, {touchMeta,role}) => ({
       //   var publishedBy = _.pick(this.user, '_id', 'name', 'email')
       //   var publishedUpdated = new Date()
       // }
-      Post.updateSet(original._id, {meta,md,publishedCommit}, cb)
+      Post.updateSet(original._id, {log,md,publishedCommit}, cb)
     })
   },
 

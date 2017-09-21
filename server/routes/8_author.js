@@ -3,6 +3,7 @@ module.exports = (app, mw, {author}) => {
 
   var router = honey.Router('author',{type:'html',mount:'/author'})
     .use(mw.$.livereload)
+    .use(mw.$.abuser)
     .use(mw.$.session)
     .use(mw.$.authd)
     .use(mw.$.inflateMe)
@@ -39,7 +40,7 @@ module.exports = (app, mw, {author}) => {
 
     .get(['/editor/:post', '/preview/:post']
         , mw.data.recast('post','params.post', {required:true,dest:'params.post'})
-        , mw.$.logic('author.getMarkdown')
+        , mw.$.pd('author.getMarkdown')
         , mw.$.pagePost({tmpl:'editor',css:'edit preview'})
       )
 

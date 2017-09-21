@@ -43,26 +43,23 @@ module.exports = (DAL, Data, DRY) => ({
 
 
   exec(original, slug, cb) {
-    var {user} = this
-    var {_id,md,htmlHead,history,meta} = original
+    let {user} = this
+    let {_id,md,htmlHead,history} = original
+    let log = DRY.logAct(original, 'submit', user)
     history.submitted = new Date()
     htmlHead = htmlHead || {}
     htmlHead.ogImage = original.assetUrl
 
     // TODO add subscribed
-
-    meta = DRY.touchMeta(meta, 'submit', user)
-
-    var tmpl = honey.templates.get('repo:post-readme')
-
-    var readmeMD = tmpl.raw(original)
+    let tmpl = honey.templates.get('repo:post-readme')
+    let readmeMD = tmpl.raw(original)
 
     // $log('Queue.postSubmit'.magenta, original.stats)
     Wrappers.GitPublisher.setupPostRepo(user, slug, _id, md, readmeMD, (e, repoInfo) => {
       if (e) return cb(e)
-      var stats = {reviews:0,comments:0,forkers:0,acceptedPRs:0,closedPRs:0,openPRs:0,views:0}
+      let stats = {reviews:0,comments:0,forkers:0,acceptedPRs:0,closedPRs:0,openPRs:0,views:0}
 
-      DAL.Post.updateSet(_id, {htmlHead,meta,slug,history,github:{repoInfo},stats}, cb)
+      DAL.Post.updateSet(_id, {htmlHead,log,slug,history,github:{repoInfo},stats}, cb)
       // $log('Queue.postSubmit'.magenta, original.title, 'nothing impl yet')
       // Queue.postSubmit(assign(original,{slug,stats}))
     })

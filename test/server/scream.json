@@ -1,10 +1,7 @@
 {
   "colors": {
-    "appload":               "white",
-    "seed":                  "magenta",
-    "spec":                  "white",
-    "error":                 "red",
-    "expectederr":           "blue"
+    "seed":                  "blue",
+    "spec":                  "yellow"
   },
   "http": {
     "api": {
@@ -26,10 +23,8 @@
     "fixtures":              "../data/fixtures",
     "stories":               "stories"
   },
-  "setup": {
-    "fail": {
-      "filter":              "supertest|next_tick|emitCloseNT"
-    }
+  "log": {
+    "filter_fail":          "next_tick|emitCloseNT"
   },
   "specs":                   "all",
   "stubs": {

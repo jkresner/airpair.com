@@ -68,9 +68,8 @@ moved301 = ->
 
   IT 'EXACT', -> perm_to [
     ['/airconf2014', '/workshops']
+    ['/workshops', '/software-experts']
     ['/railsconf2014', '/ruby-on-rails']
-    ['/author/jk', '/software-experts']
-    ['/logout', '/auth/logout']
     ['/dashboard', '/home']
     ['/me', '/account']
     ['/javascript/javascript-performance-yehuda-katz','/javascript']
@@ -91,11 +90,14 @@ moved301 = ->
     ['/android/workshops?utm_campaign=wilder', '/android?utm_campaign=wilder']
     ['/reactjs/workshops', '/reactjs']
     ['/javascript/posts', '/javascript']
-    ['/author/jk', '/software-experts']
     ['/analytics/consultant-keen-io-api-integration-seb-insua?utm_source=twitter&utm_medium=social&utm_term=analytics-consultant&utm_content=seb-insua&utm_campaign=social-blast-mar','/keen-io?utm_source=twitter&utm_medium=social&utm_term=analytics-consultant&utm_content=seb-insua&utm_campaign=social-blast-mar']
     ['/mobile-checkout/mobile-checkout-expert-radu-spineanu?utm_source=twitter&utm_medium=social&utm_term=mobile-checkout-expert','/software-experts?utm_source=twitter&utm_medium=social&utm_term=mobile-checkout-expert']
     ['/email-optimization/email-optimization-expert-james-lamont?utm_source=twitter','/software-experts?utm_source=twitter']
     ['/airconf-promo/jescalan?utm_source=meetup&utm_medium=email&utm_term=expert&utm_content=jescalan&utm_campaign=airconf', '/software-experts?utm_source=meetup&utm_medium=email&utm_term=expert&utm_content=jescalan&utm_campaign=airconf']
+  ]
+
+  IT.skip 'AUTHOR WILDCARD', -> perm_to [
+    # ['/author/jk', '/software-experts']
   ]
 
   IT 'Alternate options', -> perm_to [
@@ -127,10 +129,14 @@ moved301 = ->
     ['/report', '/reporting']
   ]
 
+  IT 'img/software/*', ->  perm_to [
+    ['/img/software/angular.png', 'https://static.airpair.com/img/software/angular.png']
+  ]
 
 moved302 = ->
 
   IT 'EXACT', -> temp_to [
+    ['/logout', '/auth/logout']
     ['/about', '/']
     ['/blog', '/software-experts']
   ]
@@ -140,17 +146,17 @@ moved302 = ->
   ]
 
   IT 'ANON', -> temp_to [
-    ['/author/new', '/login?returnTo=/author/new']
-    ['/account', '/login?returnTo=/account']
-    ['/home', '/login?returnTo=/home']
-    ['/requests', '/login?returnTo=/requests']
-    ['/billing', '/login?returnTo=/billing']
-    ['/bookings/12334', '/login?returnTo=/bookings/12334']
+    ['/author/new', '/login?returnTo=%2Fauthor%2Fnew']
+    ['/account', '/login?returnTo=%2Faccount']
+    ['/home', '/login?returnTo=%2Fhome']
+    ['/billing', '/login?returnTo=%2Fbilling']
     # ['/auth/slack?returnTo=/me', '/login?returnTo=/auth/slack%3FreturnTo%3D%2Fme']
-    ['/auth/slack?returnTo=/me', '/login']
+    # ['/auth/slack?returnTo=/me', '/login']
   ]
 
   IT 'Old feature urls', ->  temp_to [
+    # ['/requests', '/login?returnTo=/requests']
+    # ['/bookings/12334', '/login?returnTo=/bookings/12334']
     ['/settings', '/account']
   ]
 
@@ -177,9 +183,9 @@ moved302 = ->
   ]
 
   IT '/ 302 to /home', ->
-    LOGIN {key:'tst1'}, (session) =>
-      EXPECT.equalIdAttrs(session, FIXTURE.users.tst1)
-      expect(session.name).to.equal('Air PairOne')
+    LOGIN 'gnic', (session) =>
+      expect(session).eqId(FIXTURE.users.gnic)
+      expect(session.name).to.equal('gregorynicholas')
       PAGE '/', { status: 302 }, (text) =>
         expect(text).to.equal('Found. Redirecting to /home')
         DONE()

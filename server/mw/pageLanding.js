@@ -16,8 +16,5 @@ module.exports = (app, mw) =>
     if (req.locals.r.htmlHead)
       delete req.locals.r.htmlHead
 
-    req.locals.view = req.locals.r.key
-
-    // $log('pageLanding', req.locals.r.tags)
     mw.res.page(req.locals.view, {layout:'landing'})(req,res,next)
   }

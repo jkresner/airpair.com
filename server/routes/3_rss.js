@@ -52,6 +52,7 @@ module.exports = function(app, mw, {rss}) {
   var urls = rss.urls.split(',').map(url => `/${url}`)
 
   honey.Router('rss', { type:'rss' })
+    .use(mw.$.abuser)
     .get(urls, mw.$.badBot, (req, res, next) =>
       getPosts(req.query || {}, (e, items) =>
         res.status(200)

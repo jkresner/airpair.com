@@ -92,13 +92,13 @@
         </nav>
 
         <div>
-          <time ng-if="p.meta">
-            {{p.meta.lastTouch.action}}ed
-            {{p.meta.lastTouch.utc | timeAgo | replace : 'month' : 'mth'  }}
-            <!-- <em ng-if="p.meta.lastTouch.by._id != session._id">
-              by {{p.meta.lastTouch.by.name }} </em> -->
+          <time ng-if="p.log">
+            {{p.log.last.action}}ed
+            {{p.log.last.utc | timeAgo | replace : 'month' : 'mth'  }}
+            <!-- <em ng-if="p.log.last.by._id != session._id">
+              by {{p.log.last.by.name }} </em> -->
           </time>
-          <time ng-if="!p.meta">
+          <time ng-if="!p.log">
             updated  <!-- <div>{{ p.updated }}</div>  -->
             {{ p.updated | timeAgo | replace : 'month' : 'mth'  }}
           </time>

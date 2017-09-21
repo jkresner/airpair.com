@@ -1,36 +1,32 @@
 {
   "name": "airpair.com",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "www.airpair.com",
   "author": "airpair inc.",
-  "privarte": true,
+  "private": true,
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
     "url": "https://github.com/airpair/airpair.com"
   },
   "engines": {
-    "node": "8.1.4",
-    "npm": "5.2.0"
+    "node": "8.4.0",
+    "npm": "5.3.0"
   },
   "scripts": {
     "start": "node server/index.js",
-    "test": "cmd/test",
-    "gv": "heroku logs --tail --source app"
+    "test": "cmd/test"
   },
   "dependencies": {
-    "honeycombjs": "0.9.0",
+    "honeycombjs": "0.9.3",
     "github": "0.2.4",
-    "googleapis": "20.1.0",
     "node-google-timezone": "0.0.2",
     "rss": "1.0.1",
-    "stripe": "4.23.1",
     "superagent": "3.5.2",
     "twit": "2.2.9"
   },
   "devDependencies": {
-    "colors": "1.0.2",
     "meanair-build": "0.7.0",
-    "screamjs": "0.7.0"
+    "screamjs": "0.7.2"
   }
 }

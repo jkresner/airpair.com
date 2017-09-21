@@ -2,7 +2,7 @@ const Util = require('../../../es/post')
 
 
 const Views = {
-  display: '_id by stats htmlHead meta.lastTouch github.repoInfo'
+  display: '_id by stats htmlHead log.last github.repoInfo'
            + ' reviews forkers title tmpl slug tags assetUrl'
            + ' url html toc similar adtag history',
   list:    '_id by history htmlHead.canonical htmlHead.description htmlHead.ogImage github.repoInfo title url slug tags stats',
@@ -45,7 +45,7 @@ const Opts = {
   inreview: { select: `${Views.display} md slug subscribed history` },
   published: { select: `${Views.display} md slug subscribed history` },
   publishedNewest: limit => ({ limit, select: Views.list, sort: { 'history.published': -1 } }),
-  submitted: limit => ({ limit, select: Views.list, sort: { 'meta.lastTouch._id': -1 } }),
+  submitted: limit => ({ limit, select: Views.list, sort: { 'log.last._id': -1 } }),
   subscribedUsers: { select: Views.sub }
 // recentlyUpdated: { select: Views.activity, sort: { 'updated': 1 }, limit: 15 },
 // stale: { sort: { 'stats.reviews': -1, 'stats.rating': -1 }, 'limit': 9 }
@@ -295,13 +295,12 @@ module.exports = { Views, Query, Opts, Util,
 
 
     byTag: d => {
-      var latest = chain(d.posts, inflate.tags, 'url', view.list)
-      var related = _.sortBy(
+      let latest = chain(d.posts, inflate.tags, 'url', view.list)
+      let related = _.sortBy(
                       _.uniqBy(_.flatten(latest.map(p=>p.tags)), t=>t.slug)
                        .filter(t=>t.slug!=d.slug)
                     , t => -1*t.posts)
-
-      return assign(d, { posts: {latest},
+      return assign({}, d, { posts: {latest},
         htmlHead: tmpl("page:tag-meta", d),
         related: related.length > 16 ? _.take(related, 16) : related })
     }

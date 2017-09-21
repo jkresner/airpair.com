@@ -1,7 +1,7 @@
 
 IT 'ga script renders for anonymous session', ->
   expect(global.COOKIE).to.be.null
-  PAGE '/', {authenticated:false}, (html) ->
+  PAGE '/', {session:null}, (html) ->
     expect(global.COOKIE).to.exist
     # {sessionID} = SESSION()
     # OI('sessionID', sessionID)

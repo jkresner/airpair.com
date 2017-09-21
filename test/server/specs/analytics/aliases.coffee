@@ -1,16 +1,17 @@
 postUrl = '/javascript/posts/mastering-es6-higher-order-functions-for-arrays'
 
 
-IT 'Aliases anonymous sessionId with new signup user._id', ->
+IT 'anon sessionID with new signup._id', ->
+
   ANONSESSION (s) ->
     sId = s.sessionID
     utms = 'utm_campaign=testSingup&utm_source=test8src&utm_content=test8ctn'
     PAGE "#{postUrl}?#{utms}", {}, ->
       # spy = STUB.spy(analytics,'event')
-      LOGIN 'tmot', (sFull) ->
+      LOGIN 'jhoo', (sFull) ->
         # expect(spy.callCount).to.equal(1)
         expect(sFull._id).to.exist
-        expect(sFull.name).to.match(/^Todd Motto/)
+        expect(sFull.name).inc('Jaye')
         # expect(spy.args[0][0].user).to.exist
         # expect(spy.args[0][0].ctx.sId).to.equal(sId)
         # expect(spy.args[0][0].ctx).to.exist
@@ -43,7 +44,7 @@ IT 'Aliases anonymous sessionId with new signup user._id', ->
 
 
 
-IT 'sessionID is not duplicate in aliases with multiple logins', ->
+IT.skip 'sessionID is not duplicate in aliases with multiple logins', ->
   utms = ''
   ANONSESSION (anon) ->
     {sessionID} = anon

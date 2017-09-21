@@ -1,10 +1,8 @@
 UNIQUIFY_POST = (seedKey) ->
-
-  Object.assign({key},FIXTURE.posts[key])
+  assign({key},FIXTURE.posts[key])
 
 
 ENSURE_AUTHOR = (key, cb) ->
-  # $log('ENSURE_AUTHOR'.yellow, key)
   if key
     DB.ensureDocs 'User', [FIXTURE.users[key]], -> LOGIN key, cb
   else
@@ -13,12 +11,11 @@ ENSURE_AUTHOR = (key, cb) ->
 
 
 module.exports = (key, opts, done) ->
-  suffix = moment().format('X')
-
   if !done and opts.constructor is Function
     done = opts
     opts = {}
 
+  suffix = moment().format('X')
   {data,author,submit,publish,fork,review} = opts
   seedKey = FIXTURE.uniquify('posts', key, 'title slug md')
   d = FIXTURE.posts[seedKey]
@@ -34,7 +31,7 @@ module.exports = (key, opts, done) ->
       reviews:      []
       forkers:      []
       md:           d.md + DATA.lotsOfWords('## test #{suffix}')
-      meta:         activity: []
+      log:          history: [], last: {}
       history:      { created:      new Date(), updated:      new Date() }
 
 

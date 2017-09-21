@@ -1,9 +1,5 @@
-module.exports = function(app, mw, {}) {
+module.exports = function(app, mw, {slow}) {
 
-  if (mw.$.abuser)
-    app.use(mw.$.abuser)
-
-  var {slow} = config.middleware
   if (slow)
     app.use(mw.req.slow(slow, {
       onSlow({ctx,originalUrl,method,body}, duration) {

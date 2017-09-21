@@ -1,6 +1,6 @@
 const Views = {
   edit:         '_id title tags assetUrl by._id history md slug stats repo', //github.repoInfo  created published submitted tags assetUrl  synced
-  details:      '_id type title tags imgur assetUrl slug by history meta.lastTouch stats',
+  details:      '_id type title tags imgur assetUrl slug by history log.last stats',
   submit:       '_id type title tags slug submission history stats',
   forking:      '_id title tags by slug forking',
   publishing:   '_id title tags by slug history reviews',

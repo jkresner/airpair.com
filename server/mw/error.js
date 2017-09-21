@@ -1,12 +1,11 @@
 module.exports = (app, mw, {abuse}) =>
 
   mw.res.error({
-    render: { layout:false, about: app.locals.about, quiet: /prod/i.test(config.env) },
-    terse: !!process.env.LOG_TERSE,
+    render: { layout:false, about: app.locals.about },
+    quiet: !!process.env.LOG_QUIET,
     verbose: !!process.env.LOG_VERBOSE,
     onError: (req, e) => {
       if (!e.message) e = Error(e)
-      $log('mw.error.onError', e.message||e.stack||e)
 
       try {
         var msg = e.message.replace(/ /g,'')

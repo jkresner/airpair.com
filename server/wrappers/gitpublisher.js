@@ -6,7 +6,6 @@ var wrapper = {
   name: 'GitPublisher',
   init() {
     cfg                      = global.config.wrappers.gitPublisher
-    cfg.appKey               = config.auth.appKey
     cfg.userAgent            = config.auth.oauth.github.userAgent
     cfg.retryErrors          = new RegExp(/(not found|repository is empty)/)
     if (!cfg.userAgent)      throw Error("userAgent required from config.auth.oauth.github")
@@ -19,7 +18,6 @@ var wrapper = {
     this.api.setAuthToken = user => {
       if (user == 'admin')
         return this.api.authenticate({type:"oauth",token:cfg.adminToken})
-
       if (!_.get(user,`auth.gh.tokens.${cfg.appKey}.token`))
         throw Error(`GH.setAuthToken fail. gh ${cfg.appKey}.token not present on [${user.name}::${user._id}]`)
 

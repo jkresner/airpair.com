@@ -5,21 +5,22 @@ module.exports = function(app, mw, {canonical}) {
 
   var router = honey.Router('posts', {type:'html'})
     .use(mw.$.livereload)
+    .use(mw.$.abuser)
     .use(mw.$.badBot)
     .use(mw.$.throttle)
     .use([mw.$.session, mw.$.reqFirst])
-    .useEnd([mw.$.pagePost({})])
-
+    .use(mw.$.pagePost({}),{end:true})
     .post(posturls, mw.$.banPOST)
+
     .get(posturls,
-      mw.$.logic('posts.getPostPublished',{params:['url']}),
+      mw.$.pd('posts.getPostPublished',{params:['url']}),
       // mw.$.inflateAds,
       mw.$.trackPost)
 
     .get('/posts/review/:post',
        mw.$.noBot,
        mw.data.recast('post', 'params.post', {required:true}), //dest:'params.post'
-       mw.$.logic('posts.getPostForReview',{params:['post']}),
+       mw.$.pd('posts.getPostForReview',{params:['post']}),
        (req, res, next) => {
          var reqUrl = req.originalUrl
          var {url,history,title} = req.locals.r

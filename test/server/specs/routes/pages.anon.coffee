@@ -4,17 +4,17 @@ html =
   landing: /<body class="landing">/
   post: /<article class="blogpost">/
   postinreview: /Community Review/
+  ga: /function trackpageview/
 js =
   index: /javascript" src="https:\/\/static\.airpair\.com\/js\/app/
 
 
 describe ' NOINDEX'.subspec, ->
 
-  IT.skip '/tos', -> HTML @, [/<h1 class="entry-title" itemprop="headline">AirPair Terms of Service/,html.faq,html.login]
+  IT '/tos', -> HTML @, [/<h1 class="entry-title" itemprop="headline">AirPair Terms of Service/,html.faq,html.login]
   IT '/privacy', -> HTML @, [/<h1 class="entry-title" itemprop="headline">AirPair Privacy Policy/,html.faq]
   IT '/refund-policy', -> HTML @, [/<h1 class="entry-title" itemprop="headline">Refund Policy/,html.faq]
-  IT.skip '/login', -> HTML @, [js.index]
-  IT.skip '/hangout/index.html', -> HTML @, [/<img src="https:\/\/static.airpair.com\/img\/brand\/logo.png" \/>/], no: [js.index]
+  IT.skip '/login', -> HTML @, [html.ga]
 
   IT '/posts/review/551174c103d42a11002da48b', -> HTML @, [html.postinreview,
     /<h1 class="entry-title" itemprop="headline">Moving Images on Open Stack<\/h1>/
@@ -22,7 +22,7 @@ describe ' NOINDEX'.subspec, ->
 
 describe ' INDEX'.subspec, ->
 
-  IT.skip '/', -> HTML @, [/<title>airpair | Coding help/,html.login], no: [js.index,html.faq]
+  IT '/', -> HTML @, [/<title>airpair | Coding help/,html.login], no: [js.index,html.faq]
   IT '/ionic', -> HTML @, [/<title>Ionic Programming Guides and Tutorials from Top ionic Developers/,html.landing], no: [js.index,html.faq]
   IT '/angularjs', -> HTML @, [/<title>AngularJS Tutorial: a comprehensive 10,000 word guide/,/rel="canonical" href="http:\/\/www.airpair.com\/angularjs"/,html.post,html.login]
   IT '/javascript', -> HTML @, [/<title>JavaScript Programming Guides and Tutorials from Top JS Developers/,/rel="canonical" href="https:\/\/www.airpair.com\/javascript"/,html.landing]

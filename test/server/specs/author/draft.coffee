@@ -3,7 +3,7 @@ creating = ->
 
   IT "Fails for anonymous user", ->
     title = "Post Anon Create Test #{@testSeed}"
-    POST "/author/post", {title}, { authenticated: false, status: 403 }, (e) ->
+    POST "/author/post", {title}, { session:null, status:403 }, (e) ->
       DONE()
 
 
@@ -18,7 +18,7 @@ creating = ->
     title = "Post Create with no social Test #{@testSeed}"
     STORY.newAuthor 'tbau', (s) =>
       POST "/author/post", { title, type: 'tutorial' }, (p0) =>
-        EXPECT.equalIds(p0.by._id, s._id)
+        expect(p0.by._id).eqId(s._id)
         expect(p0.by.name).to.equal(s.name)
         expect(p0.by.bio).to.inc ['Member of Thiel Foundation Summi']
         expect(p0.by.avatar).to.equal("https://avatars.githubusercontent.com/u/11258947")
@@ -32,14 +32,14 @@ creating = ->
         expect(p0.history).to.exist
         expect(p0.history.created).to.exist
         expect(p0.history.published).to.be.undefined
-        # expect(p0.meta).to.be.undefined
-        expect(p0.meta).to.exist
-        expect(p0.meta.activity).to.be.undefined
-        expect(p0.meta.lastTouch).to.exist
+        expect(p0.log).to.exist
+        expect(p0.log.history).to.be.undefined
+        expect(p0.log.last).to.exist
+        expect(p0.log.last.action).to.equal('create')
         DB.docById 'Post', p0._id, (p0DB) =>
           expect(p0DB.md).to.equal('new')
-          expect(p0DB.meta).to.exist
-          expect(p0DB.meta.activity.length).to.equal(1)
+          expect(p0DB.log).to.exist
+          expect(p0DB.log.history.length).to.equal(1)
           DONE()
 
 
@@ -66,7 +66,7 @@ deleting = ->
         expect(p0._id).to.exist
         DB.docById 'Post', p0._id, (p0DB) ->
           expect(p0DB).to.exist
-          LOGIN 'tiag', { retainSession:false }, (stiag) ->
+          LOGIN 'tiag', { session:null }, (stiag) ->
             expect(s._id.toString()).not.equal(stiag._id.toString())
             DELETE "/author/post/#{p0._id}", (resp) ->
               DB.docById 'Post', p0._id, (pDB) ->
@@ -201,11 +201,11 @@ updating = ->
               expect(p3.title).to.equal(updatedTitle)
               expect(p2.tags.length).to.equal(2)
               DB.docById 'Post', p0._id, (p3DB) =>
-                {activity} = p3DB.meta
-                expect(activity.length).to.equal(3)
-                expect(activity[0].action).to.equal('create')
-                expect(activity[1].action).to.equal('updateInfo')
-                expect(activity[2].action).to.equal('updateInfo')
+                {history} = p3DB.log
+                expect(history.length).to.equal(3)
+                expect(history[0].action).to.equal('create')
+                expect(history[1].action).to.equal('updateInfo')
+                expect(history[2].action).to.equal('updateInfo')
                 DONE()
 
 
