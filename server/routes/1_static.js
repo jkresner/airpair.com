@@ -2,7 +2,7 @@ module.exports = function(app, mw, {static}) {
 
   if (!(static||{}).robots) return
 
-  var dir = join(config.appDir,static.robots.dir)
+  let dir = join(config.appDir, static.robots.dir)
 
   honey.Router('robots', static.robots)
 

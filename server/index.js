@@ -1,6 +1,9 @@
-// process.env.ENV = 'prod'
+if (process.argv[2] == '--dist'
+ || process.argv[3] == '--dist') process.env.ENV = 'prod'
+
+
 var Honey    = require('honeycombjs')
-var config   = Honey.Configure(__dirname, process.env.ENV || 'dev', true)
+var config   = Honey.Configure(__dirname, process.env.ENV, true)
 var track    = require('./app.track')
 
 var app = require('./app').run({ config, Honey, track },

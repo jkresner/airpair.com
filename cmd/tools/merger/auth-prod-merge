@@ -1,2 +1,0 @@
-#!/bin/sh
-coffee --nodejs "--harmony_destructuring" cmd/tools/merger/run.coffee -c prod.json -s merge -p

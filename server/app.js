@@ -1,20 +1,17 @@
 function run({config, Honey, track}, done) {
 
-  global.config         = config
   delete config.auth.oauth.bitbucket
   delete config.auth.oauth.angellist
+  global.config         = config
 
-  var app               = Honey.App(config, done)
-
-
-  var model             = Honey.Model(config, done)
-  var formatter         = require('../tmpl/log/analytics')
+  let app               = Honey.App(config, done)
+  let model             = Honey.Model(config, done)
 
   model.connect(() => {
 
     app = app.honey.wire({model})
              .merge(Honey.Auth)
-             .track({track,formatter})
+             .track({track,formatter:require('../tmpl/log/analytics')})
              .inflate(config.model.cache)
              .chain(config.middleware, config.routes)
              .run()

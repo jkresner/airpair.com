@@ -1,2 +1,24 @@
 #!/bin/sh
-coffee test/server/index.coffee $1 $2 $3 $4 $5 $6
+D='app33053049'
+H='candidate.14.mongolayer.com:10507'
+
+# cmd/test --live-routes PWD
+if [ "$1" = "--live-routes" ]; then
+
+  CMD="\033[0;36mcmd/test --live-routes\033[0m: ";
+
+  printf "\n${CMD}mongodump ${D} > test/bson/redirects.bson\n"
+  mongodump -h $H -d $D -u heroku -p $2 -o ~/mongo -c redirects
+  mv ~/mongo/$D/redirects.bson test/data/bson/redirects.bson
+  printf "${CMD}mongodump ${D} > test/bson/posts.bson\n"
+  mongodump -h $H -d $D -u heroku -p $2 -o ~/mongo -c posts
+  mv ~/mongo/$D/posts.bson test/data/bson/posts.bson
+
+  printf "${CMD}cmd/test --seed --only routes"
+  coffee test/server/index.coffee -s -o routes -q $3 $4 $5 $6
+
+else
+
+  coffee test/server/index.coffee $1 $2 $3 $4 $5 $6
+
+fi

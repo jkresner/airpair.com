@@ -1,7 +1,6 @@
 module.exports = (cb) ->
 
   global.UTIL =
-    in:           (ms, fn) -> setTimeout(fn, ms)
     Date:         require("honeycombjs").Util.Date
     clearIP:      ->
       delete global.cache.abuse['::ffff:127.0.0.1']
@@ -80,12 +79,6 @@ module.exports = (cb) ->
 
     global.COOKIE = null
     GET '/auth/session', opts, cb
-
-
-  # global.SIGNUP = (login, cb) ->
-  #   profile = DATA.ghProfile login, true
-  #   FIXTURE.users[profile.login] = {auth:{gh:profile}}
-  #   LOGIN profile, {retainSession:true}, cb
 
 
   global.HTML = ({test}, match, opts) =>

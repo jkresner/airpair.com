@@ -7,14 +7,15 @@ module.exports = (app, mw) =>
   *  - No html/layout wraps inside of body
   *                                                                            */
   function(req,res,next) {
-    if (!req.locals.htmlHead && !req.locals.r.htmlHead)
-      throw Error("Set landingPage req.locals.htmlHead")
+    let htmlHead = (req.locals.r||{}).htmlHead || req.locals.htmlHead
+    if (!htmlHead) throw Error("landing page req.locals.htmlHead required")
 
-    if (!req.locals.htmlHead)
-      req.locals.htmlHead = req.locals.r.htmlHead
+    if (/apple/i.test(req.ctx.ud)) htmlHead.apple = true
+    if (/android/.test(req.ctx.ud)) htmlHead.android = true
+    if (/ms/.test(req.ctx.ud)) htmlHead.ms = true
 
-    if (req.locals.r.htmlHead)
-      delete req.locals.r.htmlHead
+    assign(req.locals,{htmlHead})
+    if ((req.locals.r||{}).htmlHead) delete req.locals.r.htmlHead
 
     mw.res.page(req.locals.view, {layout:'landing'})(req,res,next)
   }

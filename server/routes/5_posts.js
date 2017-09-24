@@ -10,7 +10,8 @@ module.exports = function(app, mw, {canonical}) {
     .use(mw.$.throttle)
     .use([mw.$.session, mw.$.reqFirst])
     .use(mw.$.pagePost({}),{end:true})
-    .post(posturls, mw.$.banPOST)
+
+    .post(posturls, mw.$.ipban('posturl'))
 
     .get(posturls,
       mw.$.pd('posts.getPostPublished',{params:['url']}),

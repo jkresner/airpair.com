@@ -44,7 +44,7 @@ module.exports = function(app, mw, {rules,canonical}) {
     .use(mw.$.abuser)
     .head('*', (req, res, next) => res.end())
     .propfind('*', (req, res, next) => res.end())
-    .post('/', mw.$.banPOST)
+    .post('/', mw.$.ipban("homepage"))
     .get('*&sa=*', (req, res, next) => req.url.indexOf('?') !=-1 ? next() : res.redirect(301, req.url.replace('&sa=','?sa=')))
 
     .get('/posts/thumb/:id', mw.$.badBot, mw.$.session, (req,res,next) => {
@@ -59,7 +59,7 @@ module.exports = function(app, mw, {rules,canonical}) {
     .get(agg['bait'], (req, res) => res.send(cache.abuse.increment(418, req)))
 
   if (agg['ban'].length > 0) LOG('cfg.route', `500   >>>\t\t       [${agg['ban'].length}]`) + router
-    .get(agg['ban'], mw.$.banGET)
+    .get(agg['ban'], mw.$.ipban('banurl'))
 
 
   for (var [pattern,sub] of rewrites) router

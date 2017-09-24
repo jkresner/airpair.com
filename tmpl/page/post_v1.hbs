@@ -1,8 +1,7 @@
-{{#with r.post}}
-
 <article class="blogpost">
 
-  <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
+{{#with r}}
+  <h1 class="entry-title" itemprop="headline">{{ post.title }}</h1>
 
   {{#unless published}}
     {{#if submitted }}
@@ -16,7 +15,9 @@
     </section>
     {{/if}}
   {{/unless}}
+{{/with}}
 
+{{#with r.post}}
   <div class="railMarker"></div>
 
   <h4 id="table-of-contents">Table of Contents</h4>
@@ -40,9 +41,10 @@
   {{/if}}
   <hr />
 
-  <post>{{{ html.body }}}</post>
+  <post no-compile>{{{ html.body }}}</post>
+{{/with}}
 
-  {{#if published }}
+  {{#if r.published }}
   <div class="share">
     <div class="pw-widget pw-size-large pw-counter-show" pw:twitter-via="airpair">
       <a class="pw-button-twitter"></a><a class="pw-button-facebook"></a><a class="pw-button-linkedin"></a><a class="pw-button-googleplus"></a>{{!-- <a class="pw-button-reddit"></a> --}}
@@ -51,6 +53,7 @@
   </div>
   {{/if}}
 
+{{#with r.post}}
   <div class="rail1CTA">
     {{#if github }}
     {{#if stars }}

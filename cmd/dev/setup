@@ -1,46 +1,28 @@
 #!/bin/sh
-CYAN='\033[0;36m';
-NC='\033[0m'; # No Color
-CMD="${CYAN}CMD/setup: ";
+CMD="\033[0;36mcmd/setup:\033[0m ";
 
-printf "${CMD}CLEAN npm modules${NC} /node_modules\n"
+printf "${CMD}CLEAN npm modules /node_modules\n"
 rm package-lock.json
 rm -rf node_modules
 
-printf "${CMD}LINK local npm modules${NC} /node_modules\n"
+printf "${CMD}LINK local npm modules /node_modules\n"
 npm link screamjs
 npm link honeycombjs
 npm link meanair-build
-printf "${CMD}Installing npm packages (could take a minute)${NC}\n"
+printf "${CMD}Installing npm packages (could take a minute)\n"
 npm install;
 
-printf "${CMD}SYMLINK meanair-build/node_modules/gulp${NC}\n"
+printf "${CMD}SYMLINK meanair-build/node_modules/gulp\n"
 cd node_modules;
 ln -nsf meanair-build/node_modules/gulp
 cd ../;
 
-
 # printf "${CMD}SYMLINK meanair-build/build/cmd/${NC}\n"
-mkdir -p cmd/build;
-cd cmd/build;
-for l in $(find . -type l); do unlink $l;done;
-for f in $(ls -d ../../node_modules/meanair-build/cmd/build/*); do ln -nsf $f;done;
-cd ../../;
-mkdir -p cmd/dev;
-cd cmd/dev;
-for l in $(find . -type l); do unlink $l;done;
-for f in $(ls -d ../../node_modules/meanair-build/cmd/dev/*); do ln -nsf $f;done;
-cd ../../;
-
-# Link server/.lib source files for nodemon change/restart
-printf "${CMD}honey source sym-linked under${NC} /server/.lib\n"
-mkdir -p server/.lib;
-cd server/.lib;
-for l in $(find . -type l); do unlink $l;done;
-for f in $(ls -d ../../node_modules/honeycombjs/lib/*.js);do ln -nsf $f;done;
-for f in $(ls -d ../../node_modules/honeycombjs/lib/**/*.js);do ln -nsf $f;done;
-for f in $(ls -d ../../node_modules/honeycombjs/lib/**/**/*.js);do ln -nsf $f;done;
-cd ../../
+# mkdir -p cmd/build;
+# cd cmd/build;
+# for l in $(find . -type l); do unlink $l;done;
+# for f in $(ls -d ../../node_modules/meanair-build/cmd/build/*); do ln -nsf $f;done;
+# cd ../../;
 
 printf "${CMD}SETUP git hooks${NC}\n"
 rm -rf .git/hooks;
@@ -56,21 +38,3 @@ cd ../../;
 # cd web/components;
 # for f in $(ls ../../../static/src/js/libs);do cp ../../../static/src/js/libs/$f $f;done;
 # cd ../../;
-
-
-# # printf "${CMD}UNLINK web/js|css${NC}\n"
-# # rm -rf web/js/.lib/;printf "${CYAN}CMD/setup: unlink${NC} web/js/.lib\n"
-# # rm -rf web/css/.lib/;printf "${CYAN}CMD/setup: unlink${NC} web/css/.lib\n"
-
-# STATIC_CSS='../../../../../static/src/css'
-# LESS='web/css/app/posts';mkdir -p "${LESS}";cd "${LESS}";for l in $(find . -type l); do unlink $l;done;printf "${CYAN}CMD/setup: link  ${NC} /${LESS}/*.less\n"
-# for f in $(ls -d ../../../../../static/src/css/posts/*.less); do ln -nsf $f;done;cd ../../../../;printf "${CYAN}CMD/setup: linked${NC} ${STATIC_CSS}/posts\n";
-# LESS='web/css/.lib/component';mkdir -p "${LESS}";cd "${LESS}";for l in $(find . -type l); do unlink $l;done;printf "${CYAN}CMD/setup: link  ${NC} /${LESS}/*.less\n"
-# for f in $(ls -d ../../../../../static/src/css/component/*.less); do ln -nsf $f;done;cd ../../../../;printf "${CYAN}CMD/setup: linked${NC} ${STATIC_CSS}/component\n";
-# LESS='web/css/.lib/layout';mkdir -p "${LESS}";cd "${LESS}";for l in $(find . -type l); do unlink $l;done;printf "${CYAN}CMD/setup: link  ${NC} /${LESS}/*.less\n"
-# for f in $(ls -d ../../../../../static/src/css/layout/*.less); do ln -nsf $f;done;cd ../../../../;printf "${CYAN}CMD/setup: linked${NC} ${STATIC_CSS}/layout\n";
-# LESS='web/css/.lib/shared';mkdir -p "${LESS}";cd "${LESS}";for l in $(find . -type l); do unlink $l;done;printf "${CYAN}CMD/setup: link  ${NC} /${LESS}/*.less\n"
-# for f in $(ls -d ../../../../../static/src/css/shared/*.less); do ln -nsf $f;done;cd ../../../../;printf "${CYAN}CMD/setup: linked${NC} ${STATIC_CSS}/shared\n";
-# mkdir -p web/css/.lib/pages;
-# cd web/css/dist;
-# for l in $(find . -type l); do unlink $l;done;

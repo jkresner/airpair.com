@@ -105,8 +105,7 @@ angular.module("AP", [
 
 .run(($rootScope, $location, ERR) => {
   $rootScope.$on('$routeChangeSuccess', function() {
-    // console.log('routeChangeSuccess', $location.path(), initialLocation,
-      // $location.path().indexOf(window.initialLocation))
+    // console.log('routeChangeSuccess', $location.path(), initialLocation, $location.path().indexOf(window.initialLocation))
     if ($location.path().indexOf(window.initialLocation) == -1) {
 //       // window.trackRoute($location.path(),$location.search());
     }
@@ -118,8 +117,7 @@ angular.module("AP", [
 
 
 .controller('server:tmpl', (WINDOW) => {
-  // console.log('server:tmpl')
-  // WINDOW.legacy.loadPoSt();
+  WINDOW.legacy.loadPoSt()
   WINDOW.codeblocks.highlight()
   WINDOW.legacy.fixPostRail()
 })

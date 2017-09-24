@@ -8,7 +8,7 @@
         "short":               "gh",
         "login":               true,
         "signup":              true,
-        "logic":               "loginCust",
+        "logic":               "oauth",
         "clientID":            "378dac2743563e96c747",
         "clientSecret":        "f52d233259426f769850a13c95bfc3dbe7e3dbf2",
         "emails":              true,
@@ -60,7 +60,10 @@
         "scope":               ["identify","read","post","client"]
       }
     },
-    "pwdm":                    false
+    "user": {
+      "cohort":                true,
+      "legacy":                true
+    }
   },
   "authoring": {
     "editors":                 "5175efbfa3802cc4d5a5e6ed,5333e0fd66a6f999a4651100",
@@ -101,9 +104,9 @@
     },
     "it": {
       "auth":                  { "link":"green" },
-      "cfg":                   { "route": false },
-      "mw":                    { "trace": false, "forbid": false, "api": false },
-      "modl":                  { "cache": "green" },
+      "cfg":                   { "route":false },
+      "mw":                    { "trace":false,"forbid":false,"api":false,"ipban":"magenta" },
+      "modl":                  { "cache":"green" },
       "wrpr":                  { "ghcall":"cyan", "ghretry":"yellow", "ghstep":"white" }
     },
     "errors": {
@@ -184,6 +187,7 @@
     },
     "cloudflare":              "team@airpair.com:c6abc4d5b9c3236a3f9b796aa8465d1e14c5b",
     "gitPublisher": {
+      "appKey":                "athr",
       "scope":                 ["public_repo","user"],
       "adminToken":            "{{required}}",
       "org":                   "{{required}}",

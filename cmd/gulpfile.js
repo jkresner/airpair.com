@@ -2,7 +2,6 @@ var gulp                     = require('gulp')
 var path                     = require('path')
 var join                     = path.join
 var cfg                      = require('./build.json')
-
 var rootDir                  = path.resolve(__dirname, "../")
 process.chdir(rootDir)
 
@@ -18,10 +17,6 @@ require('meanair-build')(gulp, cfg).configure({
       dest:    join(cfg.dirs.web, less.dest),
       imports: less.imports.map(p => join(cfg.dirs.web, p)) //, '**/*.less'
     })
-  },
-  nodemon: nodemon => {
-    nodemon.config.script = join(cfg.dirs['server'],nodemon.config.script)
-    nodemon.config.watch = nodemon.dirs.map(dir => join(rootDir,dir))
   },
   browserify: browserify => {
     browserify.src = join(rootDir, browserify.src)

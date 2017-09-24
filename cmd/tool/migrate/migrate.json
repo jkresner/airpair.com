@@ -1,0 +1,16 @@
+{
+  "specs":                "all",
+  "mongo": {
+    "collections":        ["users","experts","templates","posts","redirects","tags"],
+    "url":                "mongodb://localhost/airpair_dev",
+    "seed": {
+      "dirty":            false,
+      "without":          "FIXTURE.templates.dep_ex_avl"
+    }
+  },
+  "paths": {
+    "bson":               "./201708/bson",
+    "fixtures":           "./201708/fixtures",
+    "specs":              "./201708"
+  }
+}

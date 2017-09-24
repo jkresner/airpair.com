@@ -1,0 +1,16 @@
+{
+  "specs":                "all",
+  "mongo": {
+    "collections":        ["views","issues","events","impressions","users"],
+    "url":                "mongodb://localhost/ap_gaurd",
+    "seed": {
+      "dirty":            false,
+      "without":          "FIXTURE.templates.dep_ex_avl"
+    }
+  },
+  "paths": {
+    "bson":               "./bson/2016",
+    "fixtures":           "./fixtures/2016",
+    "specs":              "./ops"
+  }
+}

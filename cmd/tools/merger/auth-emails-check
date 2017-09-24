@@ -1,4 +1,0 @@
-#!/bin/sh
-# Usage:
-#   /cmd/tools/merger/emails-check <comma-separated-emails>
-coffee cmd/tools/merger/run.coffee -c local.json -s checkemails -e $1 $2 $3

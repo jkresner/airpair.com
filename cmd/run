@@ -1,8 +1,27 @@
 #!/bin/sh
-cd cmd;
-if [ "$1" = "--dev" ]; then
-  build/dev;
-elif [ "$1" = "--dist" ]; then
-  build/dist;
+CMD="\033[0;36mcmd/run\033[0m  \t";
+killall node
+
+if [ "$1" != "--no-build" ]; then
+  if [ "$1" = "--dist" ]; then
+    cmd/build/dist;
+    for f in $(ls web/dist/css); do mv web/dist/css/$f ../static/host/public/css/$f; done;
+    for f in $(ls web/dist/js); do mv web/dist/js/$f ../static/host/public/js/$f; done;
+  else
+    cmd/build/dev;
+  fi
 fi
-gulp;
+
+printf "${CMD} start static.ap\n"
+node ../static/index.js &
+
+if [ "$2" = "--watch" ]; then
+  cd cmd;
+  gulp &
+  cd ..;
+  printf "${CMD} nodemon server/index\n"
+  #
+  nodemon --quiet --ext js,json,env,hbs -w server -w es -w tmpl -w node_modules/honeycombjs/lib -w ../honey/lib server/index.js;
+else
+  node ./server/index.js $1 $2 $3 $4 $5 $6;
+fi

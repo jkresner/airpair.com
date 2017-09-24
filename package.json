@@ -18,7 +18,7 @@
     "test": "cmd/test"
   },
   "dependencies": {
-    "honeycombjs": "0.9.3",
+    "honeycombjs": "0.9.4",
     "github": "0.2.4",
     "node-google-timezone": "0.0.2",
     "rss": "1.0.1",
@@ -27,6 +27,6 @@
   },
   "devDependencies": {
     "meanair-build": "0.7.0",
-    "screamjs": "0.7.2"
+    "screamjs": "0.7.3"
   }
 }

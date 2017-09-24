@@ -3,11 +3,6 @@
     "seed":                  "blue",
     "spec":                  "yellow"
   },
-  "http": {
-    "api": {
-      "baseUrl":             "/api"
-    }
-  },
   "mongo": {
     "collections":           ["Users","Experts","Posts","Redirects",
                               "Tags","Templates","Views",
@@ -24,7 +19,7 @@
     "stories":               "stories"
   },
   "log": {
-    "filter_fail":          "next_tick|emitCloseNT"
+    "filter_fail":           "next_tick|emitCloseNT"
   },
   "specs":                   "all",
   "stubs": {

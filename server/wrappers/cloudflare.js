@@ -1,5 +1,4 @@
 var base = 'https://api.cloudflare.com/client/v4'
-var obj = honey.util.Object
 var view = {
   getUser: 'id',
   getFirewall: 'id mode status notes modified_on'
@@ -30,7 +29,7 @@ var wrp = {
         var r = res.body.result
         var attrs = view[opName]
         if (attrs)
-          r = r.length > 0 ? r.map(item => obj.select(item, attrs)) : obj.select(r, attrs)
+          r = r.length > 0 ? r.map(item => _.select(item, attrs)) : _.select(r, attrs)
         cb(e, r)
       })
     }

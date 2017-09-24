@@ -26,19 +26,6 @@
     "times":                 false,
     "wire":                  false
   },
-  "nodemon": {
-    "dirs":                  ["server","server/.lib","es","tmpl"],
-    "config": {
-      "restartable":         false,
-      "verbose":             true,
-      "ignore":              ["*DS_Store","web/*","test/*","cmd/*"],
-      "stdout":              true,
-      "stdin":               true,
-      "execMap":             { "js": "node" },
-      "script":              "index.js",
-      "ext":                 "js json hbs env"
-    }
-  },
   "watch": {
     "livereload":            { "port": 35729 },
     "path": {

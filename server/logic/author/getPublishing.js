@@ -15,11 +15,11 @@ module.exports = (DAL, Data, {role}) => ({
     //   if (!post.tmpl)
     //     post.tmpl = 'default'
 
-    //   if (!post.meta || !post.meta.canonical)
+    //   if (!(post.log||{}).canonical)
     //   {
     //     var primarytag = _.find(post.tags,(t) => t.sort==0 || post.tags[0])
-    //     post.meta = post.meta || {}
-    //     post.meta.canonical = `/${primarytag.slug}/posts/${post.slug}`
+    //     post.log = post.log || {}
+    //     post.log.canonical = `/${primarytag.slug}/posts/${post.slug}`
     //   }
 
     //   if (!post.github) return cb(null, post)

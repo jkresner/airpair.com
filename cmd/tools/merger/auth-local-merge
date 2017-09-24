@@ -1,2 +1,0 @@
-#!/bin/sh
-coffee cmd/tools/merger/run.coffee -c local.json -s merge
