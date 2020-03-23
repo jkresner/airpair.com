@@ -1,0 +1,65 @@
+#!/bin/sh
+COM='app33053049'
+ANALYTICS='app33053049'
+CMD="\033[0;cmd/db-sync ${1}:\033[0m ";
+printf "${CMD} to impl\n"
+# if [ "$1" = "guard" ]; then
+# printf "${CMD}*** While downloading move fresh [ap].user to ~/ap_mongo/refresh/apcom/users.bson\n"
+# printf "${CMD}Dump analytics.data\n"
+# mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo/refresh -c issues
+# mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo/refresh -c views
+# mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo/refresh -c events
+# mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo/refresh -c impressions
+# printf "${CMD}Import /refresh/${2}/*.bson\n"
+# mongorestore --drop --db airpair_dev_analytics ~/ap_mongo/refresh/$2
+# printf "${CMD}CP latest [${APCOM}].users to /refresh/apcom/users$\n"
+# cp ~/ap_mongo/app33053049/users.bson ~/ap_mongo/refresh/apcom/users.bson
+# printf "${CMD}Import latest [apcom].users${NC}\n"
+# mongorestore --drop --db airpair_dev_analytics ~/ap_mongo/refresh/apcom
+
+
+
+# # # # 2019.10.14  live
+# ap_com        app28991368
+# ap_analytics  app28991368
+# mongodump     -h candidate.7.mongolayer.com:11751 -d app28991368 -u heroku -p Hk9J4HA-QpUuqxZvBIrCf2t3gg0RqaJ5oG18emuHXVAqKJr51wEVgOTZ13hi1ApCFJfRsNHrOb4Em9-34p4wHA -o ~/mdb
+# mongorestore  --drop --db ap_com ~/mdb/up/ap
+# mongorestore  -h C0-shard-0/c0-shard-00-00-2ty0i.mongodb.net,c0-shard-00-01-2ty0i.mongodb.net,c0-shard-00-02-2ty0i.mongodb.net --ssl -u apu -p 1VjoNa3rOiL84cVC --drop --authenticationDatabase admin --db ap_com ~/mdb/up/ap
+# login         ja  Hk9J4HA-Qp
+# dbuser        apu 1VjoNa3rOiL84cVC
+# atlas         mongodb+srv://apu:1VjoNa3rOiL84cVC@c0-2ty0i.mongodb.net/ap_com
+# Mongoose2     mongodb://apu:1VjoNa3rOiL84cVC@c0-shard-00-00-2ty0i.mongodb.net:27017,c0-shard-00-01-2ty0i.mongodb.net:27017,c0-shard-00-02-2ty0i.mongodb.net:27017/test?ssl=true&replicaSet=C0-shard-0&authSource=admin&retryWrites=true&w=majority
+# Mongoose3     mongodb+srv://apu:1VjoNa3rOiL84cVC@c0-2ty0i.mongodb.net/test?retryWrites=true&w=majority
+# heroku config:set LOG_ANALYTICS_MODEL_MONGOURL='mongodb://apu:1VjoNa3rOiL84cVC@c0-shard-00-00-2ty0i.mongodb.net:27017,c0-shard-00-01-2ty0i.mongodb.net:27017,c0-shard-00-02-2ty0i.mongodb.net:27017/ap_com?ssl=true&replicaSet=C0-shard-0&authSource=admin&retryWrites=true&w=majority'
+# heroku config:set MODEL_DOMAIN_MONGOURL='mongodb://apu:1VjoNa3rOiL84cVC@c0-shard-00-00-2ty0i.mongodb.net:27017,c0-shard-00-01-2ty0i.mongodb.net:27017,c0-shard-00-02-2ty0i.mongodb.net:27017/ap_com?ssl=true&replicaSet=C0-shard-0&authSource=admin&retryWrites=true&w=majority'
+#
+#
+# cfcom         app74189495
+# cf_analytics  app74189495
+# mongodump     -h candidate.10.mongolayer.com:10971 -d app74189495 -u heroku -p 58PLbPHwXj1qDQJRQA_uzevpW6BakLeeWRXvBFyfGGeXBqWGDCZkHZsruuLP6OgLgsfm9iMmteiEH4Yk48R48w -o ~/mdb
+# mongorestore -h c0-shard-0/c0-shard-00-00-vexgk.mongodb.net,c0-shard-00-01-vexgk.mongodb.net,c0-shard-00-02-vexgk.mongodb.net --ssl -u cfu -p MSmx8i6xSJ5UCn7R --authenticationDatabase admin  --db cf_com ~/mdb/up/cf
+# login         cc  JRQA_uzev6
+# dbuser        cfu MSmx8i6xSJ5UCn7R
+# atlas         mongodb+srv://cfu:MSmx8i6xSJ5UCn7R@c0-vexgk.mongodb.net/admin
+#
+# heroku config:set LOG_ANALYTICS_MODEL_MONGOURL='mongodb://cfu:MSmx8i6xSJ5UCn7R@c0-shard-00-00-vexgk.mongodb.net,c0-shard-00-01-vexgk.mongodb.net,c0-shard-00-02-vexgk.mongodb.net/cf_com?ssl=true&replicaSet=c0-shard-0&authSource=admin&retryWrites=true&w=majority'
+# heroku config:set MODEL_DOMAIN_MONGOURL='mongodb://cfu:MSmx8i6xSJ5UCn7R@c0-shard-00-00-vexgk.mongodb.net,c0-shard-00-01-vexgk.mongodb.net,c0-shard-00-02-vexgk.mongodb.net/cf_com?ssl=true&replicaSet=c0-shard-0&authSource=admin&retryWrites=true&w=majority'
+# # # #
+
+
+{ _id: new ObjectId('5c648ad9d2b6e0000406385e') } 5c648a85d2b6e00004063858 e10ccf3908ff533d2d649126f647ab50 andres_montiel@yahoo.com
+{ _id: new ObjectId('5c64795cd2b6e0000406384a') } 5c647913d2b6e00004063844 09a65706d5ce782484e7f17c63cd82e1 akki77@gmail.com
+{ _id: new ObjectId('5c64372c9a2a300004181fe0') } 5c6436d49a2a300004181fdb 7db69ee6f365fa67a10149723f7e1851 eeenersha@gmail.com
+{ _id: new ObjectId('5c638c219a2a300004181f7c') } 5c638a9f9a2a300004181f76 178d7fb9ff27299d8c577d4adbf10788 alex.axenov@gmail.com
+
+{ _id: new ObjectId('5c6342559a2a300004181efb') }
+{ _id: new ObjectId('5c5f7b4371541a0004792b68') }
+{ _id: new ObjectId('5c5f394671541a0004792ad1') }
+{ _id: new ObjectId('5c5efcf071541a0004792a9f') }
+{ _id: new ObjectId('5c5e62eb3688d30004d2eafb') }
+
+{ _id: new ObjectId('5c5ce94a00b6d70004bbfec6') }
+{ _id: new ObjectId('5c5cc0ff00b6d70004bbfe9c') }
+{ _id: new ObjectId('5c57655fc6225b0004897233') }
+{ _id: new ObjectId('5c5764cbc6225b000489722f') }
+{ _id: new ObjectId('5c573e38c6225b00048971e3') }
