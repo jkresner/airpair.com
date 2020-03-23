@@ -1,13 +1,16 @@
 module.exports = function(app, mw, {api}) {
 
+  if (!api)
+    return;
+
   app.API('auth')
     .get ({ session:             ''                        })
 
 
   app.API('tags')
-    .uses('noBot')
+    .uses('authd')
     .get (
-          // { use: 'authd' },
+          // { use: '' },
           { tagSearch:           'query.q'                 })
 
 
@@ -37,7 +40,8 @@ module.exports = function(app, mw, {api}) {
           { getForking:           'post',
             // getForReview:         'post',
             getSubmitting:        'post query.slug'        })
-    .put ({ use: 'jsonLimit' },
+    .put (
+          //{ use: 'jsonLimit' },
           { updateMarkdown:       'post body'              })
     .put ({ updateInfo:           'post body',
             updateSync:           'post',

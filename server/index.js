@@ -1,21 +1,13 @@
-if (process.argv[2] == '--dist'
- || process.argv[3] == '--dist') process.env.ENV = 'prod'
+let {argv,env} = process
+let ENV        = argv.indexOf("--dist") == -1 ? env.ENV : 'dist'
+let sitemap    = argv.indexOf("--sitemap") == -1 ? null : {
+  host: 'https://www.airpair.com',
+  file: __dirname.replace('server','web/static/robots/sitemap.xml') }
 
+var Honey      = require('honeycombjs')
+var track      = require('./app.track')
+var config     = Honey.Configure(__dirname, ENV)
+if (sitemap)     assign(config.http.static,{sitemap})
 
-var Honey    = require('honeycombjs')
-var config   = Honey.Configure(__dirname, process.env.ENV, true)
-var track    = require('./app.track')
-
-var app = require('./app').run({ config, Honey, track },
-  (e) => { if (e) console.log('APP.ERROR'.red, e, e.stack) })
-
-//     var urls = app.sitemap.map(url => `<url><loc>${url}</loc></url>`)
-//                           .join('\n  ')
-//                           .replace(new RegExp(config.http.host,'g'), 'https://www.airpair.com')
-
-//     require('fs').writeFileSync(
-//       __dirname.replace('server','web/robots/sitemap.xml'),
-// `<?xml version="1.0" encoding="UTF-8"?>
-// <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-//   ${urls}
-// </urlset>`)
+var app        = require('./app').run({ config, Honey, track },
+  e => e ? console.log('APP.ERROR'.red, e) : 0)

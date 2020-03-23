@@ -16,12 +16,16 @@ var wrapper = {
       headers: { "user-agent": cfg.userAgent }, debug: cfg.debug===true })
 
     this.api.setAuthToken = user => {
+      $log('setAuthToken', user.auth.gh.tokens, cfg.appKey)
       if (user == 'admin')
         return this.api.authenticate({type:"oauth",token:cfg.adminToken})
-      if (!_.get(user,`auth.gh.tokens.${cfg.appKey}.token`))
+
+      let token = _.get(user,`auth.gh.tokens.${cfg.appKey}.token`)
+      if (!token)
         throw Error(`GH.setAuthToken fail. gh ${cfg.appKey}.token not present on [${user.name}::${user._id}]`)
 
-      this.api.authenticate({type:"oauth",token:user.auth.gh.tokens[cfg.appKey].token})
+      $log('setAuthToken', {token})
+      this.api.authenticate({type:"oauth",token})
     }
   }
 }

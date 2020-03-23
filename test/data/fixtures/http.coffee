@@ -29,6 +29,7 @@ module.exports = {
       Yahoo:               'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)'
 
     ban:
+      AhrefsBot:           'Mozilla/5.0 (compatible; AhrefsBot/5.2; +http://ahrefs.com/robot/'
       Sogou:               'Sogou web spider/4.0(+http://www.sogou.com/docs/help/webmasters.htm#07)'
       uk_lddc:             'bl.uk_lddc_bot/3.1.1 (+http://www.bl.uk/aboutus/legaldeposit/websites/websites/faqswebmaster/index.html)'
 

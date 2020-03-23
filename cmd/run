@@ -12,16 +12,16 @@ if [ "$1" != "--no-build" ]; then
   fi
 fi
 
-printf "${CMD} start static.ap\n"
-node ../static/index.js &
+printf "${CMD} node ../ap.sttc\n"
+node ../ap.sttc/index.js &
 
 if [ "$2" = "--watch" ]; then
   cd cmd;
   gulp &
   cd ..;
   printf "${CMD} nodemon server/index\n"
-  #
   nodemon --quiet --ext js,json,env,hbs -w server -w es -w tmpl -w node_modules/honeycombjs/lib -w ../honey/lib server/index.js;
 else
+  printf "${CMD} node server/index\n"
   node ./server/index.js $1 $2 $3 $4 $5 $6;
 fi

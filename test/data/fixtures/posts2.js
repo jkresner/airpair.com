@@ -1,6 +1,5 @@
 module.exports = {
-
-
+/*
   higherOrder: {
     _id: ObjectId("55c02b22d131551100f1f0da"),
     title: "Mastering ES6 higher-order functions for Arrays",
@@ -744,6 +743,6 @@ module.exports = {
         "forkers" : 0,
         "words" : 3608
     }
-}
-
+  }
+*/
 }

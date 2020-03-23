@@ -1,9 +1,10 @@
 module.exports = (app, mw, {author}) => {
-  if (!author) return
+
+  if (!author)
+    return;
 
   var router = honey.Router('author',{type:'html',mount:'/author'})
     .use(mw.$.livereload)
-    .use(mw.$.abuser)
     .use(mw.$.session)
     .use(mw.$.authd)
     .use(mw.$.inflateMe)

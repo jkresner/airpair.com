@@ -1,45 +1,45 @@
 module.exports = function(app, mw, {landing,canonical}) {
-  if (!landing) return
 
+  if (!landing)
+    return;
 
-  var rr = honey.Router('landing',{type:'html'})
+  let r = honey.Router('landing',{type:'html'})
     .use(mw.$.livereload)
-    .use(mw.$.abuser)
-    .use(mw.$.badBot)
+    .use(mw.$.noscrape)
     .use(mw.$.throttle)
-    .use([mw.$.session, mw.$.reqFirst])
+    .use(mw.$.session)
     .use([mw.$.trackLanding, mw.$.pageLanding], {end:true})
-
-    .get('/', mw.$.inflateLanding('home'),
-      mw.res.forbid('home!anon', (({user}) => user), { redirect: req => '/home' }),
-      mw.$.cachedPublished,
-      (req, res, next) => next(null, assign(req.locals.r, cache.published))
-    )
-
-    .get('/login', mw.$.inflateLanding('login'))
 
     // .get('/typo', mw.res.page('typography',{layout:'landing'}))
 
-    .get('/100k-writing-competition', mw.$.inflateLanding('comp2015'))
+    .get('/login', mw.$.pd_landing('login'))
 
-  if (!canonical) return
+    .get('/100k-writing-competition', mw.$.pd_landing('comp2015'))
 
-  rr
-    .get(['/learn-code','/technologies'], mw.$.inflateLanding('tags'))
+    .get(['/learn-code','/technologies'], mw.$.pd_landing('tags'))
 
-    .get(['/software-experts','/posts'], mw.$.inflateLanding('posts'),
-      mw.$.cachedPublished,
-      // mw.$.inflateAds,
-      (req, res, next) => next(null, assign(req.locals.r, cache.published)) )
 
-    .get('/posts/in-community-review',
-      mw.$.noBot,
-      mw.$.inflateLanding('inreview'),
-      mw.$.pd('posts.getPostsSubmitted',{assign:'posts'}))
-
+  if (canonical.tags) r
     .get(cache.canonical.tag.map(t => t.url),
-      mw.$.inflateLanding('tag'),
-      mw.$.pd('posts.getPostsByTag',{params:['url']}))
+      mw.$.pd_landing('tag'),
+      mw.$.pd('posts.getPostsByTag', { params:['url'] }))
+
+  r
+    // mw.$.inflateAds,
+    // .get('/posts/in-community-review',
+    //   mw.$.noBot,
+    //   mw.$.pd_landing('inreview'),
+    //   mw.$.pd('posts.getPostsSubmitted',{assign:'posts'}))
+
+    .use(mw.$.cached('posts','recommended', {assign:'locals.r'}))
+
+    .get(['/software-experts','/posts'],
+      mw.$.pd_landing('posts'))
+
+    .get('/',
+      mw.res.forbid('home!anon', (r=>r.user), { redirect: r => '/home' }),
+      mw.$.pd_landing('home'))
+
 
 
 }

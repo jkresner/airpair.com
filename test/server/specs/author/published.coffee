@@ -33,8 +33,5 @@ editing = ->
 #                         DONE()
 
 
-module.exports = ->
-
-  DESCRIBE("Delete", deleting)
-  DESCRIBE("Edit (Markdown)", editing)
-  # DESCRIBE.skip("Update (Details)", ->)
+DESCRIBE("Delete", deleting)
+DESCRIBE("Edit (Markdown)", editing)

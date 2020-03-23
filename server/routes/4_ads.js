@@ -1,5 +1,7 @@
 module.exports = function(app, mw, {ads}) {
-  if (!ads || !ads.on) return
+
+  if (!(ads||{}).on)
+    return;
 
   var router = honey.Router('ads',{type:'ad'})
 

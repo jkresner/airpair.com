@@ -1,6 +1,6 @@
 #!/bin/sh
 D='app33053049'
-H='candidate.14.mongolayer.com:10507'
+H='candidate.15.mongolayer.com:11459'
 
 # cmd/test --live-routes PWD
 if [ "$1" = "--live-routes" ]; then
@@ -14,7 +14,7 @@ if [ "$1" = "--live-routes" ]; then
   mongodump -h $H -d $D -u heroku -p $2 -o ~/mongo -c posts
   mv ~/mongo/$D/posts.bson test/data/bson/posts.bson
 
-  printf "${CMD}cmd/test --seed --only routes"
+  printf "${CMD}cmd/test --db-seed --only routes\n"
   coffee test/server/index.coffee -s -o routes -q $3 $4 $5 $6
 
 else

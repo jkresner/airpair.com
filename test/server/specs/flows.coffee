@@ -11,6 +11,6 @@ module.exports = ->
     STUB.allGitPublisherAPIcalls()
 
 
-  DESCRIBE("NEW AUTHOR",      () => require('./flows/newauthor'))
+  # DESCRIBE("NEW AUTHOR",      () => require('./flows/newauthor'))
   # DESCRIBE("VETERAN AUTHOR", () => require('./flows/verteran'))
   # DESCRIBE("RE-ENGAGED AUTHOR", () => require('./flows/reengaged'))

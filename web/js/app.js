@@ -1,5 +1,5 @@
-window.$ = window.jQuery = require('./components/jquery-2.3.1.js')
-window._                 = require('./components/lodash-3.10.1.js')
+// window.$ = window.jQuery = require('./components/jquery-2.3.1.js')
+// window._                 = require('./components/lodash-3.10.1.js')
 var marked               = require('./components/marked-0.3.5.js')
 
 require('./components/angular-1.4.5.js')
@@ -41,6 +41,7 @@ require('./ang.v1/util/filters.js')
 require('./ang.v1/util/markdown.js')
 require('./ang.v1/util/window.js')
 
+require('./account/module.js')
 require('./author/module.js')
 require('./me/module.js')
 // require('./post/module.js')
@@ -71,6 +72,7 @@ angular.module("AP", [
   'AirPair.Directives.Post',
 
   //-- App modules (namespaces)
+  'AirPair.Account',
   'AirPair.Author',
   'AirPair.Author.Me',
   // 'AirPair.Post'
@@ -84,8 +86,8 @@ angular.module("AP", [
 
 .config(($locationProvider, $routeProvider) => {
   $locationProvider.html5Mode(true)
-
-  if (angular.element('#srv').length > 0)
+  var srv = angular.element(document).find('srv')
+  if (srv && srv.length ==1)
   {
     var initialLocation = window.location.pathname
       .toString()
@@ -97,7 +99,7 @@ angular.module("AP", [
     window.initialLocation = initialLocation;
 
     $routeProvider.when(initialLocation, {
-      template: angular.element('#srv').html(),
+      template: angular.element(srv[0]).html(),
       controller: 'server:tmpl'
     })
   }
@@ -105,7 +107,6 @@ angular.module("AP", [
 
 .run(($rootScope, $location, ERR) => {
   $rootScope.$on('$routeChangeSuccess', function() {
-    // console.log('routeChangeSuccess', $location.path(), initialLocation, $location.path().indexOf(window.initialLocation))
     if ($location.path().indexOf(window.initialLocation) == -1) {
 //       // window.trackRoute($location.path(),$location.search());
     }

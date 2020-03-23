@@ -39,12 +39,13 @@ module.exports = function($scope, $routeParams, $location, API, PAGE) {
 
 
   $scope.lightup = function(elem) {
-    if (elem == false)
-      $(`.navtip, .overlay`).removeClass('lit on')
-    else if (elem == 'footer')
-      $(`.edit footer, .overlay`).addClass('lit on')
-    else
-      $(`#author${elem}, .overlay`).addClass('lit')
+    console.log('impl lightup')
+    // if (elem == false)
+      // $(`.navtip, .overlay`).removeClass('lit on')
+    // else if (elem == 'footer')
+      // $(`.edit footer, .overlay`).addClass('lit on')
+    // else
+      // $(`#author${elem}, .overlay`).addClass('lit')
   }
 
 

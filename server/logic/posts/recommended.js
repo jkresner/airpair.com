@@ -1,7 +1,7 @@
 module.exports = ({Post}, {Project,Opts,Query}, DRY) => ({
 
 
-  validate(user) {},
+  // validate(user) {},
 
   exec(cb) {
 
@@ -56,8 +56,6 @@ module.exports = ({Post}, {Project,Opts,Query}, DRY) => ({
       var hottag = r.filter(p => hot.indexOf(p.slug) > -1)
       var archive = _.difference(r, _.union(popular,comp,hottag))
 
-
-
       cb(null, { latest, featured, top, popular, comp, archive, hottag })
     })
 
@@ -65,7 +63,7 @@ module.exports = ({Post}, {Project,Opts,Query}, DRY) => ({
   },
 
 
-  project: Project.latest
+  // project: Project.latest
 
 
 })

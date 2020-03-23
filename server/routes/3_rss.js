@@ -1,12 +1,14 @@
 module.exports = function(app, mw, {rss}) {
-  if (!rss) return
+
+  if (!rss)
+    return;
 
   var RSS  = require('rss')
   var feed = new RSS({
     site_url: 'https://www.airpair.com',
     image_url: 'https://static.airpair.com/img/icons/icon48.png',
     feed_url: 'https://www.airpair.com/rss',
-    copyright: '2016 AirPair Inc',
+    copyright: '2018 airpair inc',
     language: 'en',
     ttl: '60',
     title: 'AirPair Software Coding Tutorials & More',
@@ -49,15 +51,14 @@ module.exports = function(app, mw, {rss}) {
   })
 
 
-  var urls = rss.urls.split(',').map(url => `/${url}`)
-
   honey.Router('rss', { type:'rss' })
-    .use(mw.$.abuser)
-    .get(urls, mw.$.badBot, (req, res, next) =>
-      getPosts(req.query || {}, (e, items) =>
-        res.status(200)
-           .type('application/rss+xml')
-           .send(toFeed(items))
-    ))
+    .get(rss.urls.split(',').map(url => `/${url}`),
+      mw.$.bot('ban'),
+      (req, res, next) => getPosts(req.query||{},
+        (e, items) =>
+          res.status(200)
+             .type('application/rss+xml')
+             .send(toFeed(items))
+      ))
 
 }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://www.airpair.com</loc></url>
+  <url><loc>https://www.airpair.com/</loc></url>
   <url><loc>https://www.airpair.com/.net</loc></url>
   <url><loc>https://www.airpair.com/100k-writing-competition</loc></url>
   <url><loc>https://www.airpair.com/agile</loc></url>
-  <url><loc>https://www.airpair.com/agile-software/coach-and-trainer-ron-lichty/</loc></url>
+  <url><loc>https://www.airpair.com/agile-software/coach-and-trainer-ron-lichty</loc></url>
   <url><loc>https://www.airpair.com/agile/posts/guide-to-implementing-agile</loc></url>
+  <url><loc>https://www.airpair.com/amazon-web-services</loc></url>
   <url><loc>https://www.airpair.com/analytics</loc></url>
   <url><loc>https://www.airpair.com/analytics/mixpanel-problem-solving-justin-sherratt</loc></url>
   <url><loc>https://www.airpair.com/analytics/posts/user-analytics-as-your-product-grows</loc></url>
@@ -38,6 +39,7 @@
   <url><loc>https://www.airpair.com/angularjs/posts/angularjs-from-prototyping-to-functional-code</loc></url>
   <url><loc>https://www.airpair.com/angularjs/posts/angularjs-performance-large-applications</loc></url>
   <url><loc>https://www.airpair.com/angularjs/posts/angularjs-promises</loc></url>
+  <url><loc>https://www.airpair.com/angularjs/posts/animating-elements-moving-between-angularjs-lists</loc></url>
   <url><loc>https://www.airpair.com/angularjs/posts/build-a-real-time-hybrid-app-with-ionic-firebase</loc></url>
   <url><loc>https://www.airpair.com/angularjs/posts/component-based-angularjs-directives</loc></url>
   <url><loc>https://www.airpair.com/angularjs/posts/creating-components-p3-angular2-directives</loc></url>
@@ -76,6 +78,10 @@
   <url><loc>https://www.airpair.com/backbone.js</loc></url>
   <url><loc>https://www.airpair.com/backbone.js/backbone.js-code-review</loc></url>
   <url><loc>https://www.airpair.com/backbone.js/code-mentor-edward-anderson</loc></url>
+  <url><loc>https://www.airpair.com/bash</loc></url>
+  <url><loc>https://www.airpair.com/bigdata</loc></url>
+  <url><loc>https://www.airpair.com/billing*</loc></url>
+  <url><loc>https://www.airpair.com/braintree</loc></url>
   <url><loc>https://www.airpair.com/braintree/posts/making-money-with-angular-apps</loc></url>
   <url><loc>https://www.airpair.com/c%23</loc></url>
   <url><loc>https://www.airpair.com/c-plus-plus/matlab-expert-steve-purves</loc></url>
@@ -84,13 +90,18 @@
   <url><loc>https://www.airpair.com/callback</loc></url>
   <url><loc>https://www.airpair.com/canvas</loc></url>
   <url><loc>https://www.airpair.com/capistrano</loc></url>
+  <url><loc>https://www.airpair.com/cassandra</loc></url>
   <url><loc>https://www.airpair.com/cassandra/posts/vetting-apache-cassandra</loc></url>
+  <url><loc>https://www.airpair.com/chef</loc></url>
+  <url><loc>https://www.airpair.com/clojure</loc></url>
   <url><loc>https://www.airpair.com/clojure/posts/using-apache-spark-clojure</loc></url>
   <url><loc>https://www.airpair.com/cloud</loc></url>
   <url><loc>https://www.airpair.com/code-mentoring</loc></url>
   <url><loc>https://www.airpair.com/code-mentoring/airpairs-been-turing-into-my-iphone</loc></url>
+  <url><loc>https://www.airpair.com/code-quality</loc></url>
   <url><loc>https://www.airpair.com/code-review</loc></url>
   <url><loc>https://www.airpair.com/code-review/posts/code-review-the-ultimate-guide</loc></url>
+  <url><loc>https://www.airpair.com/coffeescript</loc></url>
   <url><loc>https://www.airpair.com/coffeescript/posts/migrating-coffeescript-to-es6-javascript</loc></url>
   <url><loc>https://www.airpair.com/command-line</loc></url>
   <url><loc>https://www.airpair.com/command-line/posts/command-line-newbie-to-ninja</loc></url>
@@ -103,7 +114,10 @@
   <url><loc>https://www.airpair.com/coreos</loc></url>
   <url><loc>https://www.airpair.com/coreos/posts/coreos-with-docker</loc></url>
   <url><loc>https://www.airpair.com/crud</loc></url>
+  <url><loc>https://www.airpair.com/css</loc></url>
+  <url><loc>https://www.airpair.com/css-transitions</loc></url>
   <url><loc>https://www.airpair.com/cypher</loc></url>
+  <url><loc>https://www.airpair.com/d3.js</loc></url>
   <url><loc>https://www.airpair.com/d3.js/getting-started-tutorial</loc></url>
   <url><loc>https://www.airpair.com/data-modeling</loc></url>
   <url><loc>https://www.airpair.com/data-visualization</loc></url>
@@ -114,6 +128,7 @@
   <url><loc>https://www.airpair.com/devops/devops-tools</loc></url>
   <url><loc>https://www.airpair.com/devops/posts/business-review-meetings-with-developers</loc></url>
   <url><loc>https://www.airpair.com/devops/posts/the-toolstack-for-devops-engineer</loc></url>
+  <url><loc>https://www.airpair.com/devops/posts/why-devs-should-be-involved-in-business-decisions</loc></url>
   <url><loc>https://www.airpair.com/distributed-computing</loc></url>
   <url><loc>https://www.airpair.com/django</loc></url>
   <url><loc>https://www.airpair.com/django/server-side-templates-part-1</loc></url>
@@ -127,53 +142,78 @@
   <url><loc>https://www.airpair.com/docker/posts/the-painful-journey-of-painless-deployments</loc></url>
   <url><loc>https://www.airpair.com/dom</loc></url>
   <url><loc>https://www.airpair.com/eclipse</loc></url>
+  <url><loc>https://www.airpair.com/ecmascript-6</loc></url>
+  <url><loc>https://www.airpair.com/elastic-beanstalk</loc></url>
+  <url><loc>https://www.airpair.com/elasticsearch</loc></url>
   <url><loc>https://www.airpair.com/elasticsearch/posts/elasticsearch-robust-search-functionality</loc></url>
+  <url><loc>https://www.airpair.com/email</loc></url>
   <url><loc>https://www.airpair.com/ember.js</loc></url>
   <url><loc>https://www.airpair.com/ember.js/expert-stefan-penner</loc></url>
   <url><loc>https://www.airpair.com/ember.js/posts/animations-in-emberjs-with-liquidfire</loc></url>
   <url><loc>https://www.airpair.com/ember.js/posts/top-mistakes-ember-rails</loc></url>
   <url><loc>https://www.airpair.com/ember.js/teacher-michael-grassoti</loc></url>
   <url><loc>https://www.airpair.com/ember.js/training-on-demand</loc></url>
+  <url><loc>https://www.airpair.com/erlang</loc></url>
   <url><loc>https://www.airpair.com/erlang/posts/solving-the-stable-marriage-problem-with-erlang</loc></url>
+  <url><loc>https://www.airpair.com/etcd</loc></url>
+  <url><loc>https://www.airpair.com/event-sourcing</loc></url>
   <url><loc>https://www.airpair.com/event-sourcing/posts/event-driven-data</loc></url>
+  <url><loc>https://www.airpair.com/events</loc></url>
+  <url><loc>https://www.airpair.com/evernote</loc></url>
+  <url><loc>https://www.airpair.com/evernote/evernote-api-integration-expert-phil-seeman</loc></url>
+  <url><loc>https://www.airpair.com/evernote/evernote-api-support-expert-heitor-sergent</loc></url>
+  <url><loc>https://www.airpair.com/excel</loc></url>
   <url><loc>https://www.airpair.com/excel/expert-training-professor-felienne-hermans</loc></url>
   <url><loc>https://www.airpair.com/express</loc></url>
   <url><loc>https://www.airpair.com/express/posts/earn-stack</loc></url>
   <url><loc>https://www.airpair.com/express/posts/expressjs-and-passportjs-sessions-deep-dive</loc></url>
   <url><loc>https://www.airpair.com/extjs</loc></url>
+  <url><loc>https://www.airpair.com/f%23</loc></url>
   <url><loc>https://www.airpair.com/f%23/tips-n-tricks/seven-ineffective-coding-habits-many-fsharp-programmers-dont-have</loc></url>
+  <url><loc>https://www.airpair.com/famo.us</loc></url>
   <url><loc>https://www.airpair.com/firebase</loc></url>
   <url><loc>https://www.airpair.com/firebase/posts/firebase-building-realtime-app</loc></url>
   <url><loc>https://www.airpair.com/firebase/posts/how-to-build-a-firebase-web-app</loc></url>
   <url><loc>https://www.airpair.com/firebase/posts/making-a-keenio-dashboard-realtime-by-integrating-it-with-firebase--d3js</loc></url>
   <url><loc>https://www.airpair.com/firebase/posts/structuring-your-firebase-data</loc></url>
   <url><loc>https://www.airpair.com/firebase/posts/yatodo-guide</loc></url>
+  <url><loc>https://www.airpair.com/flash</loc></url>
   <url><loc>https://www.airpair.com/flask</loc></url>
+  <url><loc>https://www.airpair.com/frontend</loc></url>
   <url><loc>https://www.airpair.com/frontend/posts/tutorial-angularjs-css-floating-labels</loc></url>
   <url><loc>https://www.airpair.com/functional-programming</loc></url>
   <url><loc>https://www.airpair.com/gaming</loc></url>
+  <url><loc>https://www.airpair.com/gcm</loc></url>
   <url><loc>https://www.airpair.com/gerrit</loc></url>
   <url><loc>https://www.airpair.com/gis</loc></url>
   <url><loc>https://www.airpair.com/git</loc></url>
   <url><loc>https://www.airpair.com/git/jenkins-gerrit-build-setup</loc></url>
   <url><loc>https://www.airpair.com/git/learn-git-basics</loc></url>
   <url><loc>https://www.airpair.com/git/posts/novice-to-ninja-git-minutiae</loc></url>
-  <url><loc>https://www.airpair.com/go/go-training-erik-st-martin/</loc></url>
+  <url><loc>https://www.airpair.com/github</loc></url>
+  <url><loc>https://www.airpair.com/go</loc></url>
+  <url><loc>https://www.airpair.com/go/go-training-erik-st-martin</loc></url>
   <url><loc>https://www.airpair.com/google-chrome</loc></url>
   <url><loc>https://www.airpair.com/google-play</loc></url>
+  <url><loc>https://www.airpair.com/graph</loc></url>
   <url><loc>https://www.airpair.com/grunt</loc></url>
   <url><loc>https://www.airpair.com/gulp</loc></url>
+  <url><loc>https://www.airpair.com/hadoop</loc></url>
   <url><loc>https://www.airpair.com/hadoop/hadoop-expert-patrick-lie</loc></url>
   <url><loc>https://www.airpair.com/hadoop/posts/getting-started-with-hadoop</loc></url>
   <url><loc>https://www.airpair.com/hapijs</loc></url>
-  <url><loc>https://www.airpair.com/haskell/posts/haskell-tutorial-introduction-to-web-apps</loc></url>
+  <url><loc>https://www.airpair.com/haskell</loc></url>
+  <url><loc>https://www.airpair.com/haskell-tutorial/intro-to-haskell-web-apps</loc></url>
   <url><loc>https://www.airpair.com/heroku</loc></url>
   <url><loc>https://www.airpair.com/heroku/expert-jed-schneider</loc></url>
   <url><loc>https://www.airpair.com/heroku/posts/heroku-tips-and-hacks</loc></url>
+  <url><loc>https://www.airpair.com/hipaa</loc></url>
   <url><loc>https://www.airpair.com/hipaa/hipaa-expert-jason-wang</loc></url>
+  <url><loc>https://www.airpair.com/hire-software-developers</loc></url>
   <url><loc>https://www.airpair.com/hosting</loc></url>
   <url><loc>https://www.airpair.com/html</loc></url>
   <url><loc>https://www.airpair.com/html/posts/life-of-web-component-a-quick-post</loc></url>
+  <url><loc>https://www.airpair.com/html5</loc></url>
   <url><loc>https://www.airpair.com/html5/html5-expert-todd-motto</loc></url>
   <url><loc>https://www.airpair.com/hyper/posts/hyper-is-docker-secured</loc></url>
   <url><loc>https://www.airpair.com/image-compression</loc></url>
@@ -183,24 +223,27 @@
   <url><loc>https://www.airpair.com/ionic-framework/posts/ionic-firebase-camera-app</loc></url>
   <url><loc>https://www.airpair.com/ionic-framework/posts/ionic-firebase-password-manager</loc></url>
   <url><loc>https://www.airpair.com/ionic-framework/posts/ionic-framework-ftw</loc></url>
-  <url><loc>https://www.airpair.com/ionic-framework/posts/ionic-socketio-chat-application-tutorial</loc></url>
   <url><loc>https://www.airpair.com/ionic-framework/posts/makeyourionicappunique</loc></url>
   <url><loc>https://www.airpair.com/ionic-framework/posts/production-ready-apps-with-ionic-framework</loc></url>
   <url><loc>https://www.airpair.com/ionic-framework/posts/push-notifications-using-ionic-framework</loc></url>
   <url><loc>https://www.airpair.com/ionic-framework/posts/the-definitive-ionic-starter-guide</loc></url>
   <url><loc>https://www.airpair.com/ionic-framework/posts/using-web-audio-api-for-precision-audio-in-ionic</loc></url>
+  <url><loc>https://www.airpair.com/ionic/a-year-using-ionic-for-hybrid-ios-android-apps</loc></url>
   <url><loc>https://www.airpair.com/ios</loc></url>
   <url><loc>https://www.airpair.com/ios/ios-code-mentor-jonathon-dalrymple</loc></url>
   <url><loc>https://www.airpair.com/ios/ios-code-review</loc></url>
   <url><loc>https://www.airpair.com/ios/ios-consultant-wain-glaister</loc></url>
-  <url><loc>https://www.airpair.com/ios/ios-teacher-nevan-king</loc></url>
-  <url><loc>https://www.airpair.com/ios/ios-trainer-reynaldo-gonzales</loc></url>
   <url><loc>https://www.airpair.com/ios/ios-training-for-couch</loc></url>
   <url><loc>https://www.airpair.com/ios/posts/adding-real-world-context-to-apps-with-ibeacons</loc></url>
   <url><loc>https://www.airpair.com/ios/posts/loading-images-ios-faster-with-progressive-jpegs</loc></url>
   <url><loc>https://www.airpair.com/ios/posts/swift-storekit-in-app-purchases</loc></url>
   <url><loc>https://www.airpair.com/ios/posts/three-new-features-in-ios-8-that-all-developers-should-know</loc></url>
+  <url><loc>https://www.airpair.com/ios5</loc></url>
+  <url><loc>https://www.airpair.com/ios8</loc></url>
   <url><loc>https://www.airpair.com/ios8/posts/watch-out-third-party-libraries</loc></url>
+  <url><loc>https://www.airpair.com/iphone</loc></url>
+  <url><loc>https://www.airpair.com/ironworker</loc></url>
+  <url><loc>https://www.airpair.com/jasmine</loc></url>
   <url><loc>https://www.airpair.com/jasmine/posts/javascriptintegrating-jasmine-with-requirejs-amd</loc></url>
   <url><loc>https://www.airpair.com/java</loc></url>
   <url><loc>https://www.airpair.com/java/posts/best-practices-using-java-teams</loc></url>
@@ -208,6 +251,7 @@
   <url><loc>https://www.airpair.com/java/posts/parallel-processing-of-io-based-data-with-java-streams</loc></url>
   <url><loc>https://www.airpair.com/java/posts/spring-streams-memory-efficiency</loc></url>
   <url><loc>https://www.airpair.com/javascript</loc></url>
+  <url><loc>https://www.airpair.com/javascript/async-javascript-libraries</loc></url>
   <url><loc>https://www.airpair.com/javascript/complete-expressjs-nodejs-mongodb-crud-skeleton</loc></url>
   <url><loc>https://www.airpair.com/javascript/developer-jeff-escalante</loc></url>
   <url><loc>https://www.airpair.com/javascript/emberjs-using-ember-cli</loc></url>
@@ -219,7 +263,6 @@
   <url><loc>https://www.airpair.com/javascript/javascript-consultant-marek-publicewicz</loc></url>
   <url><loc>https://www.airpair.com/javascript/learn-javascript</loc></url>
   <url><loc>https://www.airpair.com/javascript/node-js-tutorial</loc></url>
-  <url><loc>https://www.airpair.com/javascript/posts/a-year-using-ionic-to-build-hybrid-applications</loc></url>
   <url><loc>https://www.airpair.com/javascript/posts/age-of-dynamic-web-pages-firebase</loc></url>
   <url><loc>https://www.airpair.com/javascript/posts/an-event-loop-allegory</loc></url>
   <url><loc>https://www.airpair.com/javascript/posts/build-a-realtime-sms-call-center-with-data-mcfly-and-twilio</loc></url>
@@ -250,8 +293,8 @@
   <url><loc>https://www.airpair.com/javascript/posts/using-azk-ngrok-and-containers-to-test-webhooks</loc></url>
   <url><loc>https://www.airpair.com/javascript/posts/using-es6-harmony-with-nodejs</loc></url>
   <url><loc>https://www.airpair.com/javascript/posts/using-rethinkdb-with-expressjs</loc></url>
-  <url><loc>https://www.airpair.com/javascript/posts/which-async-javascript-libraries-should-i-use</loc></url>
   <url><loc>https://www.airpair.com/jenkins</loc></url>
+  <url><loc>https://www.airpair.com/jquery</loc></url>
   <url><loc>https://www.airpair.com/jquery/jquery-code-mentoring</loc></url>
   <url><loc>https://www.airpair.com/js/javascript-framework-comparison</loc></url>
   <url><loc>https://www.airpair.com/js/jquery-ajax-post-tutorial</loc></url>
@@ -262,15 +305,20 @@
   <url><loc>https://www.airpair.com/keen-io/posts/getting-started-with-event-data-and-keenio</loc></url>
   <url><loc>https://www.airpair.com/keen-io/posts/making-phil-libin-style-cohort-visualizations-available-to-everyone</loc></url>
   <url><loc>https://www.airpair.com/keen-io/posts/simple-blog-analytics-with-keenio</loc></url>
+  <url><loc>https://www.airpair.com/knockout.js</loc></url>
   <url><loc>https://www.airpair.com/knockout/posts/top-10-mistakes-knockoutjs</loc></url>
   <url><loc>https://www.airpair.com/koa</loc></url>
   <url><loc>https://www.airpair.com/kubernetes</loc></url>
+  <url><loc>https://www.airpair.com/lambda</loc></url>
   <url><loc>https://www.airpair.com/lambda/posts/aws-lambda-stream-processing</loc></url>
   <url><loc>https://www.airpair.com/laravel</loc></url>
   <url><loc>https://www.airpair.com/laravel/posts/automating-laravel-deployments-using-capistrano</loc></url>
   <url><loc>https://www.airpair.com/linux</loc></url>
+  <url><loc>https://www.airpair.com/localization</loc></url>
   <url><loc>https://www.airpair.com/logging</loc></url>
   <url><loc>https://www.airpair.com/logging/posts/understanding-our-app-with-neo4j</loc></url>
+  <url><loc>https://www.airpair.com/login</loc></url>
+  <url><loc>https://www.airpair.com/lumx</loc></url>
   <url><loc>https://www.airpair.com/machine-learning</loc></url>
   <url><loc>https://www.airpair.com/mamp</loc></url>
   <url><loc>https://www.airpair.com/map</loc></url>
@@ -278,6 +326,7 @@
   <url><loc>https://www.airpair.com/mean-stack</loc></url>
   <url><loc>https://www.airpair.com/mean-stack/posts/developers-moving-dotnet-to-mean</loc></url>
   <url><loc>https://www.airpair.com/mean-stack/posts/starting-a-mean-stack-app</loc></url>
+  <url><loc>https://www.airpair.com/meteor</loc></url>
   <url><loc>https://www.airpair.com/meteor/posts/choose-meteor-for-your-next-software-project</loc></url>
   <url><loc>https://www.airpair.com/microsoft.net/expert-help-peder-rice</loc></url>
   <url><loc>https://www.airpair.com/migration</loc></url>
@@ -288,6 +337,7 @@
   <url><loc>https://www.airpair.com/module</loc></url>
   <url><loc>https://www.airpair.com/mongodb</loc></url>
   <url><loc>https://www.airpair.com/mongodb/posts/mongodb-advanced-administration-mon-and-backup</loc></url>
+  <url><loc>https://www.airpair.com/mongoid</loc></url>
   <url><loc>https://www.airpair.com/mongoose</loc></url>
   <url><loc>https://www.airpair.com/multi-tenant</loc></url>
   <url><loc>https://www.airpair.com/neo4j</loc></url>
@@ -297,17 +347,18 @@
   <url><loc>https://www.airpair.com/neo4j/posts/modelling-game-economy-with-neo4j</loc></url>
   <url><loc>https://www.airpair.com/neo4j/posts/the-essence-of-spring-data-neo4j-4</loc></url>
   <url><loc>https://www.airpair.com/networking</loc></url>
+  <url><loc>https://www.airpair.com/nexmo</loc></url>
   <url><loc>https://www.airpair.com/nginx</loc></url>
   <url><loc>https://www.airpair.com/nginx/extending-nginx-tutorial</loc></url>
   <url><loc>https://www.airpair.com/nginx/posts/ultimate-guide-migrating-apache-to-nginx-1</loc></url>
   <url><loc>https://www.airpair.com/nginx/posts/ultimate-guide-migrating-apache-to-nginx-2</loc></url>
   <url><loc>https://www.airpair.com/nlp</loc></url>
-  <url><loc>https://www.airpair.com/node-js/expert-help-peter-lyons/</loc></url>
+  <url><loc>https://www.airpair.com/nlp/keyword-extraction-tutorial</loc></url>
+  <url><loc>https://www.airpair.com/node-js/expert-help-peter-lyons</loc></url>
   <url><loc>https://www.airpair.com/node.js</loc></url>
   <url><loc>https://www.airpair.com/node.js/expert-training-domenic-denicola</loc></url>
   <url><loc>https://www.airpair.com/node.js/learn-nodejs</loc></url>
   <url><loc>https://www.airpair.com/node.js/node-js-code-review</loc></url>
-  <url><loc>https://www.airpair.com/node.js/node-js-problem-solving</loc></url>
   <url><loc>https://www.airpair.com/node.js/posts/getting-started-with-docker-for-the-nodejs-dev</loc></url>
   <url><loc>https://www.airpair.com/node.js/posts/microservices-nodejs-containers</loc></url>
   <url><loc>https://www.airpair.com/node.js/posts/nodejs-framework-comparison-express-koa-hapi</loc></url>
@@ -317,15 +368,19 @@
   <url><loc>https://www.airpair.com/node.js/posts/utilities-for-everyday-node-development</loc></url>
   <url><loc>https://www.airpair.com/node.js/training-support-alexandru-vladutu</loc></url>
   <url><loc>https://www.airpair.com/nosql</loc></url>
+  <url><loc>https://www.airpair.com/npm</loc></url>
   <url><loc>https://www.airpair.com/open-source</loc></url>
   <url><loc>https://www.airpair.com/openvpn</loc></url>
   <url><loc>https://www.airpair.com/optimization</loc></url>
+  <url><loc>https://www.airpair.com/osx-mavericks</loc></url>
   <url><loc>https://www.airpair.com/osx-mavericks/posts/control-your-entire-computer-with-the-keyboard</loc></url>
+  <url><loc>https://www.airpair.com/pair-programming</loc></url>
   <url><loc>https://www.airpair.com/pair-programming</loc></url>
   <url><loc>https://www.airpair.com/parse.com</loc></url>
   <url><loc>https://www.airpair.com/passport</loc></url>
   <url><loc>https://www.airpair.com/payment</loc></url>
   <url><loc>https://www.airpair.com/payment-processing</loc></url>
+  <url><loc>https://www.airpair.com/paypal</loc></url>
   <url><loc>https://www.airpair.com/performance</loc></url>
   <url><loc>https://www.airpair.com/phonegap</loc></url>
   <url><loc>https://www.airpair.com/php</loc></url>
@@ -342,8 +397,13 @@
   <url><loc>https://www.airpair.com/postgresql</loc></url>
   <url><loc>https://www.airpair.com/postgresql/posts/sql-vs-nosql-ko-postgres-vs-mongo</loc></url>
   <url><loc>https://www.airpair.com/posts</loc></url>
+  <url><loc>https://www.airpair.com/programming-languages</loc></url>
+  <url><loc>https://www.airpair.com/project</loc></url>
+  <url><loc>https://www.airpair.com/project-management</loc></url>
   <url><loc>https://www.airpair.com/project-management/posts/how-to-write-user-stories-that-bring-your-team-together</loc></url>
+  <url><loc>https://www.airpair.com/project-ramon-code-mentoring</loc></url>
   <url><loc>https://www.airpair.com/promise</loc></url>
+  <url><loc>https://www.airpair.com/prototype</loc></url>
   <url><loc>https://www.airpair.com/pubnub</loc></url>
   <url><loc>https://www.airpair.com/pubnub/developer-dave-nugent</loc></url>
   <url><loc>https://www.airpair.com/pubnub/expert-ian-jennings</loc></url>
@@ -365,19 +425,25 @@
   <url><loc>https://www.airpair.com/python/posts/using-python-and-qgis-for-geospatial-visualization</loc></url>
   <url><loc>https://www.airpair.com/python/python-code-mentoring-web-scraping</loc></url>
   <url><loc>https://www.airpair.com/qgis</loc></url>
+  <url><loc>https://www.airpair.com/queue</loc></url>
   <url><loc>https://www.airpair.com/rbac</loc></url>
   <url><loc>https://www.airpair.com/reactjs</loc></url>
   <url><loc>https://www.airpair.com/reactjs/posts/reactjs-a-guide-for-rails-developers</loc></url>
   <url><loc>https://www.airpair.com/real-time</loc></url>
   <url><loc>https://www.airpair.com/recommendation</loc></url>
   <url><loc>https://www.airpair.com/redis</loc></url>
+  <url><loc>https://www.airpair.com/reporting</loc></url>
   <url><loc>https://www.airpair.com/reporting/posts/a-very-useful-macro-for-thoughtworks-mingle</loc></url>
   <url><loc>https://www.airpair.com/requirejs</loc></url>
+  <url><loc>https://www.airpair.com/rest</loc></url>
   <url><loc>https://www.airpair.com/rest/posts/a-well-designed-api-approach</loc></url>
   <url><loc>https://www.airpair.com/rethinkdb</loc></url>
   <url><loc>https://www.airpair.com/rethinkdb/posts/moving-from-sql-to-rethinkdb</loc></url>
+  <url><loc>https://www.airpair.com/robots.txt</loc></url>
   <url><loc>https://www.airpair.com/rspec</loc></url>
+  <url><loc>https://www.airpair.com/rspec-rails</loc></url>
   <url><loc>https://www.airpair.com/rspec/posts/gert</loc></url>
+  <url><loc>https://www.airpair.com/rss</loc></url>
   <url><loc>https://www.airpair.com/ruby</loc></url>
   <url><loc>https://www.airpair.com/ruby-on-rails</loc></url>
   <url><loc>https://www.airpair.com/ruby-on-rails-4</loc></url>
@@ -395,16 +461,19 @@
   <url><loc>https://www.airpair.com/ruby-on-rails/posts/rails-vs-sinatra</loc></url>
   <url><loc>https://www.airpair.com/ruby-on-rails/posts/ruby-on-rails-the-modular-way</loc></url>
   <url><loc>https://www.airpair.com/ruby-on-rails/posts/ruby-rails-tips-hacks</loc></url>
-  <url><loc>https://www.airpair.com/ruby-on-rails/posts/surfing-tdd-waves-with-rails-mentor-justin-gordon-1</loc></url>
   <url><loc>https://www.airpair.com/ruby-on-rails/posts/the-secret-to-an-app-with-no-experience-or-time</loc></url>
   <url><loc>https://www.airpair.com/ruby-on-rails/rails-code-mentoring</loc></url>
   <url><loc>https://www.airpair.com/ruby-on-rails/rails-code-review</loc></url>
+  <url><loc>https://www.airpair.com/ruby-on-rails/rails-expert-multi-tenancy-author-ryan-bigg</loc></url>
+  <url><loc>https://www.airpair.com/ruby-on-rails/rails-ninja-adam-cuppy</loc></url>
   <url><loc>https://www.airpair.com/ruby-on-rails/rails-problem-solving</loc></url>
   <url><loc>https://www.airpair.com/ruby-on-rails/rails-teacher-backnol-yogendran</loc></url>
+  <url><loc>https://www.airpair.com/ruby-on-rails/rails-testing-ramon-porter</loc></url>
   <url><loc>https://www.airpair.com/ruby/posts/create-maintainable-mongodb-queries-in-ruby-with-query-object-and-mongoid-criterias</loc></url>
   <url><loc>https://www.airpair.com/ruby/posts/step-aside-activesupportconcern-supermodule-is-the-new-sheriff-in-town</loc></url>
   <url><loc>https://www.airpair.com/ruby/posts/using-braintrees-vzero-sdk-to-accept-payments</loc></url>
   <url><loc>https://www.airpair.com/ruby/ruby-problem-solving-for-sendwithus</loc></url>
+  <url><loc>https://www.airpair.com/sabre</loc></url>
   <url><loc>https://www.airpair.com/salesforce</loc></url>
   <url><loc>https://www.airpair.com/salesforce/expert-daniel-ballinger</loc></url>
   <url><loc>https://www.airpair.com/scalable-architecture-with-docker-consul-and-nginx</loc></url>
@@ -416,28 +485,40 @@
   <url><loc>https://www.airpair.com/selenium/posts/selenium-tutorial-with-java</loc></url>
   <url><loc>https://www.airpair.com/selenium/selenium-expert-daniel-davison</loc></url>
   <url><loc>https://www.airpair.com/sencha</loc></url>
+  <url><loc>https://www.airpair.com/sendgrid</loc></url>
   <url><loc>https://www.airpair.com/sendgrid/posts/making-a-dashboard-with-keen-io-sendgrid-events</loc></url>
   <url><loc>https://www.airpair.com/shell</loc></url>
   <url><loc>https://www.airpair.com/sinatra</loc></url>
   <url><loc>https://www.airpair.com/sinon</loc></url>
-  <url><loc>https://www.airpair.com/socket.io</loc></url>
+  <url><loc>https://www.airpair.com/sms</loc></url>
+  <url><loc>https://www.airpair.com/social-authoring</loc></url>
   <url><loc>https://www.airpair.com/software-engineering</loc></url>
   <url><loc>https://www.airpair.com/software-engineering/posts/best-practices-patterns-software-design</loc></url>
   <url><loc>https://www.airpair.com/software-experts</loc></url>
+  <url><loc>https://www.airpair.com/spreadsheet</loc></url>
+  <url><loc>https://www.airpair.com/spring</loc></url>
   <url><loc>https://www.airpair.com/spring-data-neo4j</loc></url>
+  <url><loc>https://www.airpair.com/sql</loc></url>
+  <url><loc>https://www.airpair.com/sql-server</loc></url>
   <url><loc>https://www.airpair.com/sqlserver/posts/advanced-sql-server</loc></url>
+  <url><loc>https://www.airpair.com/stackoverflow</loc></url>
   <url><loc>https://www.airpair.com/stackoverflow/posts/30-days-of-answers-on-stack-overflow</loc></url>
   <url><loc>https://www.airpair.com/streaming</loc></url>
   <url><loc>https://www.airpair.com/stripe-payments</loc></url>
+  <url><loc>https://www.airpair.com/strongloop</loc></url>
   <url><loc>https://www.airpair.com/swift</loc></url>
   <url><loc>https://www.airpair.com/swift/building-swift-app-tutorial</loc></url>
   <url><loc>https://www.airpair.com/swift/building-swift-app-tutorial-2</loc></url>
   <url><loc>https://www.airpair.com/swift/building-swift-app-tutorial-3</loc></url>
   <url><loc>https://www.airpair.com/swift/complete-guide-to-swift</loc></url>
   <url><loc>https://www.airpair.com/swift/learning-swift-tutorial</loc></url>
+  <url><loc>https://www.airpair.com/technologies</loc></url>
+  <url><loc>https://www.airpair.com/templates</loc></url>
   <url><loc>https://www.airpair.com/terraform</loc></url>
   <url><loc>https://www.airpair.com/testing</loc></url>
   <url><loc>https://www.airpair.com/testing/learn-ruby-test-driven-development</loc></url>
+  <url><loc>https://www.airpair.com/translation</loc></url>
+  <url><loc>https://www.airpair.com/translation/crowd-translation-expert-joao-graca</loc></url>
   <url><loc>https://www.airpair.com/twilio</loc></url>
   <url><loc>https://www.airpair.com/twilio/posts/twilio-mms-messaging</loc></url>
   <url><loc>https://www.airpair.com/twilio/twilio-code-mentor-jeff-linwood</loc></url>
@@ -449,13 +530,15 @@
   <url><loc>https://www.airpair.com/typescript/posts/typescript-development-with-gulp-and-sublime-text</loc></url>
   <url><loc>https://www.airpair.com/unit-testing</loc></url>
   <url><loc>https://www.airpair.com/user-experience/ux-expert-alyssa-reese</loc></url>
+  <url><loc>https://www.airpair.com/user-interface</loc></url>
+  <url><loc>https://www.airpair.com/ux</loc></url>
+  <url><loc>https://www.airpair.com/v1/posts/browserify-your-angularjs-app</loc></url>
   <url><loc>https://www.airpair.com/vagrant</loc></url>
   <url><loc>https://www.airpair.com/version-control</loc></url>
   <url><loc>https://www.airpair.com/virtualization</loc></url>
   <url><loc>https://www.airpair.com/web-applications</loc></url>
   <url><loc>https://www.airpair.com/web-audio</loc></url>
   <url><loc>https://www.airpair.com/web-hosting</loc></url>
-  <url><loc>https://www.airpair.com/web-scraping</loc></url>
   <url><loc>https://www.airpair.com/web-security</loc></url>
   <url><loc>https://www.airpair.com/web-worker</loc></url>
   <url><loc>https://www.airpair.com/wordpress</loc></url>
@@ -465,6 +548,7 @@
   <url><loc>https://www.airpair.com/wordpress/posts/extending-wordpress-authentication-with-totp</loc></url>
   <url><loc>https://www.airpair.com/wordpress/posts/oldschool-blogging-wordpress-via-sms</loc></url>
   <url><loc>https://www.airpair.com/wordpress/posts/ten-ways-to-secure-wordpress</loc></url>
-  <url><loc>https://www.airpair.com/workshops</loc></url>
+  <url><loc>https://www.airpair.com/xml-rpc</loc></url>
+  <url><loc>https://www.airpair.com/xss</loc></url>
   <url><loc>https://www.airpair.com/yeoman</loc></url>
 </urlset>

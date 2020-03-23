@@ -1,5 +1,50 @@
-module.exports = (app, mw, {forbid}) => {
+module.exports = (app, mw, {forbid,throttle}) => {
 
+  cache['iplog'] = {}
+  cache['abuse'] = {}
+  cache.abuse.ban = []
+  cache.abuse.banned = function(req) {
+    let {limit} = honey.cfg('middleware.forbid.abuse')
+    let {ip} = req.ctx
+    let fouls = (cache.abuse[ip]||[]).length
+    let under = fouls < limit
+    let ok = cache['abuse'].ban.indexOf(ip) == -1
+    // $log('check abuse'.yellow, `[${ip}]`, fouls, cache['abuse'].ban.indexOf(ip) )
+    // $log('banned'.yellow, cache['abuse'].ban)
+    return !(under && ok)
+  }
+  cache.abuse.increment = function(status, req) {
+    let {limit} = honey.cfg('middleware.forbid.abuse')
+    let {ip,ref,ua} = req.ctx
+    let action = { t:moment().format(), u: req.originalUrl, status }
+    if (ref) action.r = ref
+
+    if (!cache.abuse[ip])
+      cache.abuse[ip] = []
+    if (status != 501)
+      cache.abuse[ip].push(action)
+
+    let fouls = cache.abuse[ip].length
+    if (fouls > limit && cache['abuse'].ban.indexOf(ip) < 0) {
+      let data = { mw: `ipban:abuse+${limit}`, method: req.method, headers: req.headers, url: req.originalUrl, user: req.ctx.user||'anon' }
+      // $log('cache.abuse.increment.ban'.red, data)
+      flareBan(req, data)
+      status = 500
+    }
+
+    req.res.status(status)
+    if (status != 500)
+      honey.log.mw.data(req, 'abuse')
+      // console.log(`[${status}${action.u}${ref?` << ${ref}`.dim:''}]abuse`.cyan, `\t${ip}[${cache.abuse[ip].length}/${forbid.abuse.limit}]`.white, (ua||'').gray)
+    return status == 418 ? 'Relax. Close your eyes.' : ''
+  }
+
+
+  mw.cache('foul', function(status) {
+    return function(req, res, next) {
+      res.send(cache.abuse.increment(status,req))
+    }
+  })
 
   // CF-Connecting-IP === X-Forwarded-For (if no spoofing)
   // First exception: CF-Connecting-IP
@@ -43,31 +88,32 @@ module.exports = (app, mw, {forbid}) => {
 
   mw.req.extend('banip', ban)
 
-
-  if (forbid.throttle) mw.cache('throttle',
-    function(req, res, next) {       // ? enhance forbid to give other responses like 500
-      let {ip,user} = req
+  mw.req.extend('throttlebanip', function(opts={}) {
+    this.mwName = opts.name || 'throttle'
+    let it = opts.log || { ban: true }
+    return function(req, res, next) {
+      let {limit} = honey.cfg('middleware.throttle')
+      let {ip,user,ud,ua} = req.ctx
       let key = moment().format('DDHHmm')
-      let throttle = 0
-      cache['iplog'][key] = cache['iplog'][key] || []
-      cache['iplog'][key].push(ip)
-      for (let hit of cache['iplog'][key]) if (hit == ip) throttle++
 
-      if (throttle < forbid.throttle.limit)
+      cache['iplog'][key] = [ip].concat(cache['iplog'][key]||[])
+
+      let reqs = cache['iplog'][key].filter(hit=>hit==ip).length
+      if (reqs < limit)
         return next()
 
-      // $log('throttle.user'.red, user, ip, throttle, throttle % forbid.throttle.limit)
-      res.send(cache.abuse.increment(500, req))
+      $log('throttle.user'.red, user, ip, throttle, throttle % limit)
+      if (it.ban)
+        $log(honey.log.mw.step(`ban ${ip} => ${reqs} reqs > ${limit}`.red))
 
-      honey.log.mw.data(req, `throttle ${forbid.throttle.limit}th`)
-      let data = { mw:'apcom_throttle', name:'throttle', rule:`${key}[${ip}] > throttle.limit`, hits:cache['iplog'][key], headers: req.headers }
+      let data = { mw:'throttle', name:'throttle', rule:`${key}[${ip}](${reqs}) > limit[${limit}]` }
+      flareBan(req, data)
 
-      if (throttle == 25)
-        flareBan(req, data)
-      else if ((throttle % forbid.throttle.limit) == 0)
-        global.analytics.issue(req.ctx, 'scrape', 'security_high', data)
-    })
+      res.status(500).send()
+    }
+  })
 
+  mw.cache('throttle', mw.req.throttlebanip({name:'ddos'}))
 
   return rule => mw.req.banip({name:rule})
 

@@ -1,4 +1,4 @@
-Sitemap: https://www.airpair.com/index_sitemap.xml
+Sitemap: https://www.airpair.com/sitemap.xml
 
 User-agent: *
 Disallow: /airconf/
@@ -22,3 +22,6 @@ Disallow: /stylesheets/
 Disallow: /v1/
 Disallow: /workshops/signup/
 Disallow: /workshops/subscribe/
+
+User-agent: AhrefsBot
+Disallow: /

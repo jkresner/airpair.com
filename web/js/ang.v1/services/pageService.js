@@ -43,6 +43,7 @@ angular.module("AirPair.Services.Page", [])
 
       return {
         setData(data, cb) {
+          console.log('PAGE.setData', data)
           Object.keys(data).forEach(key => scope[key] = data[key])
           // var ui = ($rootScope.ui||{}).main
           // if (ui && ui.loading) $rootScope.ui.main.loading = false

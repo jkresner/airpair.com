@@ -1,0 +1,9 @@
+#!/bin/sh
+CMD="\033[0;36mcmd/dev/deploy:\033[0m ";
+# printf "${CMD}: Move dist js\n"
+# cd web/dist
+# for l in $(ls -d js/*); do mv $l ../../../static/host/archive/apcom/$l;done;
+# rm -rf js
+# for l in $(ls -d css/*); do mv $l ../../../static/host/archive/apcom/$l;done;
+# rm -rf css
+# cd ../../;

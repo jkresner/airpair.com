@@ -6,7 +6,7 @@
       about:       app.locals.about,
       layout:      false,
       custom(e, req, res, next) {
-        if (mw.$.abuser && cache.abuse.banned(req))
+        if (cache.abuse && cache.abuse.banned(req))
           return res.send(cache.abuse.increment(500, req))
       }
     },

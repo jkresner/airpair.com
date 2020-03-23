@@ -16,6 +16,33 @@ angular.module("AirPair.Directives.Input", ['angularLoad', 'ui.bootstrap'])
 
 }))
 
+// .directive('socialConnect', function($rootScope, $location) {
+//   return {
+//     template: require('./socialConnect.html'),
+//     scope: {
+//       returnTo: '=returnTo',
+//     },
+//     controller($scope, $attrs) {
+//       $scope.data = {}
+//       $scope.return = $scope.returnTo || $location.path()
+//       $rootScope.$watch('session', (session) => {
+//         if (session.auth) {
+//           if (session.auth.gh) $scope.data.gh = session.auth.gh.login
+//           if (session.auth.tw) $scope.data.tw = session.auth.tw.screen_name
+//           if (session.auth.so) $scope.data.so = session.auth.so.link
+//           if (session.auth.in) $scope.data.in = session.auth.in.id
+//           if (session.auth.bb) $scope.data.bb = session.auth.bb.username
+//           if (session.auth.gp) $scope.data.gp =
+//             session.auth.gp.link || session.auth.gp.url || session.auth.gp.id
+//           if (session.auth.al) $scope.data.al =
+//             session.auth.al.username || session.auth.al.angellist_url
+//         }
+//       })
+//     }
+//   };
+// })
+
+
 .directive('singleSubmit', ($timeout, ERR) => ({
 
   template: `<a class="btn" ng-click="singleClick()" ng-disabled="btnDisabled">

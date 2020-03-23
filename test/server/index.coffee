@@ -15,12 +15,12 @@ opts =
       token = _.get(profile,"tokens.apcom.token") || "test"
       # $log('LOGIN.key', data.key, profile)
       opts.login.fn.call @, existing, 'github', profile, {token}, cb
-
+d
 
 
 SCREAM(opts).run (done) ->
   Honey                      = require('honeycombjs')
   appRoot                    = __dirname.replace('test', '')
-  config                     = Honey.Configure(appRoot, 'test', true)
+  config                     = Honey.Configure(appRoot, 'test')
   config.routes.auth.test    = { on:true, login: opts.login }
   app                        = require(join(appRoot,'app.js')).run({config,Honey},done)

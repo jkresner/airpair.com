@@ -7,9 +7,9 @@ module.exports = () => {
   })
 
   DESCRIBE("DRAFT",            () => require('./author/draft'))
-  DESCRIBE("SUBMIT",           () => require('./author/submit'))
-  DESCRIBE("SUBMITTED",        () => require('./author/submitted'))
-  DESCRIBE("PUBLISH",          () => require('./author/publish'))
-  DESCRIBE("PUBLISHED",        () => require('./author/published'))
+  // DESCRIBE("SUBMIT",           () => require('./author/submit'))
+  // DESCRIBE("SUBMITTED",        () => require('./author/submitted'))
+  // DESCRIBE("PUBLISH",          () => require('./author/publish'))
+  // DESCRIBE("PUBLISHED",        () => require('./author/published'))
 
 }

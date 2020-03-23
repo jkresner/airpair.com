@@ -1,8 +1,9 @@
 publishedPostUrl = FIXTURE.posts.higherOrder.htmlHead.canonical.replace('https://www.airpair.com', '')
-{UA} = FIXTURE.http
-BADBot =  unauthenticated:true, ua: UA.ban.uk_lddc
-GOODBot = unauthenticated:true, ua: UA.search.Google
-UANone =  unauthenticated:true, ua: 'null'
+{UA}      = FIXTURE.http
+BADBot    = session:null, ua: UA.ban.uk_lddc
+GOODBot   = session:null, ua: UA.search.Google
+AhrefsBot = session:null, ua: UA.ban.AhrefsBot
+UANone    =  session:null, ua: 'null'
 
 
 
@@ -23,62 +24,68 @@ after (done) ->
 DESCRIBE "No UA", ->
 
 
-  IT '[200] Empty html Bad url for bad bots', ->
+  IT '[200] empty for bad url', ->
     PAGE '/fasdfasdfaeed', RES(200,/html/,UANone), (resp1) ->
       expect(resp1).to.equal('')
       DONE()
 
 
   IT '/100k-writing-competition', ->
-    # viewSpy = STUB.spy(analytics, 'view')
-    PAGE '/100k-writing-competition', RES(200, UANone), (resp) ->
-      # expect(viewSpy.callCount).to.equal(0)
+    viewSpy = STUB.spy(analytics, 'view')
+    PAGE '/100k-writing-competition', RES(200,UANone), (resp) ->
+      expect(viewSpy.callCount).to.equal(0)
       DONE()
+
 
 
 
 DESCRIBE "BAD bots", ->
 
-  IT '[200] Empty html Bad url for bad bots', ->
+  IT '[200] empty for bad url', ->
     PAGE '/fasdfasdfaeed', RES(200,/html/,BADBot), (resp1) ->
       expect(resp1).to.equal('')
       DONE()
 
-  IT '[200] Empty html on good urls for bad bots', ->
+  IT '[200] empty for good url', ->
     PAGE '/', RES(200,/text/,BADBot), (resp) ->
       expect(resp).to.equal('')
       DONE()
+
+  IT '[200] empty for AhrefsBot malformed url', ->
+    badurl = '/angularjs/posts/preparing-for-the-future-of-angularjs+'
+    PAGE badurl, RES(200,/text/,AhrefsBot), (resp) ->
+      expect(resp).to.equal('')
+      DONE()
+
 
 
 DESCRIBE "GOOD bots (search)", ->
 
   IT '[404] Bad url for good (search) bots', ->
-    PAGE '/fasdfasdfaeed', RES(404, GOODBot), (resp2) ->
+    PAGE '/fasdfasdfaeed', RES(404,/text/,GOODBot), (resp2) ->
       expect(resp2).inc /not found/i
       DONE()
 
 
   IT '[200] on good urls for bad bots', ->
-    PAGE '/', RES(200,GOODBot), (resp2) ->
+    PAGE '/', RES(200,/html/,GOODBot), (resp2) ->
       expect(resp2).inc "<title>airpair | Software jobs"
       DONE()
 
 
 
-DESCRIBE "Session + analytics not persist", ->
+# DESCRIBE "Session + analytics not persist", ->
 
+#   SKIP '/100k-writing-competition Yandex Indexing 200, MirrorDector 404', ->
+#     indexBot = unauthenticated:true, ua: UA.Yandex.indexing
+#     mirrorBot = unauthenticated:true, ua: UA.Yandex.mirrorDector
+#     fakeBot = unauthenticated:true, ua: UA.Yandex.fake
 
+#     PAGE '/100k-writing-competition', Opts({status:200}, indexBot), (resp) ->
+#       expect(resp).inc "100k Writing Competition"
 
-  SKIP '/100k-writing-competition Yandex Indexing 200, MirrorDector 404', ->
-    indexBot = unauthenticated:true, ua: UA.Yandex.indexing
-    mirrorBot = unauthenticated:true, ua: UA.Yandex.mirrorDector
-    fakeBot = unauthenticated:true, ua: UA.Yandex.fake
-
-    PAGE '/100k-writing-competition', Opts({status:200}, indexBot), (resp) ->
-      expect(resp).inc "100k Writing Competition"
-
-    PAGE '/100k-writing-competition', RES(404, fakeBot), (resp) ->
-      DONE()
+#     PAGE '/100k-writing-competition', RES(404, fakeBot), (resp) ->
+#       DONE()
 
 
   #   it 'Views are saved for firefox', (done) ->

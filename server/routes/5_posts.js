@@ -1,14 +1,15 @@
 module.exports = function(app, mw, {canonical}) {
-  if (!(canonical||{}).posts) return;
+
+  if (!(canonical||{}).posts)
+    return;
 
   var posturls = cache['canonical'].post.map(p => p.url)
 
   var router = honey.Router('posts', {type:'html'})
     .use(mw.$.livereload)
-    .use(mw.$.abuser)
-    .use(mw.$.badBot)
+    .use(mw.$.noscrape)
     .use(mw.$.throttle)
-    .use([mw.$.session, mw.$.reqFirst])
+    .use(mw.$.session)
     .use(mw.$.pagePost({}),{end:true})
 
     .post(posturls, mw.$.ipban('posturl'))
@@ -19,7 +20,7 @@ module.exports = function(app, mw, {canonical}) {
       mw.$.trackPost)
 
     .get('/posts/review/:post',
-       mw.$.noBot,
+       mw.$.nobot,
        mw.data.recast('post', 'params.post', {required:true}), //dest:'params.post'
        mw.$.pd('posts.getPostForReview',{params:['post']}),
        (req, res, next) => {

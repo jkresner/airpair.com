@@ -75,6 +75,17 @@
     "transports":              ["ses"]
   },
   "http": {
+    "ctx": {
+      "ud": {
+        "search":              "Applebot|archive.org|Baiduspider|bingbot|adsbot-google|Googlebot|Docoloc|Hackerfall|Hatena|msnbot-media|Qwantify|YandexBot|Yahoo! Slurp|Y!J-ASR",
+        "ban":                 "AhrefsBot|BuckyOHare|Buzzbot|CCBot|cf-news|coccoc|cognitiveseo|CloudFlare-Always|datasift.com|dataprovider.com|Domain Re-Animator|DotBot|EmailMarketingRobot|Feedly|Genieo|GrapeshotCrawler|GurujiBot|HaosouSpider|Hubspotistellabot|linkdexbot|ltx71|Mediatoolkitbot|MegaIndex|MetaURI|MJ12bot|Nutch|oai-finder|OpenLinkProfiler|panscient.com|Pingdom|Priceonomics|QuerySeekerSpider|R6_CommentReader|rogerbot|scraper|Screaming Frog|ScoutJet|Searchmetrics|SemrushBot|Sentinurl|SeznamBot|Sgrunt|ShowyouBot|SMTBot|Sogou|Turnitin|uk_lddc_bot|WPScan|YisouSpider",
+        "mobile":              "iPhone|iPod|Mobile|Presto",
+        "lib":                 "aria2|CPython|DarcyRipper|Go 1.1|Go http client|jsoup|libwww-perl|Mechanize|Melvil|Needle|Phantom|podder|python-requests|RobotsTxtParser|Wget",
+        "tablet":              "iPad",
+        "proxy":               "BingPreview|bitlybot|Camo Asset|Googlebot-Image|Exabot|facebookexternalhit|Pinterest|Slack-ImgProxy|Slackbot-LinkExpanding|SkypeUriPreview|Twitterbot",
+        "reader":              "Blogtrottr|Evernote|PaperLiBot|Superfeedr|tt-rss.org|Toutiao|Windows-RSS"
+      }
+    },
     "static": {
       "bundles": {
         "css/app.css":         "/css/app.css",
@@ -84,11 +95,7 @@
       "dirs":                  false,
       "favicon":                { "root": "web/static" },
       "host":                  "https://static.airpair.com",
-      "opts": {
-        "index":               false,
-        "redirect":            false
-      },
-      "sitemap":               true
+      "sitemap":               false
     }
   },
   "log": {
@@ -110,29 +117,15 @@
       "wrpr":                  { "ghcall":"cyan", "ghretry":"yellow", "ghstep":"white" }
     },
     "errors": {
-      "mail":                  { "sender": "ERR <team@airpair.com>", "to": "jk <jk@airpair.com>" }
+      "mail":                  { "sender": "ERR <team@airpair.com>", "to": "jk@airpair.com" }
     }
   },
   "middleware": {
-    "api":                     { "baseUrl": "/api" },
     "authd":                   { "returnTo": true },
-    "ctx": {
-      "ud": {
-        "search":              "Applebot|archive.org|Baiduspider|bingbot|adsbot-google|Googlebot|Docoloc|Hackerfall|Hatena|msnbot-media|Qwantify|YandexBot|Yahoo! Slurp|Y!J-ASR",
-        "ban":                 "AhrefsBot|BuckyOHare|Buzzbot|CCBot|cf-news|coccoc|cognitiveseo|CloudFlare-Always|datasift.com|dataprovider.com|Domain Re-Animator|DotBot|EmailMarketingRobot|Feedly|Genieo|GrapeshotCrawler|GurujiBot|HaosouSpider|Hubspotistellabot|linkdexbot|ltx71|Mediatoolkitbot|MegaIndex|MetaURI|MJ12bot|Nutch|oai-finder|OpenLinkProfiler|panscient.com|Pingdom|Priceonomics|QuerySeekerSpider|R6_CommentReader|rogerbot|scraper|Screaming Frog|ScoutJet|Searchmetrics|SemrushBot|Sentinurl|SeznamBot|Sgrunt|ShowyouBot|SMTBot|Sogou|Turnitin|uk_lddc_bot|WPScan|YisouSpider",
-        "mobile":              "iPhone|iPod|Mobile|Presto",
-        "lib":                 "aria2|CPython|DarcyRipper|Go 1.1|Go http client|jsoup|libwww-perl|Mechanize|Melvil|Needle|Phantom|podder|python-requests|RobotsTxtParser|Wget",
-        "tablet":              "iPad",
-        "proxy":               "BingPreview|bitlybot|Camo Asset|Googlebot-Image|Exabot|facebookexternalhit|Pinterest|Slack-ImgProxy|Slackbot-LinkExpanding|SkypeUriPreview|Twitterbot",
-        "reader":              "Blogtrottr|Evernote|PaperLiBot|Superfeedr|tt-rss.org|Toutiao|Windows-RSS"
-      },
-      "uId":                   true
-    },
     "dirs":                    "mw",
     "forbid": {
       "ban":                   { "whitelist": "40.77.167|155.143.23|157.55.39" },
       "abuse":                 { "limit": 6 },
-      "throttle":              { "limit": 8 },
       "nonAdm":                { "allow": "54551be15f221efa174238d1" }
     },
     "jsonLimit":               { "limit": "2mb" },
@@ -142,13 +135,18 @@
       "name":                  "aps",
       "secret":                "airyv1",
       "store":                 { "collection": "sessions_apcom" },
-      "restrict":              "search|ban|lib|proxy|reader|uncategorized|null"
+      "restrict":              "search|ban|lib|proxy|reader|null"
     },
-    "slow":                    1000
+    "throttle":                { "limit": 8 },
+    "wrap": {
+      "bouncer":               { "on": true },
+      "slow":                  1000
+    }
   },
   "model": {
+    "da":                      ["mongoose","mongo"],
     "cache": {
-      "require":               "tags:tags,templates:templates,rules:routes",
+      "require":               "tags:tagsCached,templates:templatesCached,redirects:rulesCached",
       "inflate":               { "tags": "name slug short desc url posts" }
     }
   },
@@ -158,18 +156,16 @@
       "campaigns":             "7013A000000mKoyQAE:heroku:2016-q3-heroku",
       "dir":                   "web/static/ads"
     },
-    "api":                     { "mount": "/v1/api" },
+    "api":                     { "on": true , "mount": "/api" },
     "author":                  { "on": true },
     "canonical":               { "async": "canonical", "posts": true, "tags": true },
     "landing": {
       "tags":                  { "top": "android|aws|docker|ember.js|firebase|ios|ionic|javascript|keen-io|mean-stack|mongodb|neo4j|node.js|python|php|reactjs|rethinkdb|ruby|ruby-on-rails|selenium|swift|twilio" }
     },
-    "static": {
-      "robots":                { "dir": "web/static/robots" }
-    },
+    "robots":                  { "on": true , "dir": "web/static/robots" },
     "reviews":                 { "on": false },
     "rules":                   { "on": true },
-    "rss":                     { "urls": "atom,data.atom,/data/atom,data/rss,data.rss,rss/posts,.rss,rss.xml,rss" }
+    "rss":                     { "on": true, "urls": "atom,data.atom,/data/atom,data/rss,data.rss,rss/posts,.rss,rss.xml,rss" }
   },
   "templates": {
     "dirs": {

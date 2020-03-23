@@ -40,7 +40,7 @@
         <span ng-if="drafts.length > 0">{{drafts.length}} <b class="draft">drafts</b></span>
       </h3>
 
-      <table class="table table-striped table-stats" ng-repeat="p in published" ng-if="p.views > 0">
+      <table class="table table-striped table-stats" ng-repeat="p in published">
         <thead>
           <tr>
             <th>{{p.views}}</th>
@@ -113,10 +113,18 @@
 </section>
 
 
-
-<!--
 <div class="col side">
-
+  <section class="menu">
+    <h3>Menu</h3>
+    <ul>
+      <li><a href="/author/new" target="_self">new</a></li>
+      <li><a href="/author/drafts" target="_self">drafts</a></li>
+      <li><a href="/author/forks" target="_self">forks</a></li>
+      <li><a href="/author/published" target="_self">published</a></li>
+    </ul>
+  </section>
+  <br /><br /><br />
+<!--
   <section class="suggestions">
     <h3>Suggestions</h3>
 
@@ -137,12 +145,10 @@
       </li>
     </ul>
   </section>
-
+ -->
 </div>
 
 </section>
-
- -->
 
 
 </section>

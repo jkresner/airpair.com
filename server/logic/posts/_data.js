@@ -142,7 +142,7 @@ module.exports = { Views, Query, Opts, Util,
         return cb(null, r)
       }
 
-      var adtag = cache['tags'][d.tags[0]._id]
+      var adtag = CAL['tags'][d.tags[0]._id]
 
       // $log('adTag'.yellow, d.tags, adtag)
       var primarytag = adtag || _.find(d.tags, t => t.sort==0) || d.tags[0]

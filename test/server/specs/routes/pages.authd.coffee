@@ -7,7 +7,8 @@ html =
 js =
   index: /javascript" src="https:\/\/static\.airpair\.com\/js\/app/
 
-
+# https://coderwall.com/p/dbndpq/help-review-this-article-the-easy-way-to-integrate-stripe-payments
+# => https://www.airpair.com/posts/review/5718cb9cf0b39a120087aec3
 
 
   # IT "Redirect on review link for published post", ->
@@ -18,14 +19,16 @@ js =
 userKey = null
 session = null
 
+
+
 before (done) ->
   LOGIN 'gnic', (s) ->
-    userKey = s.username
-    session = global.COOKIE
+    global.AUTHED = key: s.username, session: global.COOKIE
     done()
 
+
 beforeEach ->
-  global.COOKIE = session
+  global.COOKIE = global.AUTHED.session
 
 
 DESCRIBE 'NOINDEX', ->
@@ -57,7 +60,6 @@ DESCRIBE 'INDEX', ->
       /<meta property="og:title" content="AngularJS vs. Backbone.js vs. Ember.js"/,
       /<h1 class="entry-title" itemprop="headline">AngularJS vs. Backbone.js vs. Ember.js/,  #
       /meta name="description" content="Angular, Backbone and Ember all have the concept of views, events, data models and routing. We will compare their differences and outline ideal use cases/,
-      /meta property="og:image" content="https:\/\/airpair-blog.s3.amazonaws.com\/wp-content\/uploads\/2014\/08\/urishaked-jscompare-2.png"/,
       /meta property="og:url" content="http:\/\/www.airpair.com\/js\/javascript-framework-comparison"/,
       /link rel="canonical" href="http:\/\/www.airpair.com\/js\/javascript-framework-comparison"/,
       /<li><a href="#2-meet-the-frameworks">2  Meet The Frameworks/,
@@ -77,9 +79,10 @@ DESCRIBE 'INDEX', ->
 
 DESCRIBE 'CLIENT (authed APP)', ->
 
-  IT '/', -> PAGE '/', {status:302}, (txt) ->
-    expect(txt).to.equal('Found. Redirecting to /home')
-    DONE()
+  IT '/', ->
+    PAGE '/', {status:302}, (txt) ->
+      expect(txt).to.equal('Found. Redirecting to /home')
+      DONE()
 
   IT '/home OK', ->
     PAGE '/home', {}, (html) =>

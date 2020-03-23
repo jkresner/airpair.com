@@ -103,8 +103,10 @@ module.exports = (cb) ->
   global.BAN = ({test,optsExpect}, opts) =>
     status = (opts||{}).status || 500
     ua = optsExpect.ua
-    PAGE test.title, {contentType: /text/, status, ua}, (txt) =>
-      DONE()
+    PAGE test.title, { contentType: /text/, status, ua }, (txt1) =>
+      PAGE '/', { contentType: /text/, status, ua }, (txt2) =>
+        expect(txt1+txt2).to.equal('')
+        DONE()
 
 
   # global.REDIRECT = ({test}, to, opts) =>

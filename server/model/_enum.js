@@ -6,6 +6,7 @@ module.exports = {
       '302',                 // 302 forward (string/pattern) from => to
       '410',                 // forward (string/pattern) from => to
       '501',                 // 501 Not implemented
+      'ban',                 // 500
       'bait',                // 418 teapot (RFC 2324) url.match(from:regex)
       // 'canonical-cached',    // Resolve custom url -> cached item (no redirect)
       // 'canonical-post',      // Resolve custom url -> post (no redirect)
@@ -31,9 +32,5 @@ module.exports = {
            'tutorial',
           ]
   },
-
-  USER: {
-    SCOPES: ['post:editor','post:moderator'],
-  }
 
 }
